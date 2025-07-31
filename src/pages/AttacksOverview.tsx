@@ -36,17 +36,6 @@ const AttacksOverview: React.FC = () => {
     }
   };
 
-  const getEvolutionArrow = (attack: Attack): JSX.Element | null => {
-    if (!attack.evolvesTo) return null;
-    const nextAttack = attackService.getAttackById(attack.evolvesTo);
-    if (!nextAttack) return null;
-    
-    return (
-      <div className="flex items-center text-xs text-gray-500 mt-1">
-        <span>→ {nextAttack.name}</span>
-      </div>
-    );
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -148,7 +137,14 @@ const AttacksOverview: React.FC = () => {
                           </div>
                         </div>
                         
-                        {getEvolutionArrow(attack)}
+                        {attack.evolvesTo && (() => {
+                          const nextAttack = attackService.getAttackById(attack.evolvesTo);
+                          return nextAttack ? (
+                            <div className="flex items-center text-xs text-gray-500 mt-1">
+                              <span>→ {nextAttack.name}</span>
+                            </div>
+                          ) : null;
+                        })()}
                         
                         {attack.effect && (
                           <div className="mt-2 pt-2 border-t border-gray-100">

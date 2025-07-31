@@ -109,8 +109,9 @@ export const attackService = {
    * Get all unique types
    */
   getAllTypes(): string[] {
-    const types = [...new Set(this.getAllAttacks().map(attack => attack.type))];
-    return types.sort();
+    const attackTypes = this.getAllAttacks().map(attack => attack.type);
+    const uniqueTypes = Array.from(new Set(attackTypes));
+    return uniqueTypes.sort();
   },
 
   /**
