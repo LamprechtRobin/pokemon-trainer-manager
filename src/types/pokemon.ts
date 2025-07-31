@@ -8,7 +8,8 @@ export interface Pokemon {
   imageUrl?: string;
   species?: string;
   abilities?: string[];
-  moves?: string[];
+  moves?: string[]; // Deprecated - kept for backwards compatibility
+  learnedAttacks?: string[]; // Array of attack IDs
   stats?: {
     hp?: number;
     attack?: number;

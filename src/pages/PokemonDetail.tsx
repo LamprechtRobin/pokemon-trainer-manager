@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Pokemon, PokemonFormData } from '../types/pokemon';
 import { Trainer } from '../types/trainer';
+import { Attack } from '../types/attack';
 import { trainerService } from '../firebase/trainerService';
+import { attackService } from '../services/attackService';
 
 
 // Pokemon type options
@@ -16,6 +18,12 @@ const POKEMON_TYPES = [
 const MIN_EXP = 0;
 const MAX_EXP = 10;
 
+// Attack upgrade costs (in talent points)
+const ATTACK_UPGRADE_COSTS = {
+  TIER_1_TO_2: 25,
+  TIER_2_TO_3: 50
+};
+
 const PokemonDetail: React.FC = () => {
   const { trainerId, pokemonIndex } = useParams<{ trainerId: string; pokemonIndex: string }>();
   const navigate = useNavigate();
@@ -25,6 +33,8 @@ const PokemonDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showAttackSelection, setShowAttackSelection] = useState(false);
+  const [attackSearchTerm, setAttackSearchTerm] = useState('');
   
   const [editForm, setEditForm] = useState<PokemonFormData>({
     name: '',
@@ -71,12 +81,25 @@ const PokemonDetail: React.FC = () => {
         species: foundPokemon.species || foundPokemon.name
       });
       
-      // Ensure talent points exist
+      // Ensure talent points and learned attacks exist
+      let needsUpdate = false;
+      let updatedPokemon = { ...foundPokemon };
+      
       if (!foundPokemon.talentPoints) {
-        const updatedPokemon = {
-          ...foundPokemon,
-          talentPoints: { hp: 0, attack: 0, defense: 0, speed: 0 }
-        };
+        updatedPokemon.talentPoints = { hp: 0, attack: 0, defense: 0, speed: 0 };
+        needsUpdate = true;
+      }
+      
+      if (!foundPokemon.learnedAttacks) {
+        // Initialize with default attack based on type
+        const defaultAttack = foundPokemon.type 
+          ? attackService.getDefaultAttackForType(foundPokemon.type)
+          : undefined;
+        updatedPokemon.learnedAttacks = defaultAttack ? [defaultAttack.id] : [];
+        needsUpdate = true;
+      }
+      
+      if (needsUpdate) {
         setPokemon(updatedPokemon);
       }
       
@@ -123,7 +146,9 @@ const PokemonDetail: React.FC = () => {
         exp: parseInt(editForm.exp) || 0,
         type: editForm.type || undefined,
         secondaryType: editForm.secondaryType || undefined,
-        species: editForm.species.trim() || editForm.name.trim()
+        species: editForm.species.trim() || editForm.name.trim(),
+        talentPoints: pokemon.talentPoints || { hp: 0, attack: 0, defense: 0, speed: 0 },
+        learnedAttacks: pokemon.learnedAttacks || []
       };
 
       const updatedTeam = [...(trainer.team || [])];
@@ -172,6 +197,219 @@ const PokemonDetail: React.FC = () => {
       level: newLevel.toString(),
       exp: newExp.toString()
     }));
+  };
+
+  // Talent Points System
+  const getMaxTalentPoints = (): number => {
+    const level = parseInt(editForm.level) || 1;
+    return (level - 1) * 5;
+  };
+
+  const getUsedTalentPoints = (): number => {
+    if (!pokemon?.talentPoints) return 0;
+    return pokemon.talentPoints.hp + pokemon.talentPoints.attack + 
+           pokemon.talentPoints.defense + pokemon.talentPoints.speed;
+  };
+
+  const getAvailableTalentPoints = (): number => {
+    return getMaxTalentPoints() - getUsedTalentPoints();
+  };
+
+  const handleTalentPointChange = (stat: 'hp' | 'attack' | 'defense' | 'speed', amount: number) => {
+    if (!pokemon?.talentPoints) return;
+    
+    const currentPoints = pokemon.talentPoints[stat];
+    const newPoints = currentPoints + amount;
+    const availablePoints = getAvailableTalentPoints();
+    
+    // Check bounds: can't go below 0 and can't exceed available points
+    if (newPoints < 0) return;
+    if (amount > 0 && availablePoints < amount) return;
+    
+    const updatedPokemon = {
+      ...pokemon,
+      talentPoints: {
+        ...pokemon.talentPoints,
+        [stat]: newPoints
+      }
+    };
+    
+    setPokemon(updatedPokemon);
+  };
+
+  // Attack Management
+  const getLearnedAttacks = (): Attack[] => {
+    if (!pokemon?.learnedAttacks) return [];
+    return pokemon.learnedAttacks
+      .map(attackId => attackService.getAttackById(attackId))
+      .filter((attack): attack is Attack => attack !== undefined);
+  };
+
+  const getAvailableAttacks = (): Attack[] => {
+    // Get all tier 1 (basic) attacks
+    const basicAttacks = attackService.getAttacksByTier(1);
+    const learnedAttackIds = pokemon?.learnedAttacks || [];
+    let availableAttacks = basicAttacks.filter(attack => !learnedAttackIds.includes(attack.id));
+    
+    // Filter by search term
+    if (attackSearchTerm.trim()) {
+      const searchLower = attackSearchTerm.toLowerCase().trim();
+      availableAttacks = availableAttacks.filter(attack => 
+        attack.name.toLowerCase().includes(searchLower) ||
+        attack.type.toLowerCase().includes(searchLower)
+      );
+    }
+    
+    return availableAttacks.sort((a, b) => a.name.localeCompare(b.name));
+  };
+
+  const handleLearnAttack = (attackId: string) => {
+    if (!pokemon) return;
+    
+    const currentAttacks = pokemon.learnedAttacks || [];
+    if (currentAttacks.length >= 4) {
+      alert('Ein Pokemon kann maximal 4 Attacken lernen!');
+      return;
+    }
+    
+    if (currentAttacks.includes(attackId)) {
+      alert('Diese Attacke wurde bereits gelernt!');
+      return;
+    }
+    
+    const updatedPokemon = {
+      ...pokemon,
+      learnedAttacks: [...currentAttacks, attackId]
+    };
+    
+    setPokemon(updatedPokemon);
+    setShowAttackSelection(false);
+    setAttackSearchTerm(''); // Clear search when closing
+  };
+
+  const handleForgetAttack = (attackId: string) => {
+    if (!pokemon?.learnedAttacks) return;
+    
+    const updatedAttacks = pokemon.learnedAttacks.filter(id => id !== attackId);
+    const updatedPokemon = {
+      ...pokemon,
+      learnedAttacks: updatedAttacks
+    };
+    
+    setPokemon(updatedPokemon);
+  };
+
+  // Attack Evolution System
+  const getUpgradeCost = (fromTier: 1 | 2 | 3): number => {
+    switch (fromTier) {
+      case 1: return ATTACK_UPGRADE_COSTS.TIER_1_TO_2;
+      case 2: return ATTACK_UPGRADE_COSTS.TIER_2_TO_3;
+      default: return 0;
+    }
+  };
+
+  const getDowngradeRefund = (fromTier: 1 | 2 | 3): number => {
+    switch (fromTier) {
+      case 2: return ATTACK_UPGRADE_COSTS.TIER_1_TO_2; // Refund for going from tier 2 to tier 1
+      case 3: return ATTACK_UPGRADE_COSTS.TIER_2_TO_3; // Refund for going from tier 3 to tier 2
+      default: return 0;
+    }
+  };
+
+  const canUpgradeAttack = (attack: Attack): boolean => {
+    if (!attack.evolvesTo) return false;
+    const upgradeCost = getUpgradeCost(attack.tier);
+    const availablePoints = getAvailableTalentPoints();
+    return availablePoints >= upgradeCost;
+  };
+
+  const handleUpgradeAttack = (attackId: string) => {
+    if (!pokemon?.learnedAttacks) return;
+    
+    const attack = attackService.getAttackById(attackId);
+    if (!attack?.evolvesTo) return;
+    
+    const upgradeCost = getUpgradeCost(attack.tier);
+    const availablePoints = getAvailableTalentPoints();
+    
+    if (availablePoints < upgradeCost) {
+      alert(`Nicht genügend Talent Points! Benötigt: ${upgradeCost}, Verfügbar: ${availablePoints}`);
+      return;
+    }
+    
+    // Upgrade the attack
+    const updatedAttacks = pokemon.learnedAttacks.map(id => 
+      id === attackId ? attack.evolvesTo! : id
+    );
+    
+    // Spend talent points (remove from HP as default, but could be improved later)
+    const currentHpPoints = pokemon.talentPoints?.hp || 0;
+    const pointsToSpend = Math.min(upgradeCost, currentHpPoints);
+    const remainingCost = upgradeCost - pointsToSpend;
+    
+    // Distribute cost across other stats if needed
+    let newTalentPoints = {
+      hp: currentHpPoints - pointsToSpend,
+      attack: pokemon.talentPoints?.attack || 0,
+      defense: pokemon.talentPoints?.defense || 0,
+      speed: pokemon.talentPoints?.speed || 0
+    };
+    
+    // If still need to spend more points, take from other stats
+    let remainingToSpend = remainingCost;
+    const stats: (keyof typeof newTalentPoints)[] = ['attack', 'defense', 'speed'];
+    
+    for (const stat of stats) {
+      if (remainingToSpend <= 0) break;
+      const available = newTalentPoints[stat];
+      const toTake = Math.min(remainingToSpend, available);
+      newTalentPoints[stat] -= toTake;
+      remainingToSpend -= toTake;
+    }
+    
+    const updatedPokemon = {
+      ...pokemon,
+      learnedAttacks: updatedAttacks,
+      talentPoints: newTalentPoints
+    };
+    
+    setPokemon(updatedPokemon);
+  };
+
+  const canDowngradeAttack = (attack: Attack): boolean => {
+    return attack.tier > 1; // Can downgrade if not tier 1
+  };
+
+  const handleDowngradeAttack = (attackId: string) => {
+    if (!pokemon?.learnedAttacks) return;
+    
+    const attack = attackService.getAttackById(attackId);
+    if (!attack || attack.tier === 1) return;
+    
+    const previousAttack = attackService.getPreviousTierAttack(attackId);
+    if (!previousAttack) return;
+    
+    const refund = getDowngradeRefund(attack.tier);
+    
+    // Downgrade the attack
+    const updatedAttacks = pokemon.learnedAttacks.map(id => 
+      id === attackId ? previousAttack.id : id
+    );
+    
+    // Refund talent points (add to HP by default, but could be improved)
+    const currentTalentPoints = pokemon.talentPoints || { hp: 0, attack: 0, defense: 0, speed: 0 };
+    const newTalentPoints = {
+      ...currentTalentPoints,
+      hp: currentTalentPoints.hp + refund
+    };
+    
+    const updatedPokemon = {
+      ...pokemon,
+      learnedAttacks: updatedAttacks,
+      talentPoints: newTalentPoints
+    };
+    
+    setPokemon(updatedPokemon);
   };
 
   if (loading) {
@@ -419,27 +657,265 @@ const PokemonDetail: React.FC = () => {
                 </div>
               )}
 
+              {/* Talent Points */}
+              {editMode && (
+                <div className="pt-4 border-t border-gray-200">
+                  <div className="flex justify-between items-center mb-3">
+                    <h4 className="font-medium text-gray-900">Talent Points</h4>
+                    <div className="text-sm">
+                      <span className="text-green-600 font-medium">{getAvailableTalentPoints()}</span>
+                      <span className="text-gray-500"> / </span>
+                      <span className="text-gray-900">{getMaxTalentPoints()}</span>
+                      <span className="text-gray-500 ml-1">verfügbar</span>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {(['hp', 'attack', 'defense', 'speed'] as const).map((stat) => {
+                      const statNames = {
+                        hp: 'HP',
+                        attack: 'Angriff',
+                        defense: 'Verteidigung',
+                        speed: 'Geschwindigkeit'
+                      };
+                      
+                      const talentPoints = pokemon?.talentPoints?.[stat] || 0;
+                      
+                      return (
+                        <div key={stat} className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <span className="text-sm font-medium text-gray-700">
+                              {statNames[stat]}:
+                            </span>
+                            <span className="ml-2 text-sm text-blue-600 font-medium">
+                              +{talentPoints} Punkte
+                            </span>
+                          </div>
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => handleTalentPointChange(stat, -5)}
+                              disabled={talentPoints < 5}
+                              className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded hover:bg-red-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              -5
+                            </button>
+                            <button
+                              onClick={() => handleTalentPointChange(stat, 5)}
+                              disabled={getAvailableTalentPoints() < 5}
+                              className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded hover:bg-green-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              +5
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Stats Preview */}
               <div className="pt-4 border-t border-gray-200">
                 <h4 className="font-medium text-gray-900 mb-2">Stats</h4>
                 <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">HP:</span>
-                    <span>{pokemon.stats?.hp || '---'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Angriff:</span>
-                    <span>{pokemon.stats?.attack || '---'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Verteidigung:</span>
-                    <span>{pokemon.stats?.defense || '---'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Geschwindigkeit:</span>
-                    <span>{pokemon.stats?.speed || '---'}</span>
+                  {(['hp', 'attack', 'defense', 'speed'] as const).map((stat) => {
+                    const statNames = {
+                      hp: 'HP',
+                      attack: 'Angriff',
+                      defense: 'Verteidigung',
+                      speed: 'Geschwindigkeit'
+                    };
+                    
+                    const baseStat = pokemon.stats?.[stat] || 0;
+                    const talentPoints = pokemon?.talentPoints?.[stat] || 0;
+                    const totalStat = baseStat + talentPoints;
+                    
+                    return (
+                      <div key={stat} className="flex justify-between">
+                        <span className="text-gray-600">{statNames[stat]}:</span>
+                        <span>
+                          {baseStat > 0 ? (
+                            <>
+                              <span className={talentPoints > 0 ? 'text-green-600 font-semibold' : ''}>
+                                {totalStat}
+                              </span>
+                              {talentPoints > 0 && (
+                                <span className="text-green-600 text-xs ml-1">
+                                  (+{talentPoints})
+                                </span>
+                              )}
+                            </>
+                          ) : (
+                            '---'
+                          )}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Learned Attacks */}
+              <div className="pt-4 border-t border-gray-200">
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="font-medium text-gray-900">Gelernte Attacken</h4>
+                  <div className="text-sm text-gray-500">
+                    {getLearnedAttacks().length}/4
                   </div>
                 </div>
+                
+                {editMode && (getLearnedAttacks().some(attack => attack.evolvesTo) || getLearnedAttacks().some(attack => attack.tier > 1)) && (
+                  <div className="mb-3 p-3 bg-blue-50 rounded-lg">
+                    <div className="text-xs text-blue-800 font-medium mb-1">Attacken-Management:</div>
+                    <div className="text-xs text-blue-700 space-y-1">
+                      <div>
+                        <span className="font-medium">Upgrade:</span> Basis → Fortgeschritten: {ATTACK_UPGRADE_COSTS.TIER_1_TO_2} TP • 
+                        Fortgeschritten → Meister: {ATTACK_UPGRADE_COSTS.TIER_2_TO_3} TP
+                      </div>
+                      <div>
+                        <span className="font-medium">Downgrade:</span> Fortgeschritten → Basis: +{ATTACK_UPGRADE_COSTS.TIER_1_TO_2} TP • 
+                        Meister → Fortgeschritten: +{ATTACK_UPGRADE_COSTS.TIER_2_TO_3} TP
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                <div className="space-y-2 mb-4">
+                  {getLearnedAttacks().length === 0 ? (
+                    <p className="text-gray-500 italic text-sm">Keine Attacken gelernt</p>
+                  ) : (
+                    getLearnedAttacks().map(attack => (
+                      <div key={attack.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-gray-900">{attack.name}</span>
+                            <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+                              {attackService.getTierName(attack.tier)}
+                            </span>
+                            {attack.evolvesTo && (
+                              <span className="text-xs text-gray-400">
+                                → {attackService.getAttackById(attack.evolvesTo)?.name}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-4 text-xs text-gray-500 mt-1">
+                            <span>{attackService.getTypeDisplay(attack.type)}</span>
+                            <span>Stärke: {attack.power}</span>
+                            <span>Genauigkeit: {attack.accuracy}%</span>
+                          </div>
+                        </div>
+                        {editMode && (
+                          <div className="flex gap-1">
+                            {attack.evolvesTo && (
+                              <button
+                                onClick={() => handleUpgradeAttack(attack.id)}
+                                disabled={!canUpgradeAttack(attack)}
+                                className={`px-2 py-1 text-xs rounded transition-colors ${
+                                  canUpgradeAttack(attack)
+                                    ? 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                }`}
+                                title={`Upgrade (${getUpgradeCost(attack.tier)} TP)`}
+                              >
+                                ↑ {getUpgradeCost(attack.tier)} TP
+                              </button>
+                            )}
+                            {canDowngradeAttack(attack) && (
+                              <button
+                                onClick={() => handleDowngradeAttack(attack.id)}
+                                className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded hover:bg-orange-200 transition-colors"
+                                title={`Downgrade (+${getDowngradeRefund(attack.tier)} TP)`}
+                              >
+                                ↓ +{getDowngradeRefund(attack.tier)} TP
+                              </button>
+                            )}
+                            <button
+                              onClick={() => handleForgetAttack(attack.id)}
+                              className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded hover:bg-red-200 transition-colors"
+                            >
+                              Vergessen
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Add Attack Button */}
+                {editMode && getLearnedAttacks().length < 4 && (
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => setShowAttackSelection(!showAttackSelection)}
+                      className="w-full px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
+                    >
+                      + Attacke lernen
+                    </button>
+                    
+                    {/* Attack Selection Dropdown */}
+                    {showAttackSelection && (
+                      <div className="border border-gray-200 rounded-lg p-4 bg-white">
+                        <h5 className="font-medium text-gray-900 mb-3">Verfügbare Basis-Attacken:</h5>
+                        
+                        {/* Search Field */}
+                        <div className="mb-3">
+                          <input
+                            type="text"
+                            placeholder="Attacke suchen (Name oder Typ)..."
+                            value={attackSearchTerm}
+                            onChange={(e) => setAttackSearchTerm(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                          />
+                        </div>
+                        
+                        <div className="mb-2 text-xs text-gray-500">
+                          {getAvailableAttacks().length} Attacken gefunden
+                        </div>
+                        
+                        <div className="max-h-60 overflow-y-auto space-y-2">
+                          {getAvailableAttacks().length === 0 ? (
+                            <p className="text-gray-500 italic text-sm">
+                              {attackSearchTerm.trim() ? 'Keine Attacken gefunden' : 'Keine neuen Attacken verfügbar'}
+                            </p>
+                          ) : (
+                            getAvailableAttacks().map(attack => (
+                              <button
+                                key={attack.id}
+                                onClick={() => handleLearnAttack(attack.id)}
+                                className="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-medium text-gray-900">{attack.name}</span>
+                                      <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+                                        {attackService.getTierName(attack.tier)}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center gap-4 text-xs text-gray-500 mt-1">
+                                      <span>{attackService.getTypeDisplay(attack.type)}</span>
+                                      <span>Stärke: {attack.power}</span>
+                                      <span>Genauigkeit: {attack.accuracy}%</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </button>
+                            ))
+                          )}
+                        </div>
+                        <button
+                          onClick={() => {
+                            setShowAttackSelection(false);
+                            setAttackSearchTerm('');
+                          }}
+                          className="mt-3 px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors"
+                        >
+                          Schließen
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>

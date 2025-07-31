@@ -5,6 +5,7 @@ import { Pokemon } from '../types/pokemon';
 import { trainerService } from '../firebase/trainerService';
 import PokemonSearch from '../components/PokemonSearch';
 import { pokeApiService } from '../services/pokeapi';
+import { attackService } from '../services/attackService';
 
 const TrainerDetail: React.FC = () => {
   const { trainerId } = useParams<{ trainerId: string }>();
@@ -84,6 +85,11 @@ const TrainerDetail: React.FC = () => {
       // Pokemon-Details von API laden
       const pokemonDetails = await pokeApiService.getPokemonDetails(pokemonName);
       
+      // Standard-Attacke basierend auf primärem Typ ermitteln
+      const defaultAttack = pokemonDetails?.type 
+        ? attackService.getDefaultAttackForType(pokemonDetails.type)
+        : undefined;
+      
       const newPokemon: Pokemon = {
         name: pokemonName,
         level: randomLevel,
@@ -99,6 +105,7 @@ const TrainerDetail: React.FC = () => {
           defense: 0,
           speed: 0
         },
+        learnedAttacks: defaultAttack ? [defaultAttack.id] : [],
         createdAt: new Date().toISOString()
       };
       
