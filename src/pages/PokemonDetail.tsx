@@ -99,10 +99,7 @@ const PokemonDetail: React.FC = () => {
         needsUpdate = true;
       }
       
-      if (!foundPokemon.evolutionData && evolutionService.hasEvolutionData(foundPokemon.name)) {
-        updatedPokemon.evolutionData = evolutionService.getEvolutionData(foundPokemon.name);
-        needsUpdate = true;
-      }
+      // Evolution data is now loaded dynamically via useEffect, no need to store in Pokemon object
       
       if (!foundPokemon.learnedAttacks) {
         // Initialize with default attack based on type
@@ -431,14 +428,35 @@ const PokemonDetail: React.FC = () => {
   };
 
   // Evolution System
+  const [evolutionData, setEvolutionData] = useState<{canEvolve: boolean; evolutions: string[]} | null>(null);
+  const [loadingEvolution, setLoadingEvolution] = useState(false);
+
+  // Load evolution data when Pokemon changes
+  useEffect(() => {
+    if (!pokemon) return;
+    
+    const loadEvolutionData = async () => {
+      setLoadingEvolution(true);
+      try {
+        const data = await evolutionService.getEvolutionData(pokemon.name);
+        setEvolutionData(data);
+      } catch (error) {
+        console.error('Error loading evolution data:', error);
+        setEvolutionData({ canEvolve: false, evolutions: [] });
+      } finally {
+        setLoadingEvolution(false);
+      }
+    };
+
+    loadEvolutionData();
+  }, [pokemon?.name]);
+
   const getAvailableEvolutions = (): string[] => {
-    if (!pokemon) return [];
-    return evolutionService.getEvolutionData(pokemon.name).evolutions;
+    return evolutionData?.evolutions || [];
   };
 
   const canEvolvePokemon = (): boolean => {
-    if (!pokemon) return false;
-    return evolutionService.getEvolutionData(pokemon.name).canEvolve;
+    return evolutionData?.canEvolve || false;
   };
 
   const handleShowEvolution = () => {
@@ -467,7 +485,6 @@ const PokemonDetail: React.FC = () => {
         imageUrl: evolutionDetails?.imageUrl || pokemon.imageUrl,
         stats: evolutionDetails?.stats || pokemon.stats,
         // Keep all progress: level, exp, talent points, learned attacks
-        evolutionData: evolutionService.getEvolutionData(selectedEvolution)
       };
 
       const updatedTeam = [...(trainer.team || [])];
@@ -538,10 +555,10 @@ const PokemonDetail: React.FC = () => {
               {canEvolvePokemon() && (
                 <button
                   onClick={handleShowEvolution}
-                  disabled={saving}
+                  disabled={saving || loadingEvolution}
                   className="px-4 py-2 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  🌟 Entwickeln
+                  {loadingEvolution ? '⏳ Lade...' : '🌟 Entwickeln'}
                 </button>
               )}
               <button

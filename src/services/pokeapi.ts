@@ -24,6 +24,34 @@ interface PokeAPIPokemonSpecies {
     };
     name: string;
   }[];
+  evolution_chain: {
+    url: string;
+  };
+}
+
+interface PokeAPIEvolutionChain {
+  id: number;
+  chain: PokeAPIEvolutionDetail;
+}
+
+interface PokeAPIEvolutionDetail {
+  species: {
+    name: string;
+    url: string;
+  };
+  evolves_to: PokeAPIEvolutionDetail[];
+  evolution_details: {
+    min_level: number | null;
+    trigger: {
+      name: string;
+    };
+    item: {
+      name: string;
+    } | null;
+    held_item: {
+      name: string;
+    } | null;
+  }[];
 }
 
 interface PokeAPIPokemon {
@@ -372,6 +400,103 @@ export const pokeApiService = {
       console.error(`Error loading Pokemon details for ${germanName}:`, error);
       return null;
     }
+  },
+
+  /**
+   * Get evolution chain for a Pokemon by German name
+   * @param germanName German Pokemon name
+   * @returns Promise<{name: string, minLevel?: number}[]> Array of possible evolutions with level requirements
+   */
+  async getEvolutionChainWithLevels(germanName: string): Promise<{name: string, minLevel?: number}[]> {
+    try {
+      // First get the English name
+      const englishName = this.getEnglishName(germanName);
+      if (!englishName) {
+        console.log(`No English name found for ${germanName}`);
+        return [];
+      }
+
+      // Get the Pokemon species data to access evolution chain
+      const speciesResponse = await fetch(`${BASE_URL}/pokemon-species/${englishName.toLowerCase()}`);
+      if (!speciesResponse.ok) {
+        console.log(`Species not found for ${englishName}`);
+        return [];
+      }
+
+      const speciesData: PokeAPIPokemonSpecies = await speciesResponse.json();
+      
+      // Get evolution chain data
+      const evolutionResponse = await fetch(speciesData.evolution_chain.url);
+      if (!evolutionResponse.ok) {
+        console.log(`Evolution chain not found for ${englishName}`);
+        return [];
+      }
+
+      const evolutionData: PokeAPIEvolutionChain = await evolutionResponse.json();
+
+      // Find the current Pokemon in the evolution chain and get its possible evolutions with level data
+      const evolutionsWithLevels = this.findEvolutionsWithLevelsForPokemon(evolutionData.chain, englishName.toLowerCase());
+      
+      // Convert back to German names
+      const germanEvolutions = evolutionsWithLevels
+        .map(evolution => ({
+          name: this.getGermanName(evolution.name),
+          minLevel: evolution.minLevel
+        }))
+        .filter(evolution => evolution.name !== null)
+        .map(evolution => ({
+          name: evolution.name as string,
+          minLevel: evolution.minLevel
+        }));
+
+      return germanEvolutions;
+    } catch (error) {
+      console.error(`Error getting evolution chain for ${germanName}:`, error);
+      return [];
+    }
+  },
+
+  /**
+   * Recursively find evolutions with level requirements for a specific Pokemon in the evolution chain
+   */
+  findEvolutionsWithLevelsForPokemon(chain: PokeAPIEvolutionDetail, targetPokemon: string): {name: string, minLevel?: number}[] {
+    // If this is the target Pokemon, return its direct evolutions with level data
+    if (chain.species.name.toLowerCase() === targetPokemon.toLowerCase()) {
+      return chain.evolves_to.map(evolution => ({
+        name: evolution.species.name,
+        minLevel: evolution.evolution_details[0]?.min_level || undefined
+      }));
+    }
+
+    // Recursively search in evolves_to chains
+    for (const evolution of chain.evolves_to) {
+      const found = this.findEvolutionsWithLevelsForPokemon(evolution, targetPokemon);
+      if (found.length > 0) {
+        return found;
+      }
+    }
+
+    return [];
+  },
+
+  /**
+   * Get evolution chain for a Pokemon by German name (legacy method for backward compatibility)
+   * @param germanName German Pokemon name
+   * @returns Promise<string[]> Array of possible evolution names in German
+   */
+  async getEvolutionChain(germanName: string): Promise<string[]> {
+    const evolutionsWithLevels = await this.getEvolutionChainWithLevels(germanName);
+    return evolutionsWithLevels.map(evolution => evolution.name);
+  },
+
+  /**
+   * Check if a Pokemon can evolve (has any evolutions available)
+   * @param germanName German Pokemon name
+   * @returns Promise<boolean>
+   */
+  async canEvolve(germanName: string): Promise<boolean> {
+    const evolutions = await this.getEvolutionChain(germanName);
+    return evolutions.length > 0;
   },
 
   /**

@@ -1,0 +1,44 @@
+{
+  "_comment": "Manual evolution overrides - these take precedence over PokeAPI data",
+  "_description": "Add Pokemon here if you want to override their evolution data. If a Pokemon is not listed here, the system will use PokeAPI data automatically.",
+  
+  "Evoli": {
+    "canEvolve": true,
+    "evolutions": ["Aquana", "Blitzeon", "Flamara", "Psiana", "Nachtara", "Folipurba", "Glaziola", "Feelinara"]
+  },
+  
+  "Quaputzi": {
+    "canEvolve": true,
+    "evolutions": ["Quappo", "Quaxo"]
+  },
+  
+  "Duflor": {
+    "canEvolve": true,
+    "evolutions": ["Giflor", "Blubella"]
+  },
+  
+  "Flegmon": {
+    "canEvolve": true,
+    "evolutions": ["Lahmus", "Laschoking"]
+  },
+  
+  "Relaxo": {
+    "canEvolve": false,
+    "evolutions": []
+  },
+  
+  "Ditto": {
+    "canEvolve": false,
+    "evolutions": []
+  },
+  
+  "Mewtu": {
+    "canEvolve": false,
+    "evolutions": []
+  },
+  
+  "Mew": {
+    "canEvolve": false,
+    "evolutions": []
+  }
+}
