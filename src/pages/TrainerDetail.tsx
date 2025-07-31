@@ -105,6 +105,7 @@ const TrainerDetail: React.FC = () => {
           defense: 0,
           speed: 0
         },
+        talentPointsSpentOnAttacks: 0,
         learnedAttacks: defaultAttack ? [defaultAttack.id] : [],
         createdAt: new Date().toISOString()
       };

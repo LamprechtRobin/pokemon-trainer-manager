@@ -22,6 +22,7 @@ export interface Pokemon {
     defense: number;
     speed: number;
   };
+  talentPointsSpentOnAttacks?: number; // Track TP spent on attack upgrades
   isShiny?: boolean;
   createdAt?: string;
 }

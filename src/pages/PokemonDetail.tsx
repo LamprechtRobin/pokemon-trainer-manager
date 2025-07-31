@@ -90,6 +90,11 @@ const PokemonDetail: React.FC = () => {
         needsUpdate = true;
       }
       
+      if (foundPokemon.talentPointsSpentOnAttacks === undefined) {
+        updatedPokemon.talentPointsSpentOnAttacks = 0;
+        needsUpdate = true;
+      }
+      
       if (!foundPokemon.learnedAttacks) {
         // Initialize with default attack based on type
         const defaultAttack = foundPokemon.type 
@@ -148,6 +153,7 @@ const PokemonDetail: React.FC = () => {
         secondaryType: editForm.secondaryType || undefined,
         species: editForm.species.trim() || editForm.name.trim(),
         talentPoints: pokemon.talentPoints || { hp: 0, attack: 0, defense: 0, speed: 0 },
+        talentPointsSpentOnAttacks: pokemon.talentPointsSpentOnAttacks || 0,
         learnedAttacks: pokemon.learnedAttacks || []
       };
 
@@ -212,7 +218,15 @@ const PokemonDetail: React.FC = () => {
   };
 
   const getAvailableTalentPoints = (): number => {
-    return getMaxTalentPoints() - getUsedTalentPoints();
+    const maxPoints = getMaxTalentPoints();
+    const usedOnStats = getUsedTalentPoints();
+    const spentOnAttacks = pokemon?.talentPointsSpentOnAttacks || 0;
+    return maxPoints - usedOnStats - spentOnAttacks;
+  };
+
+  const getMaxTalentPointsForStat = (stat: 'hp' | 'attack' | 'defense' | 'speed'): number => {
+    const baseStat = pokemon?.stats?.[stat] || 0;
+    return baseStat > 0 ? baseStat : 999; // If no base stat, allow up to 999 points
   };
 
   const handleTalentPointChange = (stat: 'hp' | 'attack' | 'defense' | 'speed', amount: number) => {
@@ -221,10 +235,12 @@ const PokemonDetail: React.FC = () => {
     const currentPoints = pokemon.talentPoints[stat];
     const newPoints = currentPoints + amount;
     const availablePoints = getAvailableTalentPoints();
+    const maxPointsForStat = getMaxTalentPointsForStat(stat);
     
-    // Check bounds: can't go below 0 and can't exceed available points
+    // Check bounds: can't go below 0, can't exceed available points, and can't exceed max for stat
     if (newPoints < 0) return;
     if (amount > 0 && availablePoints < amount) return;
+    if (newPoints > maxPointsForStat) return;
     
     const updatedPokemon = {
       ...pokemon,
@@ -290,10 +306,27 @@ const PokemonDetail: React.FC = () => {
   const handleForgetAttack = (attackId: string) => {
     if (!pokemon?.learnedAttacks) return;
     
+    const attack = attackService.getAttackById(attackId);
+    if (!attack) return;
+    
+    // Calculate refund based on attack tier and upgrades spent
+    let refund = 0;
+    if (attack.tier === 2) {
+      refund = ATTACK_UPGRADE_COSTS.TIER_1_TO_2; // Refund tier 1->2 upgrade
+    } else if (attack.tier === 3) {
+      refund = ATTACK_UPGRADE_COSTS.TIER_1_TO_2 + ATTACK_UPGRADE_COSTS.TIER_2_TO_3; // Refund both upgrades
+    }
+    
     const updatedAttacks = pokemon.learnedAttacks.filter(id => id !== attackId);
+    
+    // Reduce spent talent points on attacks
+    const currentSpentOnAttacks = pokemon.talentPointsSpentOnAttacks || 0;
+    const newSpentOnAttacks = Math.max(0, currentSpentOnAttacks - refund);
+    
     const updatedPokemon = {
       ...pokemon,
-      learnedAttacks: updatedAttacks
+      learnedAttacks: updatedAttacks,
+      talentPointsSpentOnAttacks: newSpentOnAttacks
     };
     
     setPokemon(updatedPokemon);
@@ -342,35 +375,14 @@ const PokemonDetail: React.FC = () => {
       id === attackId ? attack.evolvesTo! : id
     );
     
-    // Spend talent points (remove from HP as default, but could be improved later)
-    const currentHpPoints = pokemon.talentPoints?.hp || 0;
-    const pointsToSpend = Math.min(upgradeCost, currentHpPoints);
-    const remainingCost = upgradeCost - pointsToSpend;
-    
-    // Distribute cost across other stats if needed
-    let newTalentPoints = {
-      hp: currentHpPoints - pointsToSpend,
-      attack: pokemon.talentPoints?.attack || 0,
-      defense: pokemon.talentPoints?.defense || 0,
-      speed: pokemon.talentPoints?.speed || 0
-    };
-    
-    // If still need to spend more points, take from other stats
-    let remainingToSpend = remainingCost;
-    const stats: (keyof typeof newTalentPoints)[] = ['attack', 'defense', 'speed'];
-    
-    for (const stat of stats) {
-      if (remainingToSpend <= 0) break;
-      const available = newTalentPoints[stat];
-      const toTake = Math.min(remainingToSpend, available);
-      newTalentPoints[stat] -= toTake;
-      remainingToSpend -= toTake;
-    }
+    // Track talent points spent on attacks
+    const currentSpentOnAttacks = pokemon.talentPointsSpentOnAttacks || 0;
+    const newSpentOnAttacks = currentSpentOnAttacks + upgradeCost;
     
     const updatedPokemon = {
       ...pokemon,
       learnedAttacks: updatedAttacks,
-      talentPoints: newTalentPoints
+      talentPointsSpentOnAttacks: newSpentOnAttacks
     };
     
     setPokemon(updatedPokemon);
@@ -396,17 +408,14 @@ const PokemonDetail: React.FC = () => {
       id === attackId ? previousAttack.id : id
     );
     
-    // Refund talent points (add to HP by default, but could be improved)
-    const currentTalentPoints = pokemon.talentPoints || { hp: 0, attack: 0, defense: 0, speed: 0 };
-    const newTalentPoints = {
-      ...currentTalentPoints,
-      hp: currentTalentPoints.hp + refund
-    };
+    // Refund talent points by reducing spent on attacks
+    const currentSpentOnAttacks = pokemon.talentPointsSpentOnAttacks || 0;
+    const newSpentOnAttacks = Math.max(0, currentSpentOnAttacks - refund);
     
     const updatedPokemon = {
       ...pokemon,
       learnedAttacks: updatedAttacks,
-      talentPoints: newTalentPoints
+      talentPointsSpentOnAttacks: newSpentOnAttacks
     };
     
     setPokemon(updatedPokemon);
@@ -680,6 +689,9 @@ const PokemonDetail: React.FC = () => {
                       };
                       
                       const talentPoints = pokemon?.talentPoints?.[stat] || 0;
+                      const maxPointsForStat = getMaxTalentPointsForStat(stat);
+                      const isMaxed = talentPoints >= maxPointsForStat;
+                      const baseStat = pokemon?.stats?.[stat] || 0;
                       
                       return (
                         <div key={stat} className="flex items-center justify-between">
@@ -687,9 +699,16 @@ const PokemonDetail: React.FC = () => {
                             <span className="text-sm font-medium text-gray-700">
                               {statNames[stat]}:
                             </span>
-                            <span className="ml-2 text-sm text-blue-600 font-medium">
+                            <span className={`ml-2 text-sm font-medium ${
+                              isMaxed ? 'text-red-600' : 'text-blue-600'
+                            }`}>
                               +{talentPoints} Punkte
                             </span>
+                            {baseStat > 0 && (
+                              <span className="ml-1 text-xs text-gray-500">
+                                (max: +{maxPointsForStat})
+                              </span>
+                            )}
                           </div>
                           <div className="flex gap-1">
                             <button
@@ -701,8 +720,12 @@ const PokemonDetail: React.FC = () => {
                             </button>
                             <button
                               onClick={() => handleTalentPointChange(stat, 5)}
-                              disabled={getAvailableTalentPoints() < 5}
-                              className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded hover:bg-green-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              disabled={getAvailableTalentPoints() < 5 || isMaxed}
+                              className={`px-2 py-1 text-xs rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                                isMaxed 
+                                  ? 'bg-red-100 text-red-700 hover:bg-red-200' 
+                                  : 'bg-green-100 text-green-700 hover:bg-green-200'
+                              }`}
                             >
                               +5
                             </button>
@@ -729,6 +752,8 @@ const PokemonDetail: React.FC = () => {
                     const baseStat = pokemon.stats?.[stat] || 0;
                     const talentPoints = pokemon?.talentPoints?.[stat] || 0;
                     const totalStat = baseStat + talentPoints;
+                    const maxPointsForStat = getMaxTalentPointsForStat(stat);
+                    const isMaxed = talentPoints >= maxPointsForStat && baseStat > 0;
                     
                     return (
                       <div key={stat} className="flex justify-between">
@@ -736,12 +761,25 @@ const PokemonDetail: React.FC = () => {
                         <span>
                           {baseStat > 0 ? (
                             <>
-                              <span className={talentPoints > 0 ? 'text-green-600 font-semibold' : ''}>
+                              <span className={`${
+                                talentPoints > 0 
+                                  ? isMaxed 
+                                    ? 'text-red-600 font-bold' 
+                                    : 'text-green-600 font-semibold'
+                                  : ''
+                              }`}>
                                 {totalStat}
                               </span>
                               {talentPoints > 0 && (
-                                <span className="text-green-600 text-xs ml-1">
+                                <span className={`text-xs ml-1 ${
+                                  isMaxed ? 'text-red-600' : 'text-green-600'
+                                }`}>
                                   (+{talentPoints})
+                                </span>
+                              )}
+                              {isMaxed && (
+                                <span className="text-red-500 text-xs ml-1 font-bold">
+                                  MAX
                                 </span>
                               )}
                             </>
