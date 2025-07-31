@@ -15,6 +15,12 @@ export interface Pokemon {
     defense?: number;
     speed?: number;
   };
+  talentPoints?: {
+    hp: number;
+    attack: number;
+    defense: number;
+    speed: number;
+  };
   isShiny?: boolean;
   createdAt?: string;
 }

@@ -71,6 +71,15 @@ const PokemonDetail: React.FC = () => {
         species: foundPokemon.species || foundPokemon.name
       });
       
+      // Ensure talent points exist
+      if (!foundPokemon.talentPoints) {
+        const updatedPokemon = {
+          ...foundPokemon,
+          talentPoints: { hp: 0, attack: 0, defense: 0, speed: 0 }
+        };
+        setPokemon(updatedPokemon);
+      }
+      
     } catch (error) {
       console.error('Error loading Pokemon data:', error);
       navigate('/');
@@ -80,7 +89,26 @@ const PokemonDetail: React.FC = () => {
   };
 
   const handleFormChange = (field: keyof PokemonFormData, value: string) => {
-    setEditForm(prev => ({ ...prev, [field]: value }));
+    setEditForm(prev => {
+      const newForm = { ...prev, [field]: value };
+      
+      // Auto-level up system when EXP changes
+      if (field === 'exp') {
+        const newExp = parseInt(value) || 0;
+        const currentLevel = parseInt(prev.level) || 1;
+        
+        if (newExp >= 10) {
+          // Level up: increase level and reduce EXP by 10
+          const levelsToGain = Math.floor(newExp / 10);
+          const remainingExp = newExp % 10;
+          
+          newForm.level = (currentLevel + levelsToGain).toString();
+          newForm.exp = remainingExp.toString();
+        }
+      }
+      
+      return newForm;
+    });
   };
 
   const handleSave = async () => {
@@ -118,8 +146,32 @@ const PokemonDetail: React.FC = () => {
 
   const handleAddExp = (amount: number) => {
     const currentExp = parseInt(editForm.exp) || 0;
-    const newExp = Math.max(MIN_EXP, Math.min(MAX_EXP, currentExp + amount));
-    handleFormChange('exp', newExp.toString());
+    const currentLevel = parseInt(editForm.level) || 1;
+    
+    let newExp = currentExp + amount;
+    let newLevel = currentLevel;
+    
+    // Handle level ups (when EXP >= 10)
+    if (newExp >= 10) {
+      const levelUps = Math.floor(newExp / 10);
+      newLevel += levelUps;
+      newExp = newExp % 10;
+    }
+    
+    // Handle level downs (when EXP < 0 and level > 1)
+    while (newExp < 0 && newLevel > 1) {
+      newLevel--;
+      newExp += 10;
+    }
+    
+    // Ensure EXP stays within bounds
+    newExp = Math.max(MIN_EXP, Math.min(MAX_EXP, newExp));
+    
+    setEditForm(prev => ({
+      ...prev,
+      level: newLevel.toString(),
+      exp: newExp.toString()
+    }));
   };
 
   if (loading) {
