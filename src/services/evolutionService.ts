@@ -1,5 +1,5 @@
-import { pokeApiService } from './pokeapi';
-import evolutionOverrides from '../data/evolution-overrides.json';
+import { pokeApiService } from "./pokeapi";
+import evolutionOverrides from "../data/evolution-overrides.json";
 
 // Pokemon evolution data interface
 export interface EvolutionData {
@@ -27,12 +27,15 @@ export const evolutionService = {
     }
 
     // Check manual overrides first
-    const overrides = evolutionOverrides as Record<string, EvolutionOverride>;
+    const overrides = evolutionOverrides as unknown as Record<
+      string,
+      EvolutionOverride
+    >;
     if (overrides[pokemonName]) {
       const overrideData = overrides[pokemonName];
       const evolutionData: EvolutionData = {
         canEvolve: overrideData.canEvolve,
-        evolutions: overrideData.evolutions
+        evolutions: overrideData.evolutions,
       };
       evolutionCache.set(pokemonName, evolutionData);
       return evolutionData;
@@ -43,7 +46,7 @@ export const evolutionService = {
       const evolutions = await pokeApiService.getEvolutionChain(pokemonName);
       const evolutionData: EvolutionData = {
         canEvolve: evolutions.length > 0,
-        evolutions: evolutions
+        evolutions: evolutions,
       };
 
       // Cache the result
@@ -77,7 +80,10 @@ export const evolutionService = {
    * Check if a Pokemon name has evolution data
    */
   hasEvolutionData(pokemonName: string): boolean {
-    const overrides = evolutionOverrides as Record<string, EvolutionOverride>;
+    const overrides = evolutionOverrides as unknown as Record<
+      string,
+      EvolutionOverride
+    >;
     return pokemonName in overrides || true; // Always try API if no override
   },
 
@@ -86,5 +92,5 @@ export const evolutionService = {
    */
   clearCache(): void {
     evolutionCache.clear();
-  }
+  },
 };

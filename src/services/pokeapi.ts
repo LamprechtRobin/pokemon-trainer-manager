@@ -1,5 +1,5 @@
 // PokeAPI Service for fetching Pokemon data
-const BASE_URL = 'https://pokeapi.co/api/v2';
+const BASE_URL = "https://pokeapi.co/api/v2";
 
 // Interfaces for PokeAPI responses
 interface PokeAPIResource {
@@ -60,7 +60,7 @@ interface PokeAPIPokemon {
   sprites: {
     front_default: string | null;
     other: {
-      'official-artwork': {
+      "official-artwork": {
         front_default: string | null;
       };
     };
@@ -80,24 +80,24 @@ interface PokeAPIPokemon {
 
 // Pokemon type emojis
 const TYPE_EMOJIS: Record<string, string> = {
-  normal: '⚪',
-  fire: '🔥',
-  water: '💧',
-  electric: '⚡',
-  grass: '🌱',
-  ice: '❄️',
-  fighting: '👊',
-  poison: '☠️',
-  ground: '🌍',
-  flying: '🌪️',
-  psychic: '🔮',
-  bug: '🐛',
-  rock: '🗿',
-  ghost: '👻',
-  dragon: '🐉',
-  dark: '🌙',
-  steel: '⚙️',
-  fairy: '✨'
+  normal: "⚪",
+  fire: "🔥",
+  water: "💧",
+  electric: "⚡",
+  grass: "🌱",
+  ice: "❄️",
+  fighting: "👊",
+  poison: "☠️",
+  ground: "🌍",
+  flying: "🌪️",
+  psychic: "🔮",
+  bug: "🐛",
+  rock: "🗿",
+  ghost: "👻",
+  dragon: "🐉",
+  dark: "🌙",
+  steel: "⚙️",
+  fairy: "✨",
 };
 
 // Cache für API-Anfragen
@@ -116,11 +116,11 @@ async function fetchWithCache<T>(url: string): Promise<T> {
   try {
     console.log(`Fetching: ${url}`);
     const response = await fetch(url);
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const data = await response.json();
     cache.set(url, data);
     return data;
@@ -141,77 +141,92 @@ export const pokeApiService = {
     }
 
     try {
-      console.log('Lade alle Pokemon-Namen (alle Generationen)...');
-      
+      console.log("Lade alle Pokemon-Namen (alle Generationen)...");
+
       // Aktuelle Pokemon-Anzahl ermitteln (Stand 2024: ~1025+ Pokemon)
-      const initialResponse = await fetchWithCache<PokeAPIListResponse>(`${BASE_URL}/pokemon-species?limit=1`);
+      const initialResponse = await fetchWithCache<PokeAPIListResponse>(
+        `${BASE_URL}/pokemon-species?limit=1`
+      );
       const totalPokemon = initialResponse.count;
-      
+
       console.log(`Gefunden: ${totalPokemon} Pokemon insgesamt`);
-      
+
       // Alle Pokemon-Species laden
       const speciesListUrl = `${BASE_URL}/pokemon-species?limit=${totalPokemon}`;
-      const speciesList = await fetchWithCache<PokeAPIListResponse>(speciesListUrl);
-      
+      const speciesList = await fetchWithCache<PokeAPIListResponse>(
+        speciesListUrl
+      );
+
       allPokemonCache = [];
-      
+
       // Batch-Processing für bessere Performance
       const batchSize = 100;
       for (let i = 0; i < speciesList.results.length; i += batchSize) {
         const batch = speciesList.results.slice(i, i + batchSize);
-        
+
         const batchPromises = batch.map(async (pokemon) => {
           try {
-            const speciesData = await fetchWithCache<PokeAPIPokemonSpecies>(pokemon.url);
-            
+            const speciesData = await fetchWithCache<PokeAPIPokemonSpecies>(
+              pokemon.url
+            );
+
             // Deutschen Namen finden
             const germanName = speciesData.names.find(
-              nameEntry => nameEntry.language.name === 'de'
+              (nameEntry) => nameEntry.language.name === "de"
             );
-            
+
             return {
               name: pokemon.name,
-              germanName: germanName ? germanName.name : pokemon.name
+              germanName: germanName ? germanName.name : pokemon.name,
             };
           } catch (error) {
             console.error(`Error loading ${pokemon.name}:`, error);
             return {
               name: pokemon.name,
-              germanName: pokemon.name
+              germanName: pokemon.name,
             };
           }
         });
-        
+
         const batchResults = await Promise.all(batchPromises);
         allPokemonCache.push(...batchResults);
-        
+
         // Kurze Pause zwischen Batches
         if (i + batchSize < speciesList.results.length) {
-          await new Promise(resolve => setTimeout(resolve, 50));
+          await new Promise((resolve) => setTimeout(resolve, 50));
         }
-        
-        console.log(`Fortschritt: ${Math.min(i + batchSize, speciesList.results.length)}/${speciesList.results.length} Pokemon geladen`);
+
+        console.log(
+          `Fortschritt: ${Math.min(
+            i + batchSize,
+            speciesList.results.length
+          )}/${speciesList.results.length} Pokemon geladen`
+        );
       }
-      
+
       // Duplikate entfernen (nur das erste Pokemon mit diesem deutschen Namen behalten)
-      const uniquePokemon = new Map<string, { name: string; germanName: string }>();
-      allPokemonCache.forEach(pokemon => {
+      const uniquePokemon = new Map<
+        string,
+        { name: string; germanName: string }
+      >();
+      allPokemonCache.forEach((pokemon) => {
         if (!uniquePokemon.has(pokemon.germanName)) {
           uniquePokemon.set(pokemon.germanName, pokemon);
         }
       });
-      
+
       allPokemonCache = Array.from(uniquePokemon.values());
-      
+
       // Alphabetisch nach deutschem Namen sortieren
       allPokemonCache.sort((a, b) => a.germanName.localeCompare(b.germanName));
-      
-      console.log(`${allPokemonCache.length} Pokemon vollständig geladen und gecacht`);
-      
+
+      console.log(
+        `${allPokemonCache.length} Pokemon vollständig geladen und gecacht`
+      );
     } catch (error) {
-      console.error('Error loading all Pokemon:', error);
+      console.error("Error loading all Pokemon:", error);
       allPokemonCache = []; // Leerer Cache bei Fehler
-      throw new Error('Fehler beim Laden aller Pokemon');
+      throw new Error("Fehler beim Laden aller Pokemon");
     }
   },
 
@@ -221,33 +236,39 @@ export const pokeApiService = {
    * @param limit - Maximale Anzahl Ergebnisse (default: 20)
    * @returns Promise mit Array von Pokemon-Namen
    */
-  async searchPokemon(searchTerm: string, limit: number = 20): Promise<string[]> {
+  async searchPokemon(
+    searchTerm: string,
+    limit: number = 20
+  ): Promise<string[]> {
     // Erst alle Pokemon laden falls noch nicht geschehen
     await this.loadAllPokemon();
-    
+
     if (!allPokemonCache || searchTerm.trim().length === 0) {
       return [];
     }
-    
+
     const normalizedSearch = searchTerm.toLowerCase().trim();
-    
+
     // Suche nach deutschen Namen die mit dem Suchbegriff beginnen oder ihn enthalten
-    const matches = allPokemonCache.filter(pokemon => {
+    const matches = allPokemonCache.filter((pokemon) => {
       const germanName = pokemon.germanName.toLowerCase();
-      return germanName.startsWith(normalizedSearch) || germanName.includes(normalizedSearch);
+      return (
+        germanName.startsWith(normalizedSearch) ||
+        germanName.includes(normalizedSearch)
+      );
     });
-    
+
     // Sortierung: Zuerst die, die mit dem Suchbegriff beginnen, dann die anderen
     matches.sort((a, b) => {
       const aStarts = a.germanName.toLowerCase().startsWith(normalizedSearch);
       const bStarts = b.germanName.toLowerCase().startsWith(normalizedSearch);
-      
+
       if (aStarts && !bStarts) return -1;
       if (!aStarts && bStarts) return 1;
       return a.germanName.localeCompare(b.germanName);
     });
-    
-    return matches.slice(0, limit).map(pokemon => pokemon.germanName);
+
+    return matches.slice(0, limit).map((pokemon) => pokemon.germanName);
   },
 
   /**
@@ -257,13 +278,13 @@ export const pokeApiService = {
    */
   async getRandomPokemon(count: number = 20): Promise<string[]> {
     await this.loadAllPokemon();
-    
+
     if (!allPokemonCache) {
       return [];
     }
-    
+
     const shuffled = [...allPokemonCache].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count).map(pokemon => pokemon.germanName);
+    return shuffled.slice(0, count).map((pokemon) => pokemon.germanName);
   },
 
   /**
@@ -275,51 +296,61 @@ export const pokeApiService = {
     try {
       // Zuerst alle Pokemon-Species laden
       const speciesListUrl = `${BASE_URL}/pokemon-species?limit=${limit}`;
-      const speciesList = await fetchWithCache<PokeAPIListResponse>(speciesListUrl);
-      
-      console.log(`Lade ${speciesList.results.length} Pokemon-Namen auf Deutsch...`);
-      
+      const speciesList = await fetchWithCache<PokeAPIListResponse>(
+        speciesListUrl
+      );
+
+      console.log(
+        `Lade ${speciesList.results.length} Pokemon-Namen auf Deutsch...`
+      );
+
       // Für jeden Pokemon die deutschen Namen laden
       const germanNames: string[] = [];
-      
+
       // Batch-Processing um die API nicht zu überlasten
       const batchSize = 50;
       for (let i = 0; i < speciesList.results.length; i += batchSize) {
         const batch = speciesList.results.slice(i, i + batchSize);
-        
+
         const batchPromises = batch.map(async (pokemon) => {
           try {
-            const speciesData = await fetchWithCache<PokeAPIPokemonSpecies>(pokemon.url);
-            
+            const speciesData = await fetchWithCache<PokeAPIPokemonSpecies>(
+              pokemon.url
+            );
+
             // Deutschen Namen finden
             const germanName = speciesData.names.find(
-              nameEntry => nameEntry.language.name === 'de'
+              (nameEntry) => nameEntry.language.name === "de"
             );
-            
+
             return germanName ? germanName.name : speciesData.name; // Fallback zu englischem Namen
           } catch (error) {
             console.error(`Error loading ${pokemon.name}:`, error);
             return pokemon.name; // Fallback zu englischem Namen
           }
         });
-        
+
         const batchResults = await Promise.all(batchPromises);
         germanNames.push(...batchResults);
-        
+
         // Kurze Pause zwischen Batches um API zu schonen
         if (i + batchSize < speciesList.results.length) {
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
         }
-        
-        console.log(`Fortschritt: ${Math.min(i + batchSize, speciesList.results.length)}/${speciesList.results.length} Pokemon geladen`);
+
+        console.log(
+          `Fortschritt: ${Math.min(
+            i + batchSize,
+            speciesList.results.length
+          )}/${speciesList.results.length} Pokemon geladen`
+        );
       }
-      
+
       console.log(`${germanNames.length} Pokemon-Namen auf Deutsch geladen`);
       return germanNames.sort(); // Alphabetisch sortiert
-      
     } catch (error) {
-      console.error('Error fetching German Pokemon names:', error);
-      throw new Error('Fehler beim Laden der Pokemon-Namen');
+      console.error("Error fetching German Pokemon names:", error);
+      throw new Error("Fehler beim Laden der Pokemon-Namen");
     }
   },
 
@@ -337,65 +368,85 @@ export const pokeApiService = {
    * @param germanName - Deutscher Pokemon-Name
    * @returns Promise mit Pokemon-Details
    */
-  async getPokemonDetails(germanName: string): Promise<{imageUrl: string, type: string, secondaryType?: string, stats: {hp: number, attack: number, defense: number, speed: number}} | null> {
+  async getPokemonDetails(germanName: string): Promise<{
+    imageUrl: string;
+    type: string;
+    secondaryType?: string;
+    stats: { hp: number; attack: number; defense: number; speed: number };
+  } | null> {
     try {
       // Zuerst alle Pokemon laden falls noch nicht geschehen
       await this.loadAllPokemon();
-      
+
       if (!allPokemonCache) {
         return null;
       }
-      
+
       // Englischen Namen finden
-      const pokemonEntry = allPokemonCache.find(p => p.germanName === germanName);
+      const pokemonEntry = allPokemonCache.find(
+        (p) => p.germanName === germanName
+      );
       if (!pokemonEntry) {
         return null;
       }
-      
+
       // Pokemon-Details von API laden
       const pokemonUrl = `${BASE_URL}/pokemon/${pokemonEntry.name}`;
       const pokemonData = await fetchWithCache<PokeAPIPokemon>(pokemonUrl);
-      
+
       // Bestes Bild auswählen (Official Artwork > Standard Sprite)
-      const imageUrl = pokemonData.sprites.other['official-artwork'].front_default 
-        || pokemonData.sprites.front_default 
-        || '';
-      
+      const imageUrl =
+        pokemonData.sprites.other["official-artwork"].front_default ||
+        pokemonData.sprites.front_default ||
+        "";
+
       // Typen ermitteln
-      const primaryType = pokemonData.types[0]?.type.name || 'normal';
+      const primaryType = pokemonData.types[0]?.type.name || "normal";
       const secondaryType = pokemonData.types[1]?.type.name;
-      
-      const primaryTypeEmoji = TYPE_EMOJIS[primaryType] || '❓';
-      const primaryTypeDisplay = `${primaryTypeEmoji} ${primaryType.charAt(0).toUpperCase() + primaryType.slice(1)}`;
-      
+
+      const primaryTypeEmoji = TYPE_EMOJIS[primaryType] || "❓";
+      const primaryTypeDisplay = `${primaryTypeEmoji} ${
+        primaryType.charAt(0).toUpperCase() + primaryType.slice(1)
+      }`;
+
       let secondaryTypeDisplay: string | undefined;
       if (secondaryType) {
-        const secondaryTypeEmoji = TYPE_EMOJIS[secondaryType] || '❓';
-        secondaryTypeDisplay = `${secondaryTypeEmoji} ${secondaryType.charAt(0).toUpperCase() + secondaryType.slice(1)}`;
+        const secondaryTypeEmoji = TYPE_EMOJIS[secondaryType] || "❓";
+        secondaryTypeDisplay = `${secondaryTypeEmoji} ${
+          secondaryType.charAt(0).toUpperCase() + secondaryType.slice(1)
+        }`;
       }
-      
+
       // Stats extrahieren mit angepasster Berechnung
-      const hp = pokemonData.stats.find(s => s.stat.name === 'hp')?.base_stat || 0;
-      const attack = pokemonData.stats.find(s => s.stat.name === 'attack')?.base_stat || 0;
-      const specialAttack = pokemonData.stats.find(s => s.stat.name === 'special-attack')?.base_stat || 0;
-      const defense = pokemonData.stats.find(s => s.stat.name === 'defense')?.base_stat || 0;
-      const specialDefense = pokemonData.stats.find(s => s.stat.name === 'special-defense')?.base_stat || 0;
-      const speed = pokemonData.stats.find(s => s.stat.name === 'speed')?.base_stat || 0;
-      
+      const hp =
+        pokemonData.stats.find((s) => s.stat.name === "hp")?.base_stat || 0;
+      const attack =
+        pokemonData.stats.find((s) => s.stat.name === "attack")?.base_stat || 0;
+      const specialAttack =
+        pokemonData.stats.find((s) => s.stat.name === "special-attack")
+          ?.base_stat || 0;
+      const defense =
+        pokemonData.stats.find((s) => s.stat.name === "defense")?.base_stat ||
+        0;
+      const specialDefense =
+        pokemonData.stats.find((s) => s.stat.name === "special-defense")
+          ?.base_stat || 0;
+      const speed =
+        pokemonData.stats.find((s) => s.stat.name === "speed")?.base_stat || 0;
+
       const stats = {
         hp: hp,
         attack: Math.max(attack, specialAttack), // Höherer Wert aus Attack und Special Attack
         defense: Math.round((defense + specialDefense) / 2), // Mittelwert aus Defense und Special Defense
-        speed: speed
+        speed: speed,
       };
-      
+
       return {
         imageUrl,
         type: primaryTypeDisplay,
         secondaryType: secondaryTypeDisplay,
-        stats
+        stats,
       };
-      
     } catch (error) {
       console.error(`Error loading Pokemon details for ${germanName}:`, error);
       return null;
@@ -407,24 +458,28 @@ export const pokeApiService = {
    * @param germanName German Pokemon name
    * @returns Promise<{name: string, minLevel?: number}[]> Array of possible evolutions with level requirements
    */
-  async getEvolutionChainWithLevels(germanName: string): Promise<{name: string, minLevel?: number}[]> {
+  async getEvolutionChainWithLevels(
+    germanName: string
+  ): Promise<{ name: string; minLevel?: number }[]> {
     try {
       // First get the English name
-      const englishName = this.getEnglishName(germanName);
+      const englishName = await this.getEnglishName(germanName);
       if (!englishName) {
         console.log(`No English name found for ${germanName}`);
         return [];
       }
 
       // Get the Pokemon species data to access evolution chain
-      const speciesResponse = await fetch(`${BASE_URL}/pokemon-species/${englishName.toLowerCase()}`);
+      const speciesResponse = await fetch(
+        `${BASE_URL}/pokemon-species/${englishName.toLowerCase()}`
+      );
       if (!speciesResponse.ok) {
         console.log(`Species not found for ${englishName}`);
         return [];
       }
 
       const speciesData: PokeAPIPokemonSpecies = await speciesResponse.json();
-      
+
       // Get evolution chain data
       const evolutionResponse = await fetch(speciesData.evolution_chain.url);
       if (!evolutionResponse.ok) {
@@ -432,24 +487,30 @@ export const pokeApiService = {
         return [];
       }
 
-      const evolutionData: PokeAPIEvolutionChain = await evolutionResponse.json();
+      const evolutionData: PokeAPIEvolutionChain =
+        await evolutionResponse.json();
 
       // Find the current Pokemon in the evolution chain and get its possible evolutions with level data
-      const evolutionsWithLevels = this.findEvolutionsWithLevelsForPokemon(evolutionData.chain, englishName.toLowerCase());
-      
-      // Convert back to German names
-      const germanEvolutions = evolutionsWithLevels
-        .map(evolution => ({
-          name: this.getGermanName(evolution.name),
-          minLevel: evolution.minLevel
-        }))
-        .filter(evolution => evolution.name !== null)
-        .map(evolution => ({
-          name: evolution.name as string,
-          minLevel: evolution.minLevel
-        }));
+      const evolutionsWithLevels = this.findEvolutionsWithLevelsForPokemon(
+        evolutionData.chain,
+        englishName.toLowerCase()
+      );
 
-      return germanEvolutions;
+      const germanEvolutions = await Promise.all(
+        evolutionsWithLevels.map(async (evolution) => ({
+          name: await this.getGermanName(evolution.name),
+          minLevel: evolution.minLevel,
+        }))
+      );
+
+      return germanEvolutions
+        .filter(
+          (evolution) => evolution.name !== null && evolution.name !== undefined
+        )
+        .map((evolution) => ({
+          name: evolution.name as string,
+          minLevel: evolution.minLevel,
+        }));
     } catch (error) {
       console.error(`Error getting evolution chain for ${germanName}:`, error);
       return [];
@@ -459,18 +520,24 @@ export const pokeApiService = {
   /**
    * Recursively find evolutions with level requirements for a specific Pokemon in the evolution chain
    */
-  findEvolutionsWithLevelsForPokemon(chain: PokeAPIEvolutionDetail, targetPokemon: string): {name: string, minLevel?: number}[] {
+  findEvolutionsWithLevelsForPokemon(
+    chain: PokeAPIEvolutionDetail,
+    targetPokemon: string
+  ): { name: string; minLevel?: number }[] {
     // If this is the target Pokemon, return its direct evolutions with level data
     if (chain.species.name.toLowerCase() === targetPokemon.toLowerCase()) {
-      return chain.evolves_to.map(evolution => ({
+      return chain.evolves_to.map((evolution) => ({
         name: evolution.species.name,
-        minLevel: evolution.evolution_details[0]?.min_level || undefined
+        minLevel: evolution.evolution_details[0]?.min_level || undefined,
       }));
     }
 
     // Recursively search in evolves_to chains
     for (const evolution of chain.evolves_to) {
-      const found = this.findEvolutionsWithLevelsForPokemon(evolution, targetPokemon);
+      const found = this.findEvolutionsWithLevelsForPokemon(
+        evolution,
+        targetPokemon
+      );
       if (found.length > 0) {
         return found;
       }
@@ -478,15 +545,53 @@ export const pokeApiService = {
 
     return [];
   },
+  async getEnglishName(germanName: string): Promise<string | undefined> {
+    try {
+      // Suche nach dem deutschen Namen in der PokeAPI
+      const response = await fetch(
+        `https://pokeapi.co/api/v2/pokemon-species/${germanName.toLowerCase()}`
+      );
+      if (!response.ok) return undefined;
+      const data = await response.json();
+      // Finde den englischen Namen in den Namen-Übersetzungen
+      const englishEntry = data.names.find(
+        (entry: any) => entry.language.name === "en"
+      );
+      return englishEntry?.name?.toLowerCase();
+    } catch (error) {
+      console.error("Fehler beim Übersetzen des Namens (de->en):", error);
+      return undefined;
+    }
+  },
 
+  async getGermanName(englishName: string): Promise<string | undefined> {
+    try {
+      // Suche nach dem englischen Namen in der PokeAPI
+      const response = await fetch(
+        `https://pokeapi.co/api/v2/pokemon-species/${englishName.toLowerCase()}`
+      );
+      if (!response.ok) return undefined;
+      const data = await response.json();
+      // Finde den deutschen Namen in den Namen-Übersetzungen
+      const germanEntry = data.names.find(
+        (entry: any) => entry.language.name === "de"
+      );
+      return germanEntry?.name;
+    } catch (error) {
+      console.error("Fehler beim Übersetzen des Namens (en->de):", error);
+      return undefined;
+    }
+  },
   /**
    * Get evolution chain for a Pokemon by German name (legacy method for backward compatibility)
    * @param germanName German Pokemon name
    * @returns Promise<string[]> Array of possible evolution names in German
    */
   async getEvolutionChain(germanName: string): Promise<string[]> {
-    const evolutionsWithLevels = await this.getEvolutionChainWithLevels(germanName);
-    return evolutionsWithLevels.map(evolution => evolution.name);
+    const evolutionsWithLevels = await this.getEvolutionChainWithLevels(
+      germanName
+    );
+    return evolutionsWithLevels.map((evolution) => evolution.name);
   },
 
   /**
@@ -508,8 +613,8 @@ export const pokeApiService = {
       const response = await fetch(`${BASE_URL}/pokemon/1`);
       return response.ok;
     } catch (error) {
-      console.error('PokeAPI health check failed:', error);
+      console.error("PokeAPI health check failed:", error);
       return false;
     }
-  }
+  },
 };
