@@ -23,6 +23,11 @@ export interface Pokemon {
     speed: number;
   };
   talentPointsSpentOnAttacks?: number; // Track TP spent on attack upgrades
+  evolutionData?: {
+    canEvolve: boolean;
+    evolutions: string[]; // Array of Pokemon names that this can evolve into
+    minLevel?: number; // Minimum level required for evolution
+  };
   isShiny?: boolean;
   createdAt?: string;
 }

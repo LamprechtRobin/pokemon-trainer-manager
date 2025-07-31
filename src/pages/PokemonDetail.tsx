@@ -5,6 +5,8 @@ import { Trainer } from '../types/trainer';
 import { Attack } from '../types/attack';
 import { trainerService } from '../firebase/trainerService';
 import { attackService } from '../services/attackService';
+import { evolutionService } from '../services/evolutionService';
+import { pokeApiService } from '../services/pokeapi';
 
 
 // Pokemon type options
@@ -35,6 +37,8 @@ const PokemonDetail: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [showAttackSelection, setShowAttackSelection] = useState(false);
   const [attackSearchTerm, setAttackSearchTerm] = useState('');
+  const [showEvolutionDialog, setShowEvolutionDialog] = useState(false);
+  const [selectedEvolution, setSelectedEvolution] = useState('');
   
   const [editForm, setEditForm] = useState<PokemonFormData>({
     name: '',
@@ -92,6 +96,11 @@ const PokemonDetail: React.FC = () => {
       
       if (foundPokemon.talentPointsSpentOnAttacks === undefined) {
         updatedPokemon.talentPointsSpentOnAttacks = 0;
+        needsUpdate = true;
+      }
+      
+      if (!foundPokemon.evolutionData && evolutionService.hasEvolutionData(foundPokemon.name)) {
+        updatedPokemon.evolutionData = evolutionService.getEvolutionData(foundPokemon.name);
         needsUpdate = true;
       }
       
@@ -421,6 +430,77 @@ const PokemonDetail: React.FC = () => {
     setPokemon(updatedPokemon);
   };
 
+  // Evolution System
+  const getAvailableEvolutions = (): string[] => {
+    if (!pokemon) return [];
+    return evolutionService.getEvolutionData(pokemon.name).evolutions;
+  };
+
+  const canEvolvePokemon = (): boolean => {
+    if (!pokemon) return false;
+    return evolutionService.getEvolutionData(pokemon.name).canEvolve;
+  };
+
+  const handleShowEvolution = () => {
+    const availableEvolutions = getAvailableEvolutions();
+    if (availableEvolutions.length === 1) {
+      setSelectedEvolution(availableEvolutions[0]);
+    }
+    setShowEvolutionDialog(true);
+  };
+
+  const handleEvolvePokemon = async () => {
+    if (!pokemon || !trainer || !selectedEvolution || pokemonIndex === undefined) return;
+    
+    setSaving(true);
+    try {
+      // Get evolution data from PokeAPI
+      const evolutionDetails = await pokeApiService.getPokemonDetails(selectedEvolution);
+      
+      // Evolve the Pokemon - keep all stats and progress but change basic info
+      const evolvedPokemon: Pokemon = {
+        ...pokemon,
+        name: selectedEvolution,
+        species: selectedEvolution,
+        type: evolutionDetails?.type || pokemon.type,
+        secondaryType: evolutionDetails?.secondaryType || pokemon.secondaryType,
+        imageUrl: evolutionDetails?.imageUrl || pokemon.imageUrl,
+        stats: evolutionDetails?.stats || pokemon.stats,
+        // Keep all progress: level, exp, talent points, learned attacks
+        evolutionData: evolutionService.getEvolutionData(selectedEvolution)
+      };
+
+      const updatedTeam = [...(trainer.team || [])];
+      updatedTeam[parseInt(pokemonIndex)] = evolvedPokemon;
+      
+      const updatedTrainer = { ...trainer, team: updatedTeam };
+      
+      await trainerService.updateTrainer(trainer.id!, updatedTrainer);
+      
+      setPokemon(evolvedPokemon);
+      setTrainer(updatedTrainer);
+      
+      // Update form data
+      setEditForm(prev => ({
+        ...prev,
+        name: selectedEvolution,
+        species: selectedEvolution,
+        type: evolutionDetails?.type || prev.type,
+        secondaryType: evolutionDetails?.secondaryType || prev.secondaryType
+      }));
+      
+      setShowEvolutionDialog(false);
+      setSelectedEvolution('');
+      
+      alert(`${pokemon.name} hat sich zu ${selectedEvolution} entwickelt! 🎉`);
+    } catch (error) {
+      console.error('Error evolving Pokemon:', error);
+      alert('Fehler bei der Entwicklung des Pokemon');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -454,17 +534,28 @@ const PokemonDetail: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-900">
               {editMode ? 'Pokemon bearbeiten' : 'Pokemon Details'}
             </h1>
-            <button
-              onClick={() => editMode ? handleSave() : setEditMode(true)}
-              disabled={saving}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                editMode 
-                  ? 'bg-success-500 text-white hover:bg-success-600'
-                  : 'bg-primary-500 text-white hover:bg-primary-600'
-              } ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              {saving ? 'Speichert...' : editMode ? 'Speichern' : 'Bearbeiten'}
-            </button>
+            <div className="flex gap-2">
+              {canEvolvePokemon() && (
+                <button
+                  onClick={handleShowEvolution}
+                  disabled={saving}
+                  className="px-4 py-2 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  🌟 Entwickeln
+                </button>
+              )}
+              <button
+                onClick={() => editMode ? handleSave() : setEditMode(true)}
+                disabled={saving}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  editMode 
+                    ? 'bg-success-500 text-white hover:bg-success-600'
+                    : 'bg-primary-500 text-white hover:bg-primary-600'
+                } ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                {saving ? 'Speichert...' : editMode ? 'Speichern' : 'Bearbeiten'}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -959,6 +1050,83 @@ const PokemonDetail: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Evolution Dialog */}
+      {showEvolutionDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl p-6 m-4 max-w-md w-full">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Pokemon entwickeln</h2>
+            
+            <div className="mb-4">
+              <p className="text-gray-600 mb-2">
+                {pokemon?.name} kann sich entwickeln!
+              </p>
+              <p className="text-sm text-red-600 font-medium">
+                ⚠️ Diese Aktion kann nicht rückgängig gemacht werden!
+              </p>
+            </div>
+
+            {getAvailableEvolutions().length > 1 ? (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Entwicklung wählen:
+                </label>
+                <select
+                  value={selectedEvolution}
+                  onChange={(e) => setSelectedEvolution(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="">Entwicklung auswählen...</option>
+                  {getAvailableEvolutions().map(evolution => (
+                    <option key={evolution} value={evolution}>
+                      {evolution}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <div className="mb-4">
+                <p className="text-gray-700">
+                  <span className="font-medium">{pokemon?.name}</span> wird sich zu{' '}
+                  <span className="font-bold text-purple-600">
+                    {getAvailableEvolutions()[0]}
+                  </span>{' '}
+                  entwickeln.
+                </p>
+              </div>
+            )}
+
+            <div className="mb-6">
+              <h3 className="font-medium text-gray-900 mb-2">Was bleibt erhalten:</h3>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>✅ Level und Erfahrung</li>
+                <li>✅ Talent Points Verteilung</li>
+                <li>✅ Gelernte Attacken</li>
+                <li>✅ Shiny Status</li>
+              </ul>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowEvolutionDialog(false);
+                  setSelectedEvolution('');
+                }}
+                className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Abbrechen
+              </button>
+              <button
+                onClick={handleEvolvePokemon}
+                disabled={saving || (getAvailableEvolutions().length > 1 && !selectedEvolution)}
+                className="flex-1 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {saving ? 'Entwickelt...' : '🌟 Entwickeln!'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

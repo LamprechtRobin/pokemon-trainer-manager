@@ -6,6 +6,7 @@ import { trainerService } from '../firebase/trainerService';
 import PokemonSearch from '../components/PokemonSearch';
 import { pokeApiService } from '../services/pokeapi';
 import { attackService } from '../services/attackService';
+import { evolutionService } from '../services/evolutionService';
 
 const TrainerDetail: React.FC = () => {
   const { trainerId } = useParams<{ trainerId: string }>();
@@ -78,8 +79,8 @@ const TrainerDetail: React.FC = () => {
     }
     
     
-    const randomLevel = Math.floor(Math.random() * 50) + 1; // Random level 1-50
-    const randomExp = Math.floor(Math.random() * 11); // Random EXP 0-10
+    const startingLevel = 1; // Always start at level 1
+    const startingExp = 0; // Always start with 0 EXP
     
     try {
       // Pokemon-Details von API laden
@@ -90,15 +91,14 @@ const TrainerDetail: React.FC = () => {
         ? attackService.getDefaultAttackForType(pokemonDetails.type)
         : undefined;
       
+      const evolutionData = evolutionService.getEvolutionData(pokemonName);
+      
       const newPokemon: Pokemon = {
         name: pokemonName,
-        level: randomLevel,
-        exp: randomExp,
+        level: startingLevel,
+        exp: startingExp,
         type: pokemonDetails?.type || '❓ Unknown',
-        secondaryType: pokemonDetails?.secondaryType || undefined,
-        imageUrl: pokemonDetails?.imageUrl || undefined,
         species: pokemonName,
-        stats: pokemonDetails?.stats || undefined,
         talentPoints: {
           hp: 0,
           attack: 0,
@@ -109,6 +109,20 @@ const TrainerDetail: React.FC = () => {
         learnedAttacks: defaultAttack ? [defaultAttack.id] : [],
         createdAt: new Date().toISOString()
       };
+      
+      // Only add optional fields if they have values
+      if (pokemonDetails?.secondaryType) {
+        newPokemon.secondaryType = pokemonDetails.secondaryType;
+      }
+      if (pokemonDetails?.imageUrl) {
+        newPokemon.imageUrl = pokemonDetails.imageUrl;
+      }
+      if (pokemonDetails?.stats) {
+        newPokemon.stats = pokemonDetails.stats;
+      }
+      if (evolutionData.canEvolve) {
+        newPokemon.evolutionData = evolutionData;
+      }
       
       const updatedTeam = [...(trainer.team || []), newPokemon];
       const updatedTrainer = { ...trainer, team: updatedTeam };

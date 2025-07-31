@@ -54,12 +54,38 @@ export const trainerService = {
 
   async updateTrainer(trainerId: string, trainerData: Partial<Trainer>): Promise<void> {
     try {
+      // Recursively remove undefined values from nested objects
+      const cleanData = this.removeUndefinedValues(trainerData);
+      
       const trainerRef = doc(db, COLLECTION_NAME, trainerId);
-      await updateDoc(trainerRef, trainerData);
+      await updateDoc(trainerRef, cleanData);
     } catch (error) {
       console.error('Error updating trainer:', error);
       throw error;
     }
+  },
+
+  // Helper function to recursively remove undefined values
+  removeUndefinedValues(obj: any): any {
+    if (obj === null || obj === undefined) {
+      return null;
+    }
+    
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.removeUndefinedValues(item));
+    }
+    
+    if (typeof obj === 'object') {
+      const cleaned: any = {};
+      for (const [key, value] of Object.entries(obj)) {
+        if (value !== undefined) {
+          cleaned[key] = this.removeUndefinedValues(value);
+        }
+      }
+      return cleaned;
+    }
+    
+    return obj;
   },
 
   async deleteTrainer(trainerId: string): Promise<void> {
