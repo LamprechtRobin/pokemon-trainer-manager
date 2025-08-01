@@ -33,9 +33,22 @@ const BattleMode: React.FC = () => {
     effectiveness: number;
   } | null>(null);
   
+  const [showEvasionDialog, setShowEvasionDialog] = useState<{
+    step: 'roll' | 'damage';
+    speedValue: number;
+    rollSuccess?: boolean;
+    incomingDamage: number;
+    effectiveness: number;
+    roll1?: number;
+    roll2?: number;
+  } | null>(null);
+
   const [showDeathNotification, setShowDeathNotification] = useState<{
     pokemonName: string;
   } | null>(null);
+
+  const [showBattleEndDialog, setShowBattleEndDialog] = useState(false);
+  const [battleEndExpGains, setBattleEndExpGains] = useState<{[pokemonIndex: number]: number}>({});
 
   useEffect(() => {
     if (trainerId) {
@@ -184,12 +197,79 @@ const BattleMode: React.FC = () => {
     });
   };
 
+  const handleEvasionClick = () => {
+    if (!activePokemon) return;
+    const penPaperStats = getPenPaperStats(activePokemon);
+    const speedValue = penPaperStats.speed;
+    setShowEvasionDialog({
+      step: 'roll',
+      speedValue,
+      incomingDamage: 0,
+      effectiveness: 1 // neutral
+    });
+  };
+
+  const handleBattleEndClick = () => {
+    // Initialize EXP gains with 0 for all selected Pokemon
+    const initialExpGains: {[pokemonIndex: number]: number} = {};
+    selectedPokemonIndices.forEach(index => {
+      initialExpGains[index] = 0;
+    });
+    setBattleEndExpGains(initialExpGains);
+    setShowBattleEndDialog(true);
+  };
+
+  const updateExpGain = (pokemonIndex: number, amount: number) => {
+    setBattleEndExpGains(prev => ({
+      ...prev,
+      [pokemonIndex]: Math.max(0, (prev[pokemonIndex] || 0) + amount)
+    }));
+  };
+
+  const applyBattleEndRewards = async () => {
+    if (!trainer) return;
+
+    try {
+      const updatedTeam = [...(trainer.team || [])];
+      
+      // Apply EXP gains
+      Object.entries(battleEndExpGains).forEach(([indexStr, expGain]) => {
+        const index = parseInt(indexStr);
+        if (updatedTeam[index] && expGain > 0) {
+          const currentExp = updatedTeam[index].exp || 0;
+          updatedTeam[index].exp = currentExp + expGain;
+        }
+      });
+
+      const updatedTrainer = { ...trainer, team: updatedTeam };
+      await trainerService.updateTrainer(trainer.id!, updatedTrainer);
+      setTrainer(updatedTrainer);
+      
+      setShowBattleEndDialog(false);
+      setBattlePhase("selection");
+    } catch (error) {
+      console.error('Error applying battle end rewards:', error);
+      alert('Fehler beim Speichern der Belohnungen');
+    }
+  };
+
   const handleDefenseRollResult = (success: boolean) => {
     if (!showDefenseDialog) return;
     setShowDefenseDialog({
       ...showDefenseDialog,
       step: 'damage',
       rollSuccess: success
+    });
+  };
+
+  const handleEvasionRollResult = (success: boolean, roll1: number, roll2: number) => {
+    if (!showEvasionDialog) return;
+    setShowEvasionDialog({
+      ...showEvasionDialog,
+      step: 'damage',
+      rollSuccess: success,
+      roll1,
+      roll2
     });
   };
 
@@ -206,6 +286,23 @@ const BattleMode: React.FC = () => {
     if (!showDefenseDialog) return;
     setShowDefenseDialog({
       ...showDefenseDialog,
+      effectiveness
+    });
+  };
+
+  const updateEvasionDamage = (amount: number) => {
+    if (!showEvasionDialog) return;
+    const newDamage = Math.max(0, showEvasionDialog.incomingDamage + amount);
+    setShowEvasionDialog({
+      ...showEvasionDialog,
+      incomingDamage: newDamage
+    });
+  };
+
+  const updateEvasionEffectiveness = (effectiveness: number) => {
+    if (!showEvasionDialog) return;
+    setShowEvasionDialog({
+      ...showEvasionDialog,
       effectiveness
     });
   };
@@ -231,6 +328,22 @@ const BattleMode: React.FC = () => {
     
     // Minimum damage is always 1
     return Math.max(1, Math.floor(finalDamage));
+  };
+
+  const calculateEvasionFinalDamage = (): number => {
+    if (!showEvasionDialog || !activePokemon) return 0;
+    
+    const incomingDamage = showEvasionDialog.incomingDamage;
+    const effectiveness = showEvasionDialog.effectiveness;
+    const rollSuccess = showEvasionDialog.rollSuccess;
+    
+    if (rollSuccess) {
+      // Evasion succeeded: No damage
+      return 0;
+    } else {
+      // Evasion failed: Full damage with effectiveness  
+      return Math.max(1, Math.floor(incomingDamage * effectiveness));
+    }
   };
 
   const applyDamageToActivePokemon = async () => {
@@ -275,6 +388,54 @@ const BattleMode: React.FC = () => {
       updatedSelectedPokemon[activePokemonIndex] = updatedPokemon;
       
       setShowDefenseDialog(null);
+    } catch (error) {
+      console.error('Error updating Pokemon HP:', error);
+      alert('Fehler beim Speichern der HP-Änderung');
+    }
+  };
+
+  const applyEvasionDamageToActivePokemon = async () => {
+    if (!showEvasionDialog || !activePokemon || !trainer) return;
+    
+    const finalDamage = calculateEvasionFinalDamage();
+    const currentHp = getCurrentHp(activePokemon);
+    const maxHp = getMaxHp(activePokemon);
+    const deathThreshold = Math.floor(-maxHp / 2); // -1/2 max HP
+    
+    let newHp = currentHp - finalDamage;
+    let isDead = false;
+    
+    // Check for permanent death
+    if (newHp <= deathThreshold) {
+      isDead = true;
+      newHp = deathThreshold; // Set HP to death threshold
+      setShowDeathNotification({ pokemonName: activePokemon.name });
+    } else {
+      newHp = Math.max(0, newHp); // Normal K.O. at 0
+    }
+    
+    // Update the Pokemon's HP and death status
+    const updatedPokemon = { 
+      ...activePokemon, 
+      currentHp: newHp,
+      isDead: isDead || activePokemon.isDead // Once dead, always dead
+    };
+    
+    const updatedTeam = [...(trainer.team || [])];
+    const originalPokemonIndex = selectedPokemonIndices[activePokemonIndex];
+    updatedTeam[originalPokemonIndex] = updatedPokemon;
+    
+    const updatedTrainer = { ...trainer, team: updatedTeam };
+    
+    try {
+      await trainerService.updateTrainer(trainer.id!, updatedTrainer);
+      setTrainer(updatedTrainer);
+      
+      // Update selected Pokemon array
+      const updatedSelectedPokemon = [...selectedPokemon];
+      updatedSelectedPokemon[activePokemonIndex] = updatedPokemon;
+      
+      setShowEvasionDialog(null);
     } catch (error) {
       console.error('Error updating Pokemon HP:', error);
       alert('Fehler beim Speichern der HP-Änderung');
@@ -329,7 +490,7 @@ const BattleMode: React.FC = () => {
             </div>
             {battlePhase === "battle" && (
               <button
-                onClick={() => setBattlePhase("selection")}
+                onClick={handleBattleEndClick}
                 className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm"
               >
                 Kampf beenden
@@ -595,19 +756,12 @@ const BattleMode: React.FC = () => {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-bold text-gray-900 mb-4">Aktionen</h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <button
                   onClick={() => alert("Items - Noch nicht implementiert")}
                   className="w-full py-4 px-6 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
                 >
                   🎒 Items
-                </button>
-
-                <button
-                  onClick={() => alert("Kampf - Noch nicht implementiert")}
-                  className="w-full py-4 px-6 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors"
-                >
-                  ⚔️ Kampf
                 </button>
 
                 <button
@@ -618,15 +772,10 @@ const BattleMode: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => alert("Wechsel - Noch nicht implementiert")}
-                  disabled={selectedPokemon.length <= 1}
-                  className={`w-full py-4 px-6 rounded-lg font-medium transition-colors ${
-                    selectedPokemon.length > 1
-                      ? "bg-green-500 text-white hover:bg-green-600"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  }`}
+                  onClick={handleEvasionClick}
+                  className="w-full py-4 px-6 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-600 transition-colors"
                 >
-                  🔄 Wechsel
+                  💨 Ausweichen
                 </button>
               </div>
             </div>
@@ -1030,6 +1179,171 @@ const BattleMode: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Evasion Dialog */}
+        {showEvasionDialog && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full">
+              {showEvasionDialog.step === 'roll' && (
+                <div className="text-center mb-6">
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">
+                    💨 Ausweichen
+                  </h2>
+                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+                    <h3 className="font-bold text-purple-900 mb-2">
+                      Ausweichenwurf
+                    </h3>
+                    <div className="text-2xl font-bold text-purple-700 mb-2">
+                      1W20 + {showEvasionDialog.speedValue}
+                    </div>
+                    <div className="text-sm text-purple-600 mb-2">
+                      {activePokemon?.name} versucht auszuweichen
+                    </div>
+                    <div className="text-xs text-purple-500 bg-purple-100 rounded p-2">
+                      <strong>Geschwindigkeit wird 2x gewürfelt - schlechterer Wurf zählt</strong>
+                    </div>
+                  </div>
+                  
+                  <div className="text-sm text-gray-600 mb-4">
+                    <div className="flex justify-between">
+                      <span>Geschwindigkeit (Pen & Paper):</span>
+                      <span className="font-medium">{showEvasionDialog.speedValue}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center mb-4">
+                    <p className="text-sm text-gray-600 mb-3">Wie ist der Wurf ausgegangen?</p>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => handleEvasionRollResult(true, 0, 0)}
+                        className="flex-1 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
+                      >
+                        ✅ Geschafft (kein Schaden)
+                      </button>
+                      <button
+                        onClick={() => handleEvasionRollResult(false, 0, 0)}
+                        className="flex-1 px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
+                      >
+                        ❌ Nicht geschafft
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => setShowEvasionDialog(null)}
+                    className="w-full px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+                  >
+                    Abbrechen
+                  </button>
+                </div>
+              )}
+              
+              {showEvasionDialog.step === 'damage' && (
+                <div className="mb-6">
+                  <h2 className="text-xl font-bold text-gray-900 mb-2 text-center">
+                    💥 Schaden berechnen
+                  </h2>
+                  
+                  <div className={`p-3 rounded-lg mb-4 text-center ${
+                    showEvasionDialog.rollSuccess 
+                      ? 'bg-green-50 border border-green-200' 
+                      : 'bg-red-50 border border-red-200'
+                  }`}>
+                    <div className={`text-sm font-medium ${
+                      showEvasionDialog.rollSuccess ? 'text-green-800' : 'text-red-800'
+                    }`}>
+                      Ausweichen {showEvasionDialog.rollSuccess ? 'erfolgreich' : 'fehlgeschlagen'}
+                    </div>
+                    {showEvasionDialog.rollSuccess && (
+                      <div className="text-xs text-green-600 mt-1">
+                        Kein Schaden erhalten!
+                      </div>
+                    )}
+                  </div>
+                  
+                  {!showEvasionDialog.rollSuccess && (
+                    <>
+                      {/* Damage Input */}
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Eingehender Schaden:
+                        </label>
+                        <div className="flex items-center justify-center mb-3">
+                          <span className="text-2xl font-bold text-gray-900">
+                            {showEvasionDialog.incomingDamage}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-4 gap-2 mb-2">
+                          <button onClick={() => updateEvasionDamage(1)} className="px-3 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors">+1</button>
+                          <button onClick={() => updateEvasionDamage(2)} className="px-3 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors">+2</button>
+                          <button onClick={() => updateEvasionDamage(5)} className="px-3 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors">+5</button>
+                          <button onClick={() => updateEvasionDamage(10)} className="px-3 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors">+10</button>
+                        </div>
+                        <div className="grid grid-cols-4 gap-2">
+                          <button onClick={() => updateEvasionDamage(-1)} className="px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">-1</button>
+                          <button onClick={() => updateEvasionDamage(-2)} className="px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">-2</button>
+                          <button onClick={() => updateEvasionDamage(-5)} className="px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">-5</button>
+                          <button onClick={() => updateEvasionDamage(-10)} className="px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">-10</button>
+                        </div>
+                      </div>
+                      
+                      {/* Type Effectiveness */}
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Typ-Effektivität:
+                        </label>
+                        <select
+                          value={showEvasionDialog.effectiveness}
+                          onChange={(e) => updateEvasionEffectiveness(parseFloat(e.target.value))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        >
+                          <option value={0.25}>Überhaupt nicht effektiv (1/4)</option>
+                          <option value={0.5}>Nicht sehr effektiv (1/2)</option>
+                          <option value={1}>Normal effektiv (1x)</option>
+                          <option value={2}>Sehr effektiv (2x)</option>
+                          <option value={4}>Super effektiv (4x)</option>
+                        </select>
+                      </div>
+                      
+                      {/* Damage Calculation Preview */}
+                      <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                        <div className="text-sm text-gray-600 space-y-1">
+                          <div className="flex justify-between">
+                            <span>Eingehender Schaden:</span>
+                            <span>{showEvasionDialog.incomingDamage}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Effektivität:</span>
+                            <span>{showEvasionDialog.effectiveness}x</span>
+                          </div>
+                          <div className="flex justify-between border-t pt-1 font-bold text-red-700">
+                            <span>Finaler Schaden:</span>
+                            <span>{calculateEvasionFinalDamage()}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setShowEvasionDialog(null)}
+                      className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+                    >
+                      Abbrechen
+                    </button>
+                    <button
+                      onClick={applyEvasionDamageToActivePokemon}
+                      className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    >
+                      💔 Schaden anwenden
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         
         {/* Death Notification Dialog */}
         {showDeathNotification && (
@@ -1066,6 +1380,146 @@ const BattleMode: React.FC = () => {
               >
                 😢 Verstanden
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Battle End Dialog */}
+        {showBattleEndDialog && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">
+                  🏆 Kampf beenden
+                </h2>
+                <p className="text-gray-600 text-center">
+                  Verteile Erfahrungspunkte und andere Belohnungen
+                </p>
+              </div>
+
+              {/* EXP Distribution */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  ⭐ Erfahrungspunkte verteilen
+                </h3>
+                
+                <div className="space-y-4">
+                  {selectedPokemonIndices.map(pokemonIndex => {
+                    const pokemon = trainer.team![pokemonIndex];
+                    const currentExp = pokemon.exp || 0;
+                    const expGain = battleEndExpGains[pokemonIndex] || 0;
+                    const newExp = currentExp + expGain;
+                    
+                    return (
+                      <div key={pokemonIndex} className="bg-gray-50 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden">
+                              {pokemon.imageUrl ? (
+                                <img 
+                                  src={pokemon.imageUrl} 
+                                  alt={pokemon.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <span className="text-lg">
+                                  {pokemon.isDead ? '💀' : getCurrentHp(pokemon) === 0 ? '😵' : '😊'}
+                                </span>
+                              )}
+                              
+                              {/* Status overlay */}
+                              {pokemon.isDead && (
+                                <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center">
+                                  <span className="text-white text-xs">💀</span>
+                                </div>
+                              )}
+                              {!pokemon.isDead && getCurrentHp(pokemon) === 0 && (
+                                <div className="absolute inset-0 bg-red-500 bg-opacity-70 flex items-center justify-center">
+                                  <span className="text-white text-xs">K.O.</span>
+                                </div>
+                              )}
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-gray-900">{pokemon.name}</h4>
+                              <div className="text-sm text-gray-600">
+                                Level {pokemon.level} • EXP: {currentExp} → {newExp}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="mb-3">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            EXP Gewinn: {expGain}
+                          </label>
+                          <div className="flex items-center gap-2">
+                            <div className="grid grid-cols-6 gap-1 flex-1">
+                              <button 
+                                onClick={() => updateExpGain(pokemonIndex, 1)} 
+                                className="px-2 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200 transition-colors"
+                              >
+                                +1
+                              </button>
+                              <button 
+                                onClick={() => updateExpGain(pokemonIndex, 5)} 
+                                className="px-2 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200 transition-colors"
+                              >
+                                +5
+                              </button>
+                              <button 
+                                onClick={() => updateExpGain(pokemonIndex, 10)} 
+                                className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm hover:bg-blue-200 transition-colors"
+                              >
+                                +10
+                              </button>
+                              <button 
+                                onClick={() => updateExpGain(pokemonIndex, -1)} 
+                                className="px-2 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 transition-colors"
+                              >
+                                -1
+                              </button>
+                              <button 
+                                onClick={() => updateExpGain(pokemonIndex, -5)} 
+                                className="px-2 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 transition-colors"
+                              >
+                                -5
+                              </button>
+                              <button 
+                                onClick={() => updateExpGain(pokemonIndex, -10)} 
+                                className="px-2 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 transition-colors"
+                              >
+                                -10
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {expGain > 0 && (
+                          <div className="text-xs text-green-600 bg-green-50 rounded p-2">
+                            ⬆️ +{expGain} EXP → Neue Gesamt-EXP: {newExp}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowBattleEndDialog(false)}
+                  className="flex-1 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  onClick={applyBattleEndRewards}
+                  className="flex-1 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
+                >
+                  Belohnungen anwenden
+                </button>
+              </div>
             </div>
           </div>
         )}
