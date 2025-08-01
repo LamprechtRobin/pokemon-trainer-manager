@@ -100,6 +100,9 @@ The project includes comprehensive TypeScript types in `src/types/trainer.ts`:
 - **Naming**: Components and Component file names should be CamelCase. function pascalCase.
 - **No Smileys** Vermeide die Verwendung von Smileys für Buttons. Außer ausdrücklich erwähnt
 
+## Claude Memories
+- dont use smileys. only if specifically wished for
+
 ## Package Manager
 **Important**: This project uses `pnpm` as the package manager. Always use `pnpm` commands:
 - `pnpm install` - Install dependencies

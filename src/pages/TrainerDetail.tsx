@@ -20,6 +20,7 @@ const TrainerDetail: React.FC = () => {
   const [editForm, setEditForm] = useState({
     name: "",
     description: "",
+    money: "",
   });
 
   useEffect(() => {
@@ -38,6 +39,7 @@ const TrainerDetail: React.FC = () => {
         setEditForm({
           name: foundTrainer.name,
           description: foundTrainer.description || "",
+          money: (foundTrainer.money || 0).toString(),
         });
       } else {
         navigate("/");
@@ -58,6 +60,7 @@ const TrainerDetail: React.FC = () => {
         ...trainer,
         name: editForm.name.trim(),
         description: editForm.description.trim() || undefined,
+        money: parseInt(editForm.money) || 0,
       };
 
       await trainerService.updateTrainer(trainer.id!, updatedTrainer);
@@ -251,6 +254,28 @@ const TrainerDetail: React.FC = () => {
                 ) : (
                   <p className="text-gray-600">
                     {trainer.description || "Keine Beschreibung vorhanden"}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Geld:
+                </label>
+                {editMode ? (
+                  <input
+                    type="number"
+                    value={editForm.money}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, money: e.target.value })
+                    }
+                    min="0"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    placeholder="0"
+                  />
+                ) : (
+                  <p className="text-gray-600 font-medium">
+                    ₽ {(trainer.money || 0).toLocaleString()}
                   </p>
                 )}
               </div>

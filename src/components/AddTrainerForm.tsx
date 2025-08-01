@@ -12,6 +12,7 @@ const AddTrainerForm: React.FC<AddTrainerFormProps> = ({ onSubmit, onCancel }) =
   const [formData, setFormData] = useState<TrainerFormData>({
     name: '',
     description: '',
+    money: '1000',
     imageFile: null,
     imageMode: 'upload',
     aiPrompt: '',
@@ -79,6 +80,7 @@ const AddTrainerForm: React.FC<AddTrainerFormProps> = ({ onSubmit, onCancel }) =
     const trainerData = {
       name: formData.name,
       description: formData.description || undefined,
+      money: parseInt(formData.money) || 0,
       imageUrl,
       team: [], // Initialize with empty Pokemon team
       createdAt: new Date().toISOString()
