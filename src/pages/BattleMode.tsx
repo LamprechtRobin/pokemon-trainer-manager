@@ -803,6 +803,163 @@ const BattleMode: React.FC = () => {
             </div>
           </div>
         )}
+        
+        {/* Defense Dialog */}
+        {showDefenseDialog && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full">
+              {showDefenseDialog.step === 'roll' && (
+                <div className="text-center mb-6">
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">
+                    🛡️ Verteidigung
+                  </h2>
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                    <h3 className="font-bold text-yellow-900 mb-2">
+                      Verteidigungswurf
+                    </h3>
+                    <div className="text-2xl font-bold text-yellow-700 mb-2">
+                      1W20 + {showDefenseDialog.defenseValue}
+                    </div>
+                    <div className="text-sm text-yellow-600">
+                      {activePokemon?.name} versucht sich zu verteidigen
+                    </div>
+                  </div>
+                  
+                  <div className="text-sm text-gray-600 mb-4">
+                    <div className="flex justify-between">
+                      <span>Verteidigung (Pen & Paper):</span>
+                      <span className="font-medium">{showDefenseDialog.defenseValue}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center mb-4">
+                    <p className="text-sm text-gray-600 mb-3">Wie ist der Wurf ausgegangen?</p>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => handleDefenseRollResult(true)}
+                        className="flex-1 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
+                      >
+                        ✅ Geschafft
+                      </button>
+                      <button
+                        onClick={() => handleDefenseRollResult(false)}
+                        className="flex-1 px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
+                      >
+                        ❌ Nicht geschafft
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => setShowDefenseDialog(null)}
+                    className="w-full px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+                  >
+                    Abbrechen
+                  </button>
+                </div>
+              )}
+              
+              {showDefenseDialog.step === 'damage' && (
+                <div className="mb-6">
+                  <h2 className="text-xl font-bold text-gray-900 mb-2 text-center">
+                    💥 Schaden berechnen
+                  </h2>
+                  
+                  <div className={`p-3 rounded-lg mb-4 text-center ${
+                    showDefenseDialog.rollSuccess 
+                      ? 'bg-green-50 border border-green-200' 
+                      : 'bg-red-50 border border-red-200'
+                  }`}>
+                    <div className={`text-sm font-medium ${
+                      showDefenseDialog.rollSuccess ? 'text-green-800' : 'text-red-800'
+                    }`}>
+                      Verteidigung {showDefenseDialog.rollSuccess ? 'erfolgreich' : 'fehlgeschlagen'}
+                    </div>
+                  </div>
+                  
+                  {/* Damage Input */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Eingehender Schaden:
+                    </label>
+                    <div className="flex items-center justify-center mb-3">
+                      <span className="text-2xl font-bold text-gray-900">
+                        {showDefenseDialog.incomingDamage}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-4 gap-2 mb-2">
+                      <button onClick={() => updateIncomingDamage(1)} className="px-3 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors">+1</button>
+                      <button onClick={() => updateIncomingDamage(2)} className="px-3 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors">+2</button>
+                      <button onClick={() => updateIncomingDamage(5)} className="px-3 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors">+5</button>
+                      <button onClick={() => updateIncomingDamage(10)} className="px-3 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors">+10</button>
+                    </div>
+                    <div className="grid grid-cols-4 gap-2">
+                      <button onClick={() => updateIncomingDamage(-1)} className="px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">-1</button>
+                      <button onClick={() => updateIncomingDamage(-2)} className="px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">-2</button>
+                      <button onClick={() => updateIncomingDamage(-5)} className="px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">-5</button>
+                      <button onClick={() => updateIncomingDamage(-10)} className="px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">-10</button>
+                    </div>
+                  </div>
+                  
+                  {/* Type Effectiveness */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Typ-Effektivität:
+                    </label>
+                    <select
+                      value={showDefenseDialog.effectiveness}
+                      onChange={(e) => updateEffectiveness(parseFloat(e.target.value))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                    >
+                      <option value={0.25}>Überhaupt nicht effektiv (1/4)</option>
+                      <option value={0.5}>Nicht sehr effektiv (1/2)</option>
+                      <option value={1}>Normal effektiv (1x)</option>
+                      <option value={2}>Sehr effektiv (2x)</option>
+                      <option value={4}>Super effektiv (4x)</option>
+                    </select>
+                  </div>
+                  
+                  {/* Damage Calculation Preview */}
+                  <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                    <div className="text-sm text-gray-600 space-y-1">
+                      <div className="flex justify-between">
+                        <span>Eingehender Schaden:</span>
+                        <span>{showDefenseDialog.incomingDamage}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Verteidigung:</span>
+                        <span>{showDefenseDialog.defenseValue} {showDefenseDialog.rollSuccess ? '(voll)' : '(halber)'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Effektivität:</span>
+                        <span>{showDefenseDialog.effectiveness}x</span>
+                      </div>
+                      <div className="flex justify-between border-t pt-1 font-bold text-red-700">
+                        <span>Finaler Schaden:</span>
+                        <span>{calculateFinalDamage()}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setShowDefenseDialog(null)}
+                      className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+                    >
+                      Abbrechen
+                    </button>
+                    <button
+                      onClick={applyDamageToActivePokemon}
+                      className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    >
+                      💔 Schaden anwenden
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
