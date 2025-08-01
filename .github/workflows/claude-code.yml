@@ -48,6 +48,15 @@ jobs:
             echo "issue_number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
           fi
 
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Python dependencies
+        run: |
+          pip install requests
+
       - name: Process Claude Request
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -60,11 +69,24 @@ jobs:
           if [ -n "$CLAUDE_REQUEST" ]; then
             echo "Processing Claude request: $CLAUDE_REQUEST"
             
-            # Erstelle eine einfache Antwort auf das Issue
-            gh issue comment ${{ steps.extract-request.outputs.issue_number }} --body "🤖 **Claude Code Assistant aktiviert** - **Aufgabe:** $CLAUDE_REQUEST - Ich habe deine Anfrage erhalten und arbeite daran. Bitte gib mir einen Moment..."
-
-            # Hier könntest du später die eigentliche Implementierung hinzufügen
-            # Für jetzt nur eine Bestätigungsnachricht
+            # Erstelle initiale Antwort
+            gh issue comment ${{ steps.extract-request.outputs.issue_number }} --body "🤖 **Claude Code Assistant aktiviert** - Bearbeite: $CLAUDE_REQUEST"
+            
+            # Führe Python-Handler aus
+            export CLAUDE_REQUEST="$CLAUDE_REQUEST"
+            export ISSUE_NUMBER="${{ steps.extract-request.outputs.issue_number }}"
+            
+            python .github/scripts/claude-handler.py
+            
+            # Committe eventuelle Änderungen
+            git config --local user.email "action@github.com"
+            git config --local user.name "Claude Code Assistant"
+            
+            if ! git diff --quiet || ! git diff --cached --quiet; then
+              git add .
+              git commit -m "🤖 Claude Code: $CLAUDE_REQUEST - Executed via GitHub Actions from issue #${{ steps.extract-request.outputs.issue_number }}"
+              git push
+            fi
             
             echo "Claude request processed: $CLAUDE_REQUEST"
           fi
