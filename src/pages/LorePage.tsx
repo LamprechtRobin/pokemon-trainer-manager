@@ -41,7 +41,11 @@ const LorePage: React.FC = () => {
         /^### (.*$)/gim,
         '<h3 class="text-lg font-medium text-gray-700 mb-3 mt-6">$1</h3>'
       )
-      .replace(/\*\*(.*?)\**/g, "<strong>$1</strong>")
+      .replace(
+        /^#### (.*$)/gim,
+        '<h4 class="text-md font-medium text-gray-600 mb-2 mt-4">$1</h4>'
+      )
+      .replace(/\*\*(.*?)\**/g, '<strong class="font-bold">$1</strong>')
       .replace(/^(\d+)\. (.*)$/gim, '<li class="mb-2">$2</li>')
       .replace(/^- (.*)$/gim, '<li class="mb-2">$1</li>');
 
