@@ -32,6 +32,10 @@ const BattleMode: React.FC = () => {
     incomingDamage: number;
     effectiveness: number;
   } | null>(null);
+  
+  const [showDeathNotification, setShowDeathNotification] = useState<{
+    pokemonName: string;
+  } | null>(null);
 
   useEffect(() => {
     if (trainerId) {
@@ -234,10 +238,28 @@ const BattleMode: React.FC = () => {
     
     const finalDamage = calculateFinalDamage();
     const currentHp = getCurrentHp(activePokemon);
-    const newHp = Math.max(0, currentHp - finalDamage);
+    const maxHp = getMaxHp(activePokemon);
+    const deathThreshold = Math.floor(-maxHp / 2); // -1/2 max HP
     
-    // Update the Pokemon's HP
-    const updatedPokemon = { ...activePokemon, currentHp: newHp };
+    let newHp = currentHp - finalDamage;
+    let isDead = false;
+    
+    // Check for permanent death
+    if (newHp <= deathThreshold) {
+      isDead = true;
+      newHp = deathThreshold; // Set HP to death threshold
+      setShowDeathNotification({ pokemonName: activePokemon.name });
+    } else {
+      newHp = Math.max(0, newHp); // Normal K.O. at 0
+    }
+    
+    // Update the Pokemon's HP and death status
+    const updatedPokemon = { 
+      ...activePokemon, 
+      currentHp: newHp,
+      isDead: isDead || activePokemon.isDead // Once dead, always dead
+    };
+    
     const updatedTeam = [...(trainer.team || [])];
     const originalPokemonIndex = selectedPokemonIndices[activePokemonIndex];
     updatedTeam[originalPokemonIndex] = updatedPokemon;
@@ -352,37 +374,56 @@ const BattleMode: React.FC = () => {
                 const currentHp = getCurrentHp(pokemon);
                 const maxHp = getMaxHp(pokemon);
                 const isKnockedOut = currentHp === 0;
+                const isDead = pokemon.isDead || false;
 
                 return (
                   <div
                     key={index}
-                    onClick={() => !isKnockedOut && handlePokemonToggle(index)}
+                    onClick={() => !isKnockedOut && !isDead && handlePokemonToggle(index)}
                     className={`relative bg-white rounded-xl shadow-sm border-2 p-4 transition-all cursor-pointer ${
-                      isKnockedOut
-                        ? "border-gray-200 opacity-50 cursor-not-allowed bg-gray-50"
+                      isDead
+                        ? "border-black bg-gray-900 opacity-75 cursor-not-allowed"
+                        : isKnockedOut
+                        ? "border-red-500 opacity-60 cursor-not-allowed bg-red-50"
                         : isSelected
                         ? "border-orange-500 bg-orange-50"
                         : "border-gray-200 hover:border-orange-300"
                     }`}
                   >
                     {/* Selection Indicator */}
-                    {isSelected && (
+                    {isSelected && !isDead && !isKnockedOut && (
                       <div className="absolute top-2 right-2 w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
                         ✓
                       </div>
                     )}
+                    
+                    {/* K.O. Symbol for 0 HP */}
+                    {isKnockedOut && !isDead && (
+                      <div className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xs shadow-lg">
+                        K.O.
+                      </div>
+                    )}
+                    
+                    {/* Death Symbol for permanently dead Pokemon */}
+                    {isDead && (
+                      <div className="absolute top-2 right-2 bg-black text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg shadow-lg">
+                        💀
+                      </div>
+                    )}
 
                     {/* Pokemon Image */}
-                    {pokemon.imageUrl && (
-                      <img
-                        src={pokemon.imageUrl}
-                        alt={`${pokemon.name} sprite`}
-                        className="w-24 h-24 mx-auto mb-3 pixelated"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                        }}
-                      />
-                    )}
+                    <div className="relative">
+                      {pokemon.imageUrl && (
+                        <img
+                          src={pokemon.imageUrl}
+                          alt={`${pokemon.name} sprite`}
+                          className={`w-24 h-24 mx-auto mb-3 pixelated ${isDead ? 'grayscale' : ''}`}
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                          }}
+                        />
+                      )}
+                    </div>
 
                     {/* Pokemon Info */}
                     <div className="text-center">
@@ -411,11 +452,15 @@ const BattleMode: React.FC = () => {
                         </div>
                       </div>
 
-                      {isKnockedOut && (
-                        <p className="text-red-600 text-sm font-medium">
-                          💀 K.O.
+                      {isDead ? (
+                        <p className="text-white text-sm font-medium">
+                          💀 TOT
                         </p>
-                      )}
+                      ) : isKnockedOut ? (
+                        <p className="text-red-600 text-sm font-medium">
+                          💔 K.O.
+                        </p>
+                      ) : null}
                     </div>
                   </div>
                 );
@@ -430,16 +475,32 @@ const BattleMode: React.FC = () => {
             {/* Main Pokemon Display */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="text-center mb-6">
-                {activePokemon.imageUrl && (
-                  <img
-                    src={activePokemon.imageUrl}
-                    alt={`${activePokemon.name} sprite`}
-                    className="w-48 h-48 mx-auto mb-4 pixelated"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
-                )}
+                <div className="relative inline-block">
+                  {activePokemon.imageUrl && (
+                    <img
+                      src={activePokemon.imageUrl}
+                      alt={`${activePokemon.name} sprite`}
+                      className="w-48 h-48 mx-auto mb-4 pixelated"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  )}
+                  
+                  {/* K.O. Symbol for 0 HP */}
+                  {getCurrentHp(activePokemon) === 0 && !activePokemon.isDead && (
+                    <div className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-16 h-16 flex items-center justify-center font-bold text-lg shadow-lg">
+                      K.O.
+                    </div>
+                  )}
+                  
+                  {/* Death Symbol for permanently dead Pokemon */}
+                  {activePokemon.isDead && (
+                    <div className="absolute top-2 right-2 bg-black text-white rounded-full w-16 h-16 flex items-center justify-center font-bold text-2xl shadow-lg">
+                      💀
+                    </div>
+                  )}
+                </div>
 
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">
                   {activePokemon.name}
@@ -666,6 +727,7 @@ const BattleMode: React.FC = () => {
                     const isActive = selectedIndex === activePokemonIndex;
                     const currentHp = getCurrentHp(pokemon);
                     const isKnockedOut = currentHp === 0;
+                    const isDead = pokemon.isDead || false;
 
                     return (
                       <button
@@ -673,14 +735,17 @@ const BattleMode: React.FC = () => {
                         onClick={() =>
                           !isActive &&
                           !isKnockedOut &&
+                          !isDead &&
                           handleSwitchPokemon(selectedIndex)
                         }
-                        disabled={isActive || isKnockedOut}
+                        disabled={isActive || isKnockedOut || isDead}
                         className={`p-3 rounded-lg border-2 transition-all ${
                           isActive
                             ? "border-orange-500 bg-orange-50 cursor-default"
+                            : isDead
+                            ? "border-black bg-gray-900 opacity-75 cursor-not-allowed"
                             : isKnockedOut
-                            ? "border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed"
+                            ? "border-red-500 bg-red-50 opacity-60 cursor-not-allowed"
                             : "border-gray-200 hover:border-green-300 hover:bg-green-50"
                         }`}
                       >
@@ -701,12 +766,17 @@ const BattleMode: React.FC = () => {
                           <p className="text-xs text-gray-500">
                             {currentHp}/{getMaxHp(pokemon)} HP
                           </p>
-                          {isActive && (
+                          {isActive && !isDead && !isKnockedOut && (
                             <p className="text-xs text-orange-600 font-medium mt-1">
                               Aktiv
                             </p>
                           )}
-                          {isKnockedOut && (
+                          {isDead && (
+                            <p className="text-xs text-white font-medium mt-1">
+                              💀 TOT
+                            </p>
+                          )}
+                          {isKnockedOut && !isDead && (
                             <p className="text-xs text-red-600 font-medium mt-1">
                               K.O.
                             </p>
@@ -957,6 +1027,45 @@ const BattleMode: React.FC = () => {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+        
+        {/* Death Notification Dialog */}
+        {showDeathNotification && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full border-4 border-red-500">
+              <div className="text-center mb-6">
+                <div className="text-6xl mb-4">💀</div>
+                <h2 className="text-2xl font-bold text-red-900 mb-2">
+                  Pokemon ist gestorben!
+                </h2>
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                  <p className="text-red-800 font-bold text-lg">
+                    {showDeathNotification.pokemonName}
+                  </p>
+                  <p className="text-red-700 text-sm mt-2">
+                    ist komplett gestorben und kampfunfähig für immer.
+                  </p>
+                </div>
+                
+                <div className="text-sm text-gray-600 space-y-2">
+                  <p>⚠️ <strong>Permanenter Tod:</strong></p>
+                  <ul className="text-left space-y-1">
+                    <li>• HP fiel unter -½ Maximum</li>
+                    <li>• Kann nicht mehr geheilt werden</li>
+                    <li>• Für immer kampfunfähig</li>
+                    <li>• Status wird gespeichert</li>
+                  </ul>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowDeathNotification(null)}
+                className="w-full px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+              >
+                😢 Verstanden
+              </button>
             </div>
           </div>
         )}

@@ -25,6 +25,7 @@ export interface Pokemon {
   };
   talentPointsSpentOnAttacks?: number; // Track TP spent on attack upgrades
   isShiny?: boolean;
+  isDead?: boolean; // Pokemon is permanently dead (cannot be healed)
   createdAt?: string;
 }
 //test commit
