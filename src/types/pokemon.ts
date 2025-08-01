@@ -3,6 +3,7 @@ export interface Pokemon {
   name: string;
   level?: number;
   exp?: number; // Current experience points
+  currentHp?: number; // Current HP (separate from max HP)
   type?: string; // Primary type
   secondaryType?: string; // Secondary type (optional)
   imageUrl?: string;
@@ -31,6 +32,7 @@ export interface PokemonFormData {
   name: string;
   level: string;
   exp: string;
+  currentHp: string;
   type: string;
   secondaryType: string;
   species: string;

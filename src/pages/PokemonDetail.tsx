@@ -61,6 +61,7 @@ const PokemonDetail: React.FC = () => {
     name: "",
     level: "",
     exp: "",
+    currentHp: "",
     type: "",
     secondaryType: "",
     species: "",
@@ -101,6 +102,7 @@ const PokemonDetail: React.FC = () => {
         name: foundPokemon.name,
         level: foundPokemon.level?.toString() || "1",
         exp: foundPokemon.exp?.toString() || "0",
+        currentHp: foundPokemon.currentHp?.toString() || "0",
         type: foundPokemon.type || "",
         secondaryType: foundPokemon.secondaryType || "",
         species: foundPokemon.species || foundPokemon.name,
@@ -125,6 +127,13 @@ const PokemonDetail: React.FC = () => {
         needsUpdate = true;
       }
 
+      // Initialize currentHp if not set
+      if (foundPokemon.currentHp === undefined) {
+        const maxHp = (foundPokemon.stats?.hp || 0) + (foundPokemon.talentPoints?.hp || 0);
+        updatedPokemon.currentHp = Math.max(1, maxHp); // Set to full HP, minimum 1
+        needsUpdate = true;
+      }
+
       // Evolution data is now loaded dynamically via useEffect, no need to store in Pokemon object
 
       if (!foundPokemon.learnedAttacks) {
@@ -138,6 +147,11 @@ const PokemonDetail: React.FC = () => {
 
       if (needsUpdate) {
         setPokemon(updatedPokemon);
+        // Update form with corrected currentHp
+        setEditForm(prev => ({
+          ...prev,
+          currentHp: updatedPokemon.currentHp?.toString() || "1"
+        }));
       }
     } catch (error) {
       console.error("Error loading Pokemon data:", error);
@@ -180,6 +194,7 @@ const PokemonDetail: React.FC = () => {
         name: editForm.name.trim(),
         level: parseInt(editForm.level) || 1,
         exp: parseInt(editForm.exp) || 0,
+        currentHp: parseInt(editForm.currentHp) || 1,
         type: editForm.type || undefined,
         secondaryType: editForm.secondaryType || undefined,
         species: editForm.species.trim() || editForm.name.trim(),
@@ -239,6 +254,38 @@ const PokemonDetail: React.FC = () => {
       level: newLevel.toString(),
       exp: newExp.toString(),
     }));
+  };
+
+  // HP Management System
+  const getMaxHp = (): number => {
+    const baseHp = pokemon?.stats?.hp || 0;
+    const talentHp = pokemon?.talentPoints?.hp || 0;
+    return Math.max(1, baseHp + talentHp); // Minimum 1 HP
+  };
+
+  const handleAddHp = (amount: number) => {
+    const currentHp = parseInt(editForm.currentHp) || 0;
+    const maxHp = getMaxHp();
+    
+    const newHp = Math.max(0, Math.min(maxHp, currentHp + amount));
+    
+    setEditForm(prev => ({
+      ...prev,
+      currentHp: newHp.toString()
+    }));
+  };
+
+  const getHpPercentage = (): number => {
+    const currentHp = parseInt(editForm.currentHp) || 0;
+    const maxHp = getMaxHp();
+    return maxHp > 0 ? (currentHp / maxHp) * 100 : 0;
+  };
+
+  const getHpColorClass = (): string => {
+    const percentage = getHpPercentage();
+    if (percentage > 50) return 'bg-green-500';
+    if (percentage > 25) return 'bg-yellow-500';
+    return 'bg-red-500';
   };
 
   // Talent Points System
@@ -854,6 +901,115 @@ const PokemonDetail: React.FC = () => {
                   </div>
                 </div>
               )}
+
+              {/* Current HP Management */}
+              <div className="pt-4 border-t border-gray-200">
+                <h4 className="font-medium text-gray-900 mb-3">Lebenspunkte</h4>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Aktuelle HP:
+                    </label>
+                    {editMode ? (
+                      <input
+                        type="number"
+                        min="0"
+                        max={getMaxHp()}
+                        value={editForm.currentHp}
+                        onChange={(e) => handleFormChange("currentHp", e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      />
+                    ) : (
+                      <p className="text-lg font-semibold text-primary-600">
+                        {pokemon.currentHp || 0}/{getMaxHp()} HP
+                      </p>
+                    )}
+                  </div>
+
+                  {/* HP Progress Bar */}
+                  <div>
+                    <div className="flex justify-between text-sm text-gray-600 mb-1">
+                      <span>0 HP</span>
+                      <span>{getMaxHp()} HP</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div 
+                        className={`h-3 rounded-full transition-all duration-300 ${getHpColorClass()}`}
+                        style={{
+                          width: `${getHpPercentage()}%`
+                        }}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {parseInt(editForm.currentHp) || 0} von {getMaxHp()} Lebenspunkten
+                    </p>
+                  </div>
+
+                  {/* HP Quick Adjust Buttons */}
+                  {editMode && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        HP ändern:
+                      </label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <button
+                          onClick={() => handleAddHp(1)}
+                          className="px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
+                        >
+                          +1 HP
+                        </button>
+                        <button
+                          onClick={() => handleAddHp(5)}
+                          className="px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
+                        >
+                          +5 HP
+                        </button>
+                        <button
+                          onClick={() => handleAddHp(10)}
+                          className="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
+                        >
+                          +10 HP
+                        </button>
+                        <button
+                          onClick={() => handleAddHp(-1)}
+                          className="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                        >
+                          -1 HP
+                        </button>
+                        <button
+                          onClick={() => handleAddHp(-5)}
+                          className="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                        >
+                          -5 HP
+                        </button>
+                        <button
+                          onClick={() => handleAddHp(-10)}
+                          className="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                        >
+                          -10 HP
+                        </button>
+                      </div>
+                      
+                      {/* Quick Actions */}
+                      <div className="mt-3 flex gap-2">
+                        <button
+                          onClick={() => setEditForm(prev => ({ ...prev, currentHp: getMaxHp().toString() }))}
+                          className="flex-1 py-2 px-3 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600 transition-colors"
+                        >
+                          💚 Vollheilung
+                        </button>
+                        <button
+                          onClick={() => setEditForm(prev => ({ ...prev, currentHp: "0" }))}
+                          className="flex-1 py-2 px-3 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors"
+                        >
+                          💀 K.O.
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {/* Talent Points */}
               {editMode && (
