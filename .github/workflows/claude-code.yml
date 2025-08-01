@@ -74,24 +74,12 @@ jobs:
             
             if ! git diff --quiet; then
               git add .
-              git commit -m "🤖 Claude Code: $CLAUDE_REQUEST
-
-Executed via GitHub Actions from issue #${{ steps.extract-request.outputs.issue_number }}"
+              git commit -m "🤖 Claude Code: $CLAUDE_REQUEST - Executed via GitHub Actions from issue #${{ steps.extract-request.outputs.issue_number }}"
               git push
               
               # Kommentiere auf das Issue
-              gh issue comment ${{ steps.extract-request.outputs.issue_number }} --body "✅ **Claude Code Ausführung abgeschlossen**
-
-Änderungen wurden committet und gepusht. 
-
-**Ausgeführte Aufgabe:** $CLAUDE_REQUEST
-
-Die Implementierung findest du im neuesten Commit."
+              gh issue comment ${{ steps.extract-request.outputs.issue_number }} --body "✅ **Claude Code Ausführung abgeschlossen** - Änderungen wurden committet und gepusht. **Ausgeführte Aufgabe:** $CLAUDE_REQUEST - Die Implementierung findest du im neuesten Commit."
             else
-              gh issue comment ${{ steps.extract-request.outputs.issue_number }} --body "ℹ️ **Claude Code Ausführung abgeschlossen**
-
-**Ausgeführte Aufgabe:** $CLAUDE_REQUEST
-
-Keine Dateien wurden geändert - möglicherweise war nur eine Analyse oder Beratung erforderlich."
+              gh issue comment ${{ steps.extract-request.outputs.issue_number }} --body "ℹ️ **Claude Code Ausführung abgeschlossen** - **Ausgeführte Aufgabe:** $CLAUDE_REQUEST - Keine Dateien wurden geändert."
             fi
           fi
