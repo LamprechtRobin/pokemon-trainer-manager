@@ -30,7 +30,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -38,15 +37,61 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Install Claude Code CLI
+        run: |
+          curl -fsSL https://claude.ai/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Extract request from issue/comment
+        id: extract-request
+        run: |
+          if [[ "${{ github.event_name }}" == "issue_comment" ]]; then
+            echo "request=${{ github.event.comment.body }}" >> $GITHUB_OUTPUT
+            echo "issue_number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "issues" ]]; then
+            echo "request=${{ github.event.issue.body }}" >> $GITHUB_OUTPUT
+            echo "issue_number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Run Claude Code
-        uses: anthropics/claude-code-action@v1
-        with:
-          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          # Konfiguration für dein Pokemon Trainer Manager Projekt
-          working-directory: "."
-          timeout-minutes: 30
-          max-iterations: 10
         env:
-          # Zusätzliche Umgebungsvariablen falls benötigt
-          NODE_ENV: development
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Extrahiere die Aufgabe nach @claude
+          REQUEST="${{ steps.extract-request.outputs.request }}"
+          CLAUDE_REQUEST=$(echo "$REQUEST" | sed -n 's/.*@claude\s*\(.*\)/\1/p')
+          
+          if [ -n "$CLAUDE_REQUEST" ]; then
+            echo "Processing Claude request: $CLAUDE_REQUEST"
+            
+            # Führe Claude Code aus
+            claude-code "$CLAUDE_REQUEST" --non-interactive --timeout 1800
+            
+            # Committe Änderungen falls vorhanden
+            git config --local user.email "action@github.com"
+            git config --local user.name "Claude Code Assistant"
+            
+            if ! git diff --quiet; then
+              git add .
+              git commit -m "🤖 Claude Code: $CLAUDE_REQUEST
+
+Executed via GitHub Actions from issue #${{ steps.extract-request.outputs.issue_number }}"
+              git push
+              
+              # Kommentiere auf das Issue
+              gh issue comment ${{ steps.extract-request.outputs.issue_number }} --body "✅ **Claude Code Ausführung abgeschlossen**
+
+Änderungen wurden committet und gepusht. 
+
+**Ausgeführte Aufgabe:** $CLAUDE_REQUEST
+
+Die Implementierung findest du im neuesten Commit."
+            else
+              gh issue comment ${{ steps.extract-request.outputs.issue_number }} --body "ℹ️ **Claude Code Ausführung abgeschlossen**
+
+**Ausgeführte Aufgabe:** $CLAUDE_REQUEST
+
+Keine Dateien wurden geändert - möglicherweise war nur eine Analyse oder Beratung erforderlich."
+            fi
+          fi
