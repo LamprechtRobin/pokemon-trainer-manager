@@ -44,3 +44,5 @@ pids
 
 # Claude
 .claude/
+.env.production
+.env.local
