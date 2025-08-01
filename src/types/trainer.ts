@@ -13,4 +13,9 @@ export interface TrainerFormData {
   name: string;
   description: string;
   imageFile: File | null;
+  // AI Image Generation fields
+  imageMode: 'upload' | 'generate';
+  aiPrompt: string;
+  generatedImageUrl: string | null;
+  isGenerating: boolean;
 }
