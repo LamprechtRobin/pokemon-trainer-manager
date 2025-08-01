@@ -7,6 +7,7 @@ import AttacksOverview from "./pages/AttacksOverview";
 import AttackManagement from "./pages/AttackManagement";
 import BattleMode from "./pages/BattleMode";
 import DocumentationPage from "./pages/DocumentationPage";
+import LorePage from "./pages/LorePage";
 
 const App: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const App: React.FC = () => {
         />
         <Route path="/battle/:trainerId" element={<BattleMode />} />
         <Route path="/documentation" element={<DocumentationPage />} />
+        <Route path="/lore" element={<LorePage />} />
       </Routes>
     </Router>
   );

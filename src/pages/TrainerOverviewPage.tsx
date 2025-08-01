@@ -27,12 +27,18 @@ const TrainerOverviewPage: React.FC = () => {
             ⚔️ Attacken-Datenbank
           </button>
         </div>
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center gap-4 mb-8">
           <button
             onClick={() => navigate("/documentation")}
             className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center gap-2 font-medium"
           >
             📄 Dokumentation
+          </button>
+          <button
+            onClick={() => navigate("/lore")}
+            className="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors flex items-center gap-2 font-medium"
+          >
+            📚 Lore
           </button>
         </div>
 

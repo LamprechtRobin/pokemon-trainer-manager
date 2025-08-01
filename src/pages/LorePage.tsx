@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const DocumentationPage: React.FC = () => {
+const LorePage: React.FC = () => {
   const navigate = useNavigate();
-  const [docContent, setDocContent] = useState<string>("");
+  const [loreContent, setLoreContent] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadMarkdown = async () => {
       try {
         // Fetch the markdown file from the public folder
-        const response = await fetch("/doc.md");
+        const response = await fetch("/lore.md");
         const text = await response.text();
-        setDocContent(text);
+        setLoreContent(text);
       } catch (error) {
-        console.error("Error loading documentation:", error);
-        setDocContent(
-          "# Fehler beim Laden der Dokumentation\n\nDie Dokumentation konnte nicht geladen werden."
+        console.error("Error loading lore:", error);
+        setLoreContent(
+          "# Fehler beim Laden der Lore\n\nDie Lore konnte nicht geladen werden."
         );
       } finally {
         setLoading(false);
@@ -62,7 +62,6 @@ const DocumentationPage: React.FC = () => {
 
         if (line.startsWith("<li")) {
           if (!inList) {
-            const nextLine = lines[i + 1]?.trim();
             listType =
               line.includes('class="mb-2"') &&
               (markdown.includes("1. ") ||
@@ -111,21 +110,23 @@ const DocumentationPage: React.FC = () => {
           >
             ← Zurück
           </button>
-          <h1 className="text-3xl font-bold text-gray-900">Dokumentation</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Lore</h1>
           <div></div> {/* Spacer for centering */}
         </div>
 
-        {/* Documentation content */}
+        {/* Lore content */}
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="prose prose-lg max-w-none">
             {loading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-                <p className="mt-4 text-gray-600">Lade Dokumentation...</p>
+                <p className="mt-4 text-gray-600">Lade Lore...</p>
               </div>
             ) : (
               <div
-                dangerouslySetInnerHTML={{ __html: markdownToHtml(docContent) }}
+                dangerouslySetInnerHTML={{
+                  __html: markdownToHtml(loreContent),
+                }}
               />
             )}
           </div>
@@ -135,4 +136,4 @@ const DocumentationPage: React.FC = () => {
   );
 };
 
-export default DocumentationPage;
+export default LorePage;
