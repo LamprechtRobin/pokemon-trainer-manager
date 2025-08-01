@@ -92,7 +92,7 @@ The project includes comprehensive TypeScript types in `src/types/trainer.ts`:
 - Responsive breakpoints: sm (640px), md (768px), lg (1024px), xl (1280px)
 
 ## Styling Architecture
-- **Mobile-First**: All styles start with mobile and scale up
+- **Mobile-First**: If something new is implemented it should be optimized for mobile. Deskopt is second place.
 - **Tailwind CSS**: Utility-first CSS framework
 - **Responsive Grid**: Adaptive layout for trainer cards
 - **Custom Colors**: Extended Tailwind palette with primary, success, and danger colors

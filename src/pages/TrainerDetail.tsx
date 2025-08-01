@@ -294,7 +294,7 @@ const TrainerDetail: React.FC = () => {
                     <div
                       key={index}
                       onClick={() =>
-                        navigate(`/trainer/${trainerId}/pokemon/${index}`)
+                        navigate(`/pokemon/${trainerId}/${index}`)
                       }
                       className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                     >
