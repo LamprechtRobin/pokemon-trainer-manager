@@ -57,10 +57,10 @@ class ImageGenerationService {
   }
 
   /**
-   * Enhance user prompt for better trainer avatar results
+   * Enhance user prompt for better avatar results
    */
   private enhancePromptForTrainer(userPrompt: string): string {
-    const baseStyle = 'cartoon style, anime style, pokemon trainer';
+    const baseStyle = 'cartoon style, anime style, character avatar';
     const qualityTags = 'high quality, detailed, colorful, friendly face';
     const avatarSpecs = 'portrait, character design, solo person';
     
@@ -176,20 +176,20 @@ class ImageGenerationService {
   }
 
   /**
-   * Get suggested prompts for trainer avatars
+   * Get suggested prompts for diverse avatars
    */
   getPromptSuggestions(): string[] {
     return [
-      'young pokemon trainer with brown hair',
-      'female trainer with blue eyes and ponytail',
-      'male trainer with cap and backpack',
-      'trainer with red hair and determined expression',
-      'friendly trainer with green jacket',
-      'cool trainer with sunglasses',
-      'trainer with pikachu on shoulder',
-      'energetic trainer with spiky hair',
-      'trainer in pokemon league uniform',
-      'adventurous trainer with hiking gear'
+      'young person with brown hair and friendly smile',
+      'woman with blue eyes and ponytail hairstyle',
+      'man with baseball cap and adventure backpack',
+      'person with red hair and determined expression',
+      'cheerful character with green jacket',
+      'cool person wearing sunglasses',
+      'energetic character with spiky colorful hair',
+      'person in sporty uniform outfit',
+      'adventurous character with hiking gear',
+      'smiling person with curly hair'
     ];
   }
 
