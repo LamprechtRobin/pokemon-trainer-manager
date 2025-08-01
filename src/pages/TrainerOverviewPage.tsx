@@ -1,7 +1,7 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import TrainerOverview from '../components/TrainerOverview';
-import PokeAPITest from '../components/PokeAPITest';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import TrainerOverview from "../components/TrainerOverview";
+import PokeAPITest from "../components/PokeAPITest";
 
 const TrainerOverviewPage: React.FC = () => {
   const navigate = useNavigate();
@@ -17,20 +17,28 @@ const TrainerOverviewPage: React.FC = () => {
             Manage your Pokemon trainers and their teams
           </p>
         </header>
-        
+
         {/* Navigation */}
         <div className="flex justify-center mb-8">
           <button
-            onClick={() => navigate('/attacks')}
+            onClick={() => navigate("/attacks")}
             className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2 font-medium"
           >
             ⚔️ Attacken-Datenbank
           </button>
         </div>
-        
+        <div className="flex justify-center mb-8">
+          <button
+            onClick={() => navigate("/documentation")}
+            className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center gap-2 font-medium"
+          >
+            📄 Dokumentation
+          </button>
+        </div>
+
         {/* Temporärer PokeAPI Test */}
         <PokeAPITest />
-        
+
         <TrainerOverview />
       </div>
     </div>
