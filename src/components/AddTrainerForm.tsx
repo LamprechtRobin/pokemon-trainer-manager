@@ -183,6 +183,22 @@ const AddTrainerForm: React.FC<AddTrainerFormProps> = ({ onSubmit, onCancel }) =
           />
         </div>
 
+        <div>
+          <label htmlFor="money" className="block text-sm font-medium text-gray-900 mb-1">
+            Startgeld (₽)
+          </label>
+          <input
+            id="money"
+            type="number"
+            name="money"
+            value={formData.money}
+            onChange={handleChange}
+            min="0"
+            placeholder="1000"
+            className="w-full px-3 py-3 border border-gray-300 rounded-lg text-base bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          />
+        </div>
+
         <div className="flex flex-col sm:flex-row gap-3 pt-4">
           <button 
             type="submit"

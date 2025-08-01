@@ -49,6 +49,7 @@ const BattleMode: React.FC = () => {
 
   const [showBattleEndDialog, setShowBattleEndDialog] = useState(false);
   const [battleEndExpGains, setBattleEndExpGains] = useState<{[pokemonIndex: number]: number}>({});
+  const [battleEndMoneyReward, setBattleEndMoneyReward] = useState(0);
 
   useEffect(() => {
     if (trainerId) {
@@ -216,6 +217,7 @@ const BattleMode: React.FC = () => {
       initialExpGains[index] = 0;
     });
     setBattleEndExpGains(initialExpGains);
+    setBattleEndMoneyReward(0);
     setShowBattleEndDialog(true);
   };
 
@@ -226,27 +228,59 @@ const BattleMode: React.FC = () => {
     }));
   };
 
+  const updateMoneyReward = (amount: number) => {
+    setBattleEndMoneyReward(prev => prev + amount);
+  };
+
+  // Calculate level based on EXP (10 EXP per level, starting at level 1)
+  const calculateLevel = (exp: number): number => {
+    return Math.floor(exp / 10) + 1;
+  };
+
+  // Calculate EXP needed for next level
+  const getExpForNextLevel = (level: number): number => {
+    return level * 10;
+  };
+
+  // Calculate current EXP within the level (0-9)
+  const getCurrentLevelExp = (exp: number): number => {
+    return exp % 10;
+  };
+
   const applyBattleEndRewards = async () => {
     if (!trainer) return;
 
     try {
       const updatedTeam = [...(trainer.team || [])];
       
-      // Apply EXP gains
+      // Apply EXP gains and level ups
       Object.entries(battleEndExpGains).forEach(([indexStr, expGain]) => {
         const index = parseInt(indexStr);
         if (updatedTeam[index] && expGain > 0) {
           const currentExp = updatedTeam[index].exp || 0;
-          updatedTeam[index].exp = currentExp + expGain;
+          const newExp = currentExp + expGain;
+          const newLevel = calculateLevel(newExp);
+          
+          updatedTeam[index].exp = newExp;
+          updatedTeam[index].level = newLevel;
         }
       });
 
-      const updatedTrainer = { ...trainer, team: updatedTeam };
+      // Apply money reward
+      const currentMoney = trainer.money || 0;
+      const newMoney = currentMoney + battleEndMoneyReward;
+
+      const updatedTrainer = { 
+        ...trainer, 
+        team: updatedTeam,
+        money: newMoney
+      };
       await trainerService.updateTrainer(trainer.id!, updatedTrainer);
       setTrainer(updatedTrainer);
       
       setShowBattleEndDialog(false);
-      setBattlePhase("selection");
+      // Navigate back to trainer detail page
+      navigate(`/trainer/${trainerId}`);
     } catch (error) {
       console.error('Error applying battle end rewards:', error);
       alert('Fehler beim Speichern der Belohnungen');
@@ -1409,6 +1443,9 @@ const BattleMode: React.FC = () => {
                     const currentExp = pokemon.exp || 0;
                     const expGain = battleEndExpGains[pokemonIndex] || 0;
                     const newExp = currentExp + expGain;
+                    const currentLevel = pokemon.level || 1;
+                    const newLevel = calculateLevel(newExp);
+                    const levelUp = newLevel > currentLevel;
                     
                     return (
                       <div key={pokemonIndex} className="bg-gray-50 rounded-lg p-4">
@@ -1442,8 +1479,13 @@ const BattleMode: React.FC = () => {
                             <div>
                               <h4 className="font-medium text-gray-900">{pokemon.name}</h4>
                               <div className="text-sm text-gray-600">
-                                Level {pokemon.level} • EXP: {currentExp} → {newExp}
+                                Level {currentLevel} → {newLevel} • EXP: {currentExp} → {newExp}
                               </div>
+                              {levelUp && (
+                                <div className="text-xs text-blue-600 font-medium">
+                                  🎉 Level Up! ({newLevel - currentLevel} Level)
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1497,11 +1539,94 @@ const BattleMode: React.FC = () => {
                         {expGain > 0 && (
                           <div className="text-xs text-green-600 bg-green-50 rounded p-2">
                             ⬆️ +{expGain} EXP → Neue Gesamt-EXP: {newExp}
+                            {levelUp && (
+                              <div className="text-blue-600 font-medium mt-1">
+                                🎉 Level {currentLevel} → {newLevel}!
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
                     );
                   })}
+                </div>
+              </div>
+
+              {/* Money Reward */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  💰 Geld-Änderung
+                </h3>
+                
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="mb-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700">Aktuelles Geld:</span>
+                      <span className="text-sm text-gray-600">₽ {(trainer.money || 0).toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700">Änderung:</span>
+                      <span className={`text-lg font-bold ${
+                        battleEndMoneyReward >= 0 ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {battleEndMoneyReward >= 0 ? '+' : ''}₽ {battleEndMoneyReward.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between border-t pt-2">
+                      <span className="font-medium text-gray-900">Neues Geld:</span>
+                      <span className="font-bold text-gray-900">₽ {((trainer.money || 0) + battleEndMoneyReward).toLocaleString()}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Geld-Belohnung anpassen:
+                    </label>
+                    <div className="grid grid-cols-6 gap-1">
+                      <button 
+                        onClick={() => updateMoneyReward(500)} 
+                        className="px-2 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200 transition-colors"
+                      >
+                        +500
+                      </button>
+                      <button 
+                        onClick={() => updateMoneyReward(1000)} 
+                        className="px-2 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200 transition-colors"
+                      >
+                        +1000
+                      </button>
+                      <button 
+                        onClick={() => updateMoneyReward(5000)} 
+                        className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm hover:bg-blue-200 transition-colors"
+                      >
+                        +5000
+                      </button>
+                      <button 
+                        onClick={() => updateMoneyReward(-500)} 
+                        className="px-2 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 transition-colors"
+                      >
+                        -500
+                      </button>
+                      <button 
+                        onClick={() => updateMoneyReward(-1000)} 
+                        className="px-2 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 transition-colors"
+                      >
+                        -1000
+                      </button>
+                      <button 
+                        onClick={() => updateMoneyReward(-5000)} 
+                        className="px-2 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 transition-colors"
+                      >
+                        -5000
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {battleEndMoneyReward > 0 && (
+                    <div className="text-xs text-green-600 bg-green-50 rounded p-2">
+                      💰 +₽ {battleEndMoneyReward.toLocaleString()} Belohnung
+                    </div>
+                  )}
                 </div>
               </div>
 
