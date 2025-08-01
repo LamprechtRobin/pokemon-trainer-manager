@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { MarkdownService } from "../services/markdownService";
 
 const DocumentationPage: React.FC = () => {
   const navigate = useNavigate();
@@ -7,12 +8,10 @@ const DocumentationPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadMarkdown = async () => {
+    const loadDocumentation = async () => {
       try {
-        // Fetch the markdown file from the public folder
-        const response = await fetch("/doc.md");
-        const text = await response.text();
-        setDocContent(text);
+        const content = await MarkdownService.loadMarkdownFile("doc.md");
+        setDocContent(content);
       } catch (error) {
         console.error("Error loading documentation:", error);
         setDocContent(
@@ -23,82 +22,9 @@ const DocumentationPage: React.FC = () => {
       }
     };
 
-    loadMarkdown();
+    loadDocumentation();
   }, []);
 
-  // Simple markdown to HTML converter for basic formatting
-  const markdownToHtml = (markdown: string) => {
-    let html = markdown
-      .replace(
-        /^# (.*$)/gim,
-        '<h1 class="text-2xl font-bold text-gray-900 mb-6">$1</h1>'
-      )
-      .replace(
-        /^## (.*$)/gim,
-        '<h2 class="text-xl font-semibold text-gray-800 mb-4 mt-8">$1</h2>'
-      )
-      .replace(
-        /^### (.*$)/gim,
-        '<h3 class="text-lg font-medium text-gray-700 mb-3 mt-6">$1</h3>'
-      )
-      .replace(/\*\*(.*?)\**/g, "<strong>$1</strong>")
-      .replace(/^(\d+)\. (.*)$/gim, '<li class="mb-2">$2</li>')
-      .replace(/^- (.*)$/gim, '<li class="mb-2">$1</li>');
-
-    // Convert paragraphs
-    const lines = html.split("\n");
-    let result = "";
-    let inList = false;
-    let listType = "";
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-
-      if (line.startsWith("<h") || line.startsWith("<li")) {
-        if (inList && !line.startsWith("<li")) {
-          result += `</${listType}>\n`;
-          inList = false;
-        }
-
-        if (line.startsWith("<li")) {
-          if (!inList) {
-            const nextLine = lines[i + 1]?.trim();
-            listType =
-              line.includes('class="mb-2"') &&
-              (markdown.includes("1. ") ||
-                markdown.includes("2. ") ||
-                markdown.includes("3. "))
-                ? 'ol class="list-decimal list-inside mb-4 ml-4"'
-                : 'ul class="list-disc list-inside mb-4 ml-4"';
-            result += `<${listType}>\n`;
-            inList = true;
-          }
-        }
-
-        result += line + "\n";
-      } else if (line === "") {
-        if (inList) {
-          result += `</${listType}>\n`;
-          inList = false;
-        }
-        result += "\n";
-      } else if (!line.startsWith("<")) {
-        if (inList) {
-          result += `</${listType}>\n`;
-          inList = false;
-        }
-        result += `<p class="mb-4">${line}</p>\n`;
-      } else {
-        result += line + "\n";
-      }
-    }
-
-    if (inList) {
-      result += `</${listType}>\n`;
-    }
-
-    return result;
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -125,7 +51,9 @@ const DocumentationPage: React.FC = () => {
               </div>
             ) : (
               <div
-                dangerouslySetInnerHTML={{ __html: markdownToHtml(docContent) }}
+                dangerouslySetInnerHTML={{ 
+                  __html: MarkdownService.markdownToHtml(docContent) 
+                }}
               />
             )}
           </div>

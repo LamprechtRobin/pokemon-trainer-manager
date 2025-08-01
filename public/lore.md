@@ -31,7 +31,8 @@ Zitat von Commander Y: „Die Götter sprachen – doch die Menschheit hörte ni
 
 #### Team Z
 militaristisch und streng hierarchisch, glaubt an Ordnung durch Stärke und paramilitärische Kontrolle.
-Ziel: Sie wollen Marko Dash aus dem Hochsicherheitstrakt befreien und ihn erneut als ihren rechtmäßigen Anführer einsetzen – um unter seiner Führung eine neue Ära des absoluten Gehorsams einzuleiten.  
+Ziel: Sie wollen Marko Dash aus dem
+ Hochsicherheitstrakt befreien und ihn erneut als ihren rechtmäßigen Anführer einsetzen – um unter seiner Führung eine neue Ära des absoluten Gehorsams einzuleiten.  
 Zitat von Commander Z: „Nur ein unsterblicher Anführer kann eine ewige Ordnung schaffen.“
 
 
