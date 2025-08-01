@@ -98,6 +98,7 @@ The project includes comprehensive TypeScript types in `src/types/trainer.ts`:
 - **Custom Colors**: Extended Tailwind palette with primary, success, and danger colors
 - **Typography Scale**: Responsive text sizes that adapt to screen size
 - **Naming**: Components and Component file names should be CamelCase. function pascalCase.
+- **No Smileys** Vermeide die Verwendung von Smileys für Buttons. Außer ausdrücklich erwähnt
 
 ## Package Manager
 **Important**: This project uses `pnpm` as the package manager. Always use `pnpm` commands:

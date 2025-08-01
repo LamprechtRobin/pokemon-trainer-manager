@@ -661,12 +661,12 @@ const PokemonDetail: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-900">
               {editMode ? "Pokemon bearbeiten" : "Pokemon Details"}
             </h1>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               {editMode && canEvolvePokemon() && (
                 <button
                   onClick={handleShowEvolution}
                   disabled={saving || loadingEvolution}
-                  className="px-4 py-2 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto px-4 py-2 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loadingEvolution ? "⏳ Lade..." : "Entwickeln"}
                 </button>
@@ -674,7 +674,7 @@ const PokemonDetail: React.FC = () => {
               <button
                 onClick={() => (editMode ? handleSave() : setEditMode(true))}
                 disabled={saving}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`w-full sm:w-auto px-4 py-2 rounded-lg font-medium transition-colors ${
                   editMode
                     ? "bg-success-500 text-white hover:bg-success-600"
                     : "bg-primary-500 text-white hover:bg-primary-600"

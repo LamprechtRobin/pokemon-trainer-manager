@@ -4,7 +4,7 @@
       "id": "tackle",
       "name": "Tackle",
       "type": "normal",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "body_slam"
@@ -13,7 +13,7 @@
       "id": "body_slam",
       "name": "Bodyslam",
       "type": "normal",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "hyper_beam"
@@ -22,7 +22,7 @@
       "id": "hyper_beam",
       "name": "Hyperstrahl",
       "type": "normal",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -30,7 +30,7 @@
       "id": "ember",
       "name": "Glut",
       "type": "fire",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "flamethrower"
@@ -39,7 +39,7 @@
       "id": "flamethrower",
       "name": "Flammenwurf",
       "type": "fire",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "fire_blast"
@@ -48,7 +48,7 @@
       "id": "fire_blast",
       "name": "Feuersturm",
       "type": "fire",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -56,7 +56,7 @@
       "id": "water_gun",
       "name": "Aquaknarre",
       "type": "water",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "surf"
@@ -65,7 +65,7 @@
       "id": "surf",
       "name": "Surfer",
       "type": "water",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "hydro_pump"
@@ -74,7 +74,7 @@
       "id": "hydro_pump",
       "name": "Hydropumpe",
       "type": "water",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -82,7 +82,7 @@
       "id": "thunder_shock",
       "name": "Donnerschock",
       "type": "electric",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "thunderbolt"
@@ -91,7 +91,7 @@
       "id": "thunderbolt",
       "name": "Donnerblitz",
       "type": "electric",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "thunder"
@@ -100,7 +100,7 @@
       "id": "thunder",
       "name": "Donner",
       "type": "electric",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -108,7 +108,7 @@
       "id": "absorb",
       "name": "Absorber",
       "type": "grass",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "razor_leaf"
@@ -117,7 +117,7 @@
       "id": "razor_leaf",
       "name": "Rasierblatt",
       "type": "grass",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "solar_beam"
@@ -126,7 +126,7 @@
       "id": "solar_beam",
       "name": "Solarstrahl",
       "type": "grass",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -134,7 +134,7 @@
       "id": "powder_snow",
       "name": "Pulverschnee",
       "type": "ice",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "ice_beam"
@@ -143,7 +143,7 @@
       "id": "ice_beam",
       "name": "Eisstrahl",
       "type": "ice",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "blizzard"
@@ -152,7 +152,7 @@
       "id": "blizzard",
       "name": "Blizzard",
       "type": "ice",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -160,7 +160,7 @@
       "id": "karate_chop",
       "name": "Karateschlag",
       "type": "fighting",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "brick_break"
@@ -169,7 +169,7 @@
       "id": "brick_break",
       "name": "Durchbruch",
       "type": "fighting",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "close_combat"
@@ -178,7 +178,7 @@
       "id": "close_combat",
       "name": "Nahkampf",
       "type": "fighting",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -186,7 +186,7 @@
       "id": "poison_sting",
       "name": "Giftstachel",
       "type": "poison",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "sludge_bomb"
@@ -195,7 +195,7 @@
       "id": "sludge_bomb",
       "name": "Matschbombe",
       "type": "poison",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,      
       "tier": 2,
       "evolvesTo": "gunk_shot"
@@ -204,7 +204,7 @@
       "id": "gunk_shot",
       "name": "Mülltreffer",
       "type": "poison",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -212,7 +212,7 @@
       "id": "mud_slap",
       "name": "Lehmschelle",
       "type": "ground",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "earthquake"
@@ -221,7 +221,7 @@
       "id": "earthquake",
       "name": "Erdbeben",
       "type": "ground",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "fissure"
@@ -230,7 +230,7 @@
       "id": "fissure",
       "name": "Geofissur",
       "type": "ground",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -238,7 +238,7 @@
       "id": "gust",
       "name": "Windstoß",
       "type": "flying",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "air_slash"
@@ -247,7 +247,7 @@
       "id": "air_slash",
       "name": "Luftschnitt",
       "type": "flying",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "hurricane"
@@ -256,7 +256,7 @@
       "id": "hurricane",
       "name": "Orkan",
       "type": "flying",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -264,7 +264,7 @@
       "id": "confusion",
       "name": "Konfusion",
       "type": "psychic",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "psychic"
@@ -273,7 +273,7 @@
       "id": "psychic",
       "name": "Psychokinese",
       "type": "psychic",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "psystrike"
@@ -282,7 +282,7 @@
       "id": "psystrike",
       "name": "Psyschlag",
       "type": "psychic",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -290,7 +290,7 @@
       "id": "bug_bite",
       "name": "Käferbiss",
       "type": "bug",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "bug_buzz"
@@ -299,7 +299,7 @@
       "id": "bug_buzz",
       "name": "Käfersummen",
       "type": "bug",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "megahorn"
@@ -308,7 +308,7 @@
       "id": "megahorn",
       "name": "Vielender",
       "type": "bug",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -316,7 +316,7 @@
       "id": "rock_throw",
       "name": "Steinwurf",
       "type": "rock",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "rock_slide"
@@ -325,7 +325,7 @@
       "id": "rock_slide",
       "name": "Steinhagel",
       "type": "rock",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "stone_edge"
@@ -334,7 +334,7 @@
       "id": "stone_edge",
       "name": "Steinkante",
       "type": "rock",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -342,7 +342,7 @@
       "id": "lick",
       "name": "Schlecker",
       "type": "ghost",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "shadow_ball"
@@ -351,7 +351,7 @@
       "id": "shadow_ball",
       "name": "Spukball",
       "type": "ghost",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "shadow_force"
@@ -360,7 +360,7 @@
       "id": "shadow_force",
       "name": "Schattenstoß",
       "type": "ghost",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -368,7 +368,7 @@
       "id": "dragon_breath",
       "name": "Drachenhauch",
       "type": "dragon",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "dragon_pulse"
@@ -377,7 +377,7 @@
       "id": "dragon_pulse",
       "name": "Drachenpuls",
       "type": "dragon",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "draco_meteor"
@@ -386,7 +386,7 @@
       "id": "draco_meteor",
       "name": "Draco Meteor",
       "type": "dragon",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -394,7 +394,7 @@
       "id": "bite",
       "name": "Biss",
       "type": "dark",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "crunch"
@@ -403,7 +403,7 @@
       "id": "crunch",
       "name": "Knirscher",
       "type": "dark",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "dark_pulse"
@@ -412,7 +412,7 @@
       "id": "dark_pulse",
       "name": "Finsteraura",
       "type": "dark",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -420,7 +420,7 @@
       "id": "metal_claw",
       "name": "Metallklaue",
       "type": "steel",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "iron_head"
@@ -429,7 +429,7 @@
       "id": "iron_head",
       "name": "Eisenschädel",
       "type": "steel",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "meteor_mash"
@@ -438,7 +438,7 @@
       "id": "meteor_mash",
       "name": "Sternenhieb",
       "type": "steel",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     },
@@ -446,7 +446,7 @@
       "id": "fairy_wind",
       "name": "Feenwind",
       "type": "fairy",
-      "power": 40,
+      "power": 4,
       "accuracy": 100,
       "tier": 1,
       "evolvesTo": "dazzling_gleam"
@@ -455,7 +455,7 @@
       "id": "dazzling_gleam",
       "name": "Blendender Glanz",
       "type": "fairy",
-      "power": 70,
+      "power": 7,
       "accuracy": 95,
       "tier": 2,
       "evolvesTo": "moonblast"
@@ -464,7 +464,7 @@
       "id": "moonblast",
       "name": "Mondschein",
       "type": "fairy",
-      "power": 100,
+      "power": 10,
       "accuracy": 85,
       "tier": 3
     }

@@ -179,16 +179,26 @@ const TrainerDetail: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-900">
               {editMode ? "Trainer bearbeiten" : "Trainer Details"}
             </h1>
-            <button
-              onClick={() => (editMode ? handleSaveEdit() : setEditMode(true))}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                editMode
-                  ? "bg-success-500 text-white hover:bg-success-600"
-                  : "bg-primary-500 text-white hover:bg-primary-600"
-              }`}
-            >
-              {editMode ? "Speichern" : "Bearbeiten"}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-2">
+              {!editMode && (trainer.team || []).length > 0 && (
+                <button
+                  onClick={() => navigate(`/battle/${trainerId}`)}
+                  className="w-full sm:w-auto px-4 py-2 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-colors"
+                >
+                  ⚔️ Battle Mode
+                </button>
+              )}
+              <button
+                onClick={() => (editMode ? handleSaveEdit() : setEditMode(true))}
+                className={`w-full sm:w-auto px-4 py-2 rounded-lg font-medium transition-colors ${
+                  editMode
+                    ? "bg-success-500 text-white hover:bg-success-600"
+                    : "bg-primary-500 text-white hover:bg-primary-600"
+                }`}
+              >
+                {editMode ? "Speichern" : "Bearbeiten"}
+              </button>
+            </div>
           </div>
         </div>
 

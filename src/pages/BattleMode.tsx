@@ -1,0 +1,811 @@
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Trainer } from "../types/trainer";
+import { Pokemon } from "../types/pokemon";
+import { Attack } from "../types/attack";
+import { trainerService } from "../firebase/trainerService";
+import { attackService } from "../services/attackService";
+
+type BattlePhase = "selection" | "battle";
+
+const BattleMode: React.FC = () => {
+  const { trainerId } = useParams<{ trainerId: string }>();
+  const navigate = useNavigate();
+
+  const [trainer, setTrainer] = useState<Trainer | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [battlePhase, setBattlePhase] = useState<BattlePhase>("selection");
+  const [selectedPokemonIndices, setSelectedPokemonIndices] = useState<
+    number[]
+  >([]);
+  const [activePokemonIndex, setActivePokemonIndex] = useState<number>(0);
+  const [showAttackRoll, setShowAttackRoll] = useState<{
+    attack: Attack;
+    attackValue: number;
+    damage: number;
+  } | null>(null);
+  
+  const [showDefenseDialog, setShowDefenseDialog] = useState<{
+    step: 'roll' | 'damage';
+    defenseValue: number;
+    rollSuccess?: boolean;
+    incomingDamage: number;
+    effectiveness: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (trainerId) {
+      loadTrainer();
+    }
+  }, [trainerId]);
+
+  const loadTrainer = async () => {
+    try {
+      const trainers = await trainerService.getAllTrainers();
+      const foundTrainer = trainers.find((t) => t.id === trainerId);
+
+      if (!foundTrainer) {
+        navigate("/");
+        return;
+      }
+
+      if (!foundTrainer.team || foundTrainer.team.length === 0) {
+        navigate(`/trainer/${trainerId}`);
+        return;
+      }
+
+      setTrainer(foundTrainer);
+    } catch (error) {
+      console.error("Error loading trainer:", error);
+      navigate("/");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePokemonToggle = (index: number) => {
+    setSelectedPokemonIndices((prev) => {
+      if (prev.includes(index)) {
+        return prev.filter((i) => i !== index);
+      } else {
+        return [...prev, index];
+      }
+    });
+  };
+
+  const handleStartBattle = () => {
+    if (selectedPokemonIndices.length === 0) return;
+
+    setActivePokemonIndex(0); // Start with first selected Pokemon
+    setBattlePhase("battle");
+  };
+
+  const handleSwitchPokemon = (selectedIndex: number) => {
+    setActivePokemonIndex(selectedIndex);
+  };
+
+  const getMaxHp = (pokemon: Pokemon): number => {
+    const baseHp = pokemon.stats?.hp || 0;
+    const talentHp = pokemon.talentPoints?.hp || 0;
+    return Math.max(1, baseHp + talentHp);
+  };
+
+  const getCurrentHp = (pokemon: Pokemon): number => {
+    // If currentHp is not set, initialize it to max HP
+    if (pokemon.currentHp === undefined) {
+      return getMaxHp(pokemon);
+    }
+    return pokemon.currentHp;
+  };
+
+  const getHpPercentage = (pokemon: Pokemon): number => {
+    const currentHp = getCurrentHp(pokemon);
+    const maxHp = getMaxHp(pokemon);
+    return maxHp > 0 ? (currentHp / maxHp) * 100 : 0;
+  };
+
+  const getHpColorClass = (pokemon: Pokemon): string => {
+    const percentage = getHpPercentage(pokemon);
+    if (percentage > 50) return "bg-green-500";
+    if (percentage > 25) return "bg-yellow-500";
+    return "bg-red-500";
+  };
+
+  // Pen & Paper stat conversion functions
+  const getPenPaperStats = (pokemon: Pokemon) => {
+    const baseStats = pokemon.stats || {
+      hp: 0,
+      attack: 0,
+      defense: 0,
+      speed: 0,
+    };
+    const talentPoints = pokemon.talentPoints || {
+      hp: 0,
+      attack: 0,
+      defense: 0,
+      speed: 0,
+    };
+
+    // Calculate total stats (base + talent points)
+    const totalHp = (baseStats.hp ?? 0) + (talentPoints.hp ?? 0);
+    const totalAttack = (baseStats.attack ?? 0) + (talentPoints.attack ?? 0);
+    const totalDefense = (baseStats.defense ?? 0) + (talentPoints.defense ?? 0);
+    const totalSpeed = (baseStats.speed ?? 0) + (talentPoints.speed ?? 0);
+
+    return {
+      hp: Math.max(1, totalHp), // HP stays the same, minimum 1
+      attack: Math.floor(totalAttack / 10), // Attack divided by 10, rounded down
+      defense: Math.max(1, Math.floor(totalDefense / 10)), // Defense divided by 10, rounded down
+      speed: Math.floor(totalSpeed / 10), // Speed divided by 10, rounded down
+    };
+  };
+
+  // Attack functions
+  const getLearnedAttacks = (pokemon: Pokemon): Attack[] => {
+    if (!pokemon.learnedAttacks) return [];
+    return pokemon.learnedAttacks
+      .map(attackId => attackService.getAttackById(attackId))
+      .filter((attack): attack is Attack => attack !== undefined);
+  };
+
+  const calculateAttackValue = (pokemon: Pokemon, attack: Attack): number => {
+    const penPaperStats = getPenPaperStats(pokemon);
+    const attackStat = penPaperStats.attack;
+    const accuracyModifier = attack.accuracy / 100; // Convert percentage to decimal
+    return Math.floor(attackStat * accuracyModifier);
+  };
+
+  const calculateDamage = (pokemon: Pokemon, attack: Attack): number => {
+    const penPaperStats = getPenPaperStats(pokemon);
+    const attackStat = penPaperStats.attack;
+    return attack.power + attackStat;
+  };
+
+  const handleAttackClick = (attack: Attack) => {
+    if (!activePokemon) return;
+    const attackValue = calculateAttackValue(activePokemon, attack);
+    const damage = calculateDamage(activePokemon, attack);
+    setShowAttackRoll({ attack, attackValue, damage });
+  };
+
+  const handleDefenseClick = () => {
+    if (!activePokemon) return;
+    const penPaperStats = getPenPaperStats(activePokemon);
+    const defenseValue = penPaperStats.defense;
+    setShowDefenseDialog({
+      step: 'roll',
+      defenseValue,
+      incomingDamage: 0,
+      effectiveness: 1 // neutral
+    });
+  };
+
+  const handleDefenseRollResult = (success: boolean) => {
+    if (!showDefenseDialog) return;
+    setShowDefenseDialog({
+      ...showDefenseDialog,
+      step: 'damage',
+      rollSuccess: success
+    });
+  };
+
+  const updateIncomingDamage = (amount: number) => {
+    if (!showDefenseDialog) return;
+    const newDamage = Math.max(0, showDefenseDialog.incomingDamage + amount);
+    setShowDefenseDialog({
+      ...showDefenseDialog,
+      incomingDamage: newDamage
+    });
+  };
+
+  const updateEffectiveness = (effectiveness: number) => {
+    if (!showDefenseDialog) return;
+    setShowDefenseDialog({
+      ...showDefenseDialog,
+      effectiveness
+    });
+  };
+
+  const calculateFinalDamage = (): number => {
+    if (!showDefenseDialog || !activePokemon) return 0;
+    
+    const penPaperStats = getPenPaperStats(activePokemon);
+    const defense = penPaperStats.defense;
+    const incomingDamage = showDefenseDialog.incomingDamage;
+    const effectiveness = showDefenseDialog.effectiveness;
+    const rollSuccess = showDefenseDialog.rollSuccess;
+    
+    let finalDamage: number;
+    
+    if (rollSuccess) {
+      // Defense succeeded: (Incoming Damage - Defense) * Effectiveness
+      finalDamage = (incomingDamage - defense) * effectiveness;
+    } else {
+      // Defense failed: (Incoming Damage - Defense/2) * Effectiveness  
+      finalDamage = (incomingDamage - (defense / 2)) * effectiveness;
+    }
+    
+    // Minimum damage is always 1
+    return Math.max(1, Math.floor(finalDamage));
+  };
+
+  const applyDamageToActivePokemon = async () => {
+    if (!showDefenseDialog || !activePokemon || !trainer) return;
+    
+    const finalDamage = calculateFinalDamage();
+    const currentHp = getCurrentHp(activePokemon);
+    const newHp = Math.max(0, currentHp - finalDamage);
+    
+    // Update the Pokemon's HP
+    const updatedPokemon = { ...activePokemon, currentHp: newHp };
+    const updatedTeam = [...(trainer.team || [])];
+    const originalPokemonIndex = selectedPokemonIndices[activePokemonIndex];
+    updatedTeam[originalPokemonIndex] = updatedPokemon;
+    
+    const updatedTrainer = { ...trainer, team: updatedTeam };
+    
+    try {
+      await trainerService.updateTrainer(trainer.id!, updatedTrainer);
+      setTrainer(updatedTrainer);
+      
+      // Update selected Pokemon array
+      const updatedSelectedPokemon = [...selectedPokemon];
+      updatedSelectedPokemon[activePokemonIndex] = updatedPokemon;
+      
+      setShowDefenseDialog(null);
+    } catch (error) {
+      console.error('Error updating Pokemon HP:', error);
+      alert('Fehler beim Speichern der HP-Änderung');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-lg text-gray-600">Lade Battle Mode...</div>
+      </div>
+    );
+  }
+
+  if (!trainer) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-lg text-gray-600">Trainer nicht gefunden</div>
+      </div>
+    );
+  }
+
+  const selectedPokemon = selectedPokemonIndices.map(
+    (index) => trainer.team![index]
+  );
+  const activePokemon = selectedPokemon[activePokemonIndex];
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Header */}
+        <div className="mb-6">
+          <button
+            onClick={() => navigate(`/trainer/${trainerId}`)}
+            className="mb-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm"
+          >
+            ← Zurück zu {trainer.name}
+          </button>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {battlePhase === "selection"
+                  ? "Pokemon auswählen"
+                  : "Battle Mode"}
+              </h1>
+              <p className="text-gray-600 text-sm">
+                {battlePhase === "selection"
+                  ? "Wähle Pokemon für den Kampf aus"
+                  : `Kampf mit ${trainer.name}`}
+              </p>
+            </div>
+            {battlePhase === "battle" && (
+              <button
+                onClick={() => setBattlePhase("selection")}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm"
+              >
+                Kampf beenden
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Pokemon Selection Phase */}
+        {battlePhase === "selection" && (
+          <div className="space-y-6">
+            {/* Selection Info */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="font-medium text-gray-900">
+                    Pokemon auswählen ({selectedPokemonIndices.length}/
+                    {trainer.team!.length})
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Wähle mindestens ein Pokemon für den Kampf aus
+                  </p>
+                </div>
+                <button
+                  onClick={handleStartBattle}
+                  disabled={selectedPokemonIndices.length === 0}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    selectedPokemonIndices.length > 0
+                      ? "bg-orange-500 text-white hover:bg-orange-600"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                >
+                  ⚔️ Kampf starten
+                </button>
+              </div>
+            </div>
+
+            {/* Pokemon Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {trainer.team!.map((pokemon, index) => {
+                const isSelected = selectedPokemonIndices.includes(index);
+                const currentHp = getCurrentHp(pokemon);
+                const maxHp = getMaxHp(pokemon);
+                const isKnockedOut = currentHp === 0;
+
+                return (
+                  <div
+                    key={index}
+                    onClick={() => !isKnockedOut && handlePokemonToggle(index)}
+                    className={`relative bg-white rounded-xl shadow-sm border-2 p-4 transition-all cursor-pointer ${
+                      isKnockedOut
+                        ? "border-gray-200 opacity-50 cursor-not-allowed bg-gray-50"
+                        : isSelected
+                        ? "border-orange-500 bg-orange-50"
+                        : "border-gray-200 hover:border-orange-300"
+                    }`}
+                  >
+                    {/* Selection Indicator */}
+                    {isSelected && (
+                      <div className="absolute top-2 right-2 w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                        ✓
+                      </div>
+                    )}
+
+                    {/* Pokemon Image */}
+                    {pokemon.imageUrl && (
+                      <img
+                        src={pokemon.imageUrl}
+                        alt={`${pokemon.name} sprite`}
+                        className="w-24 h-24 mx-auto mb-3 pixelated"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                    )}
+
+                    {/* Pokemon Info */}
+                    <div className="text-center">
+                      <h3 className="font-bold text-gray-900 mb-1">
+                        {pokemon.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-2">
+                        Level {pokemon.level || 1}
+                      </p>
+
+                      {/* HP Bar */}
+                      <div className="mb-2">
+                        <div className="flex justify-between text-xs text-gray-600 mb-1">
+                          <span>HP</span>
+                          <span>
+                            {currentHp}/{maxHp}
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className={`h-2 rounded-full transition-all ${getHpColorClass(
+                              pokemon
+                            )}`}
+                            style={{ width: `${getHpPercentage(pokemon)}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      {isKnockedOut && (
+                        <p className="text-red-600 text-sm font-medium">
+                          💀 K.O.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Battle Phase */}
+        {battlePhase === "battle" && activePokemon && (
+          <div className="space-y-6">
+            {/* Main Pokemon Display */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="text-center mb-6">
+                {activePokemon.imageUrl && (
+                  <img
+                    src={activePokemon.imageUrl}
+                    alt={`${activePokemon.name} sprite`}
+                    className="w-48 h-48 mx-auto mb-4 pixelated"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                )}
+
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                  {activePokemon.name}
+                </h2>
+                <p className="text-lg text-gray-600 mb-4">
+                  Level {activePokemon.level || 1}
+                </p>
+
+                {/* HP Display */}
+                <div className="max-w-md mx-auto">
+                  <div className="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>HP</span>
+                    <span className="font-medium">
+                      {getCurrentHp(activePokemon)}/{getMaxHp(activePokemon)}
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-4">
+                    <div
+                      className={`h-4 rounded-full transition-all ${getHpColorClass(
+                        activePokemon
+                      )}`}
+                      style={{ width: `${getHpPercentage(activePokemon)}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {Math.round(getHpPercentage(activePokemon))}% HP
+                  </p>
+                </div>
+
+                {/* Pen & Paper Stats */}
+                <div className="mt-6 max-w-md mx-auto">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3 text-center">
+                    Pen & Paper Stats
+                  </h3>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    {(() => {
+                      const stats = getPenPaperStats(activePokemon);
+                      return (
+                        <>
+                          <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
+                            <div className="text-xs text-red-600 font-medium mb-1">
+                              HP
+                            </div>
+                            <div className="text-xl font-bold text-red-700">
+                              {stats.hp}
+                            </div>
+                          </div>
+
+                          <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 text-center">
+                            <div className="text-xs text-orange-600 font-medium mb-1">
+                              Angriff
+                            </div>
+                            <div className="text-xl font-bold text-orange-700">
+                              {stats.attack}
+                            </div>
+                          </div>
+
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+                            <div className="text-xs text-blue-600 font-medium mb-1">
+                              Verteidigung
+                            </div>
+                            <div className="text-xl font-bold text-blue-700">
+                              {stats.defense}
+                            </div>
+                          </div>
+
+                          <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+                            <div className="text-xs text-green-600 font-medium mb-1">
+                              Geschw.
+                            </div>
+                            <div className="text-xl font-bold text-green-700">
+                              {stats.speed}
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+
+                  <div className="mt-3 text-xs text-gray-500 text-center">
+                    <p>🎲 Würfelwerte für Pen & Paper</p>
+                    <p className="mt-1">
+                      Angriff & Geschwindigkeit: (Basis + TP) ÷ 5
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Aktionen</h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <button
+                  onClick={() => alert("Items - Noch nicht implementiert")}
+                  className="w-full py-4 px-6 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
+                >
+                  🎒 Items
+                </button>
+
+                <button
+                  onClick={() => alert("Kampf - Noch nicht implementiert")}
+                  className="w-full py-4 px-6 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors"
+                >
+                  ⚔️ Kampf
+                </button>
+
+                <button
+                  onClick={handleDefenseClick}
+                  className="w-full py-4 px-6 bg-yellow-500 text-white rounded-lg font-medium hover:bg-yellow-600 transition-colors"
+                >
+                  🛡️ Verteidigen
+                </button>
+
+                <button
+                  onClick={() => alert("Wechsel - Noch nicht implementiert")}
+                  disabled={selectedPokemon.length <= 1}
+                  className={`w-full py-4 px-6 rounded-lg font-medium transition-colors ${
+                    selectedPokemon.length > 1
+                      ? "bg-green-500 text-white hover:bg-green-600"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                >
+                  🔄 Wechsel
+                </button>
+              </div>
+            </div>
+
+            {/* Attacks Section */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">
+                Attacken ({getLearnedAttacks(activePokemon).length}/4)
+              </h3>
+              
+              {getLearnedAttacks(activePokemon).length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-500 italic">Keine Attacken gelernt</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {getLearnedAttacks(activePokemon).map(attack => {
+                    const attackValue = calculateAttackValue(activePokemon, attack);
+                    const damage = calculateDamage(activePokemon, attack);
+                    
+                    return (
+                      <button
+                        key={attack.id}
+                        onClick={() => handleAttackClick(attack)}
+                        className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg hover:from-purple-100 hover:to-pink-100 transition-all text-left"
+                      >
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <h4 className="font-bold text-gray-900 mb-1">
+                              {attack.name}
+                            </h4>
+                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                              attack.tier === 1 ? 'bg-green-100 text-green-800' :
+                              attack.tier === 2 ? 'bg-blue-100 text-blue-800' :
+                              'bg-purple-100 text-purple-800'
+                            }`}>
+                              {attackService.getTierName(attack.tier)}
+                            </span>
+                          </div>
+                          <div className="text-right">
+                            <div className="grid grid-cols-2 gap-2 text-center">
+                              <div>
+                                <div className="text-xs text-gray-500">Würfel</div>
+                                <div className="text-sm font-bold text-purple-700">
+                                  +{attackValue}
+                                </div>
+                              </div>
+                              <div>
+                                <div className="text-xs text-gray-500">Schaden</div>
+                                <div className="text-sm font-bold text-red-700">
+                                  {damage}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-3 gap-2 text-xs text-gray-600 mb-2">
+                          <div>
+                            <span className="font-medium">Typ:</span><br/>
+                            {attackService.getTypeDisplay(attack.type)}
+                          </div>
+                          <div>
+                            <span className="font-medium">Stärke:</span><br/>
+                            {attack.power}
+                          </div>
+                          <div>
+                            <span className="font-medium">Genauigkeit:</span><br/>
+                            {attack.accuracy}%
+                          </div>
+                        </div>
+                        
+                        {attack.effect && (
+                          <div className="text-xs text-gray-600 bg-gray-50 rounded p-2">
+                            {attack.effect}
+                          </div>
+                        )}
+                        
+                        <div className="mt-2 text-xs text-purple-600 font-medium">
+                          🎲 Klicken für Würfelanweisung
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Pokemon Switching */}
+            {selectedPokemon.length > 1 && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">
+                  Pokemon wechseln ({selectedPokemon.length} verfügbar)
+                </h3>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {selectedPokemon.map((pokemon, selectedIndex) => {
+                    const isActive = selectedIndex === activePokemonIndex;
+                    const currentHp = getCurrentHp(pokemon);
+                    const isKnockedOut = currentHp === 0;
+
+                    return (
+                      <button
+                        key={selectedIndex}
+                        onClick={() =>
+                          !isActive &&
+                          !isKnockedOut &&
+                          handleSwitchPokemon(selectedIndex)
+                        }
+                        disabled={isActive || isKnockedOut}
+                        className={`p-3 rounded-lg border-2 transition-all ${
+                          isActive
+                            ? "border-orange-500 bg-orange-50 cursor-default"
+                            : isKnockedOut
+                            ? "border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed"
+                            : "border-gray-200 hover:border-green-300 hover:bg-green-50"
+                        }`}
+                      >
+                        {pokemon.imageUrl && (
+                          <img
+                            src={pokemon.imageUrl}
+                            alt={`${pokemon.name} sprite`}
+                            className="w-12 h-12 mx-auto mb-2 pixelated"
+                            onError={(e) => {
+                              e.currentTarget.style.display = "none";
+                            }}
+                          />
+                        )}
+                        <div className="text-center">
+                          <p className="font-medium text-sm text-gray-900 mb-1">
+                            {pokemon.name}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {currentHp}/{getMaxHp(pokemon)} HP
+                          </p>
+                          {isActive && (
+                            <p className="text-xs text-orange-600 font-medium mt-1">
+                              Aktiv
+                            </p>
+                          )}
+                          {isKnockedOut && (
+                            <p className="text-xs text-red-600 font-medium mt-1">
+                              K.O.
+                            </p>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        
+        {/* Attack Roll Dialog */}
+        {showAttackRoll && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full">
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-2">
+                  🎲 Würfelanweisung
+                </h2>
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+                  <h3 className="font-bold text-purple-900 mb-2">
+                    {showAttackRoll.attack.name}
+                  </h3>
+                  <div className="text-2xl font-bold text-purple-700 mb-2">
+                    1W20 + {showAttackRoll.attackValue}
+                  </div>
+                  <div className="text-sm text-purple-600 mb-2">
+                    {activePokemon?.name} verwendet {showAttackRoll.attack.name}
+                  </div>
+                  <div className="bg-red-50 border border-red-200 rounded p-2">
+                    <div className="text-xs text-red-600 font-medium">Bei Erfolg:</div>
+                    <div className="text-lg font-bold text-red-700">
+                      {showAttackRoll.damage} Schaden
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="text-sm text-gray-600 space-y-2">
+                  <div className="flex justify-between">
+                    <span>Angriff (Pen & Paper):</span>
+                    <span className="font-medium">{getPenPaperStats(activePokemon!).attack}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Attacken-Stärke:</span>
+                    <span className="font-medium">{showAttackRoll.attack.power}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Genauigkeit:</span>
+                    <span className="font-medium">{showAttackRoll.attack.accuracy}%</span>
+                  </div>
+                  <div className="flex justify-between border-t pt-2">
+                    <span>Würfelmodifikator:</span>
+                    <span className="font-bold text-purple-700">+{showAttackRoll.attackValue}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Schaden bei Erfolg:</span>
+                    <span className="font-bold text-red-700">{showAttackRoll.damage}</span>
+                  </div>
+                </div>
+                
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg space-y-1">
+                  <p className="text-xs text-gray-600">
+                    <strong>Würfel-Berechnung:</strong> Angriff ({getPenPaperStats(activePokemon!).attack}) × Genauigkeit ({showAttackRoll.attack.accuracy / 100}) = {showAttackRoll.attackValue}
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    <strong>Schaden-Berechnung:</strong> Attacken-Stärke ({showAttackRoll.attack.power}) + Angriff ({getPenPaperStats(activePokemon!).attack}) = {showAttackRoll.damage}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowAttackRoll(null)}
+                  className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Schließen
+                </button>
+                <button
+                  onClick={() => {
+                    // Copy to clipboard if available
+                    if (navigator.clipboard) {
+                      navigator.clipboard.writeText(`1W20+${showAttackRoll.attackValue} (${showAttackRoll.attack.name})`);
+                    }
+                    setShowAttackRoll(null);
+                  }}
+                  className="flex-1 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors"
+                >
+                  📋 Kopieren
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default BattleMode;
