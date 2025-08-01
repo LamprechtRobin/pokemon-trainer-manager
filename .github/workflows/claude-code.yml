@@ -39,8 +39,7 @@ jobs:
 
       - name: Install Claude Code CLI
         run: |
-          curl -fsSL https://claude.ai/install.sh | sh
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          npm install -g @anthropic-ai/claude-code
 
       - name: Extract request from issue/comment
         id: extract-request
@@ -66,7 +65,7 @@ jobs:
             echo "Processing Claude request: $CLAUDE_REQUEST"
             
             # Führe Claude Code aus
-            claude-code "$CLAUDE_REQUEST" --non-interactive --timeout 1800
+            npx claude-code "$CLAUDE_REQUEST" --non-interactive
             
             # Committe Änderungen falls vorhanden
             git config --local user.email "action@github.com"
