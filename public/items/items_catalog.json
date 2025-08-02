@@ -1,0 +1,342 @@
+[
+  {
+    "id": 4,
+    "name": "poke-ball",
+    "display_name": "Poké Ball",
+    "category": "pokeballs",
+    "filename": "poke-ball.png",
+    "description": "Used in battle :   Attempts to catch a wild Pokémon, using a catch rate of 1×.      If used in a trainer battle, nothing happens and the ball is lost.",
+    "cost": 200,
+    "image_url": "/items/poke-ball.png"
+  },
+  {
+    "id": 3,
+    "name": "great-ball",
+    "display_name": "Great Ball",
+    "category": "pokeballs",
+    "filename": "great-ball.png",
+    "description": "Used in battle :   Attempts to catch a wild Pokémon, using a catch rate of 1.5×.      If used in a trainer battle, nothing happens and the ball is lost.",
+    "cost": 600,
+    "image_url": "/items/great-ball.png"
+  },
+  {
+    "id": 2,
+    "name": "ultra-ball",
+    "display_name": "Ultra Ball",
+    "category": "pokeballs",
+    "filename": "ultra-ball.png",
+    "description": "Used in battle :   Attempts to catch a wild Pokémon, using a catch rate of 2×.      If used in a trainer battle, nothing happens and the ball is lost.",
+    "cost": 800,
+    "image_url": "/items/ultra-ball.png"
+  },
+  {
+    "id": 1,
+    "name": "master-ball",
+    "display_name": "Master Ball",
+    "category": "pokeballs",
+    "filename": "master-ball.png",
+    "description": "Used in battle :   Catches a wild Pokémon without fail.      If used in a trainer battle, nothing happens and the ball is lost.",
+    "cost": 0,
+    "image_url": "/items/master-ball.png"
+  },
+  {
+    "id": 12,
+    "name": "premier-ball",
+    "display_name": "Premier Ball",
+    "category": "pokeballs",
+    "filename": "premier-ball.png",
+    "description": "Used in battle :   Attempts to catch a wild Pokémon, using a catch rate of 1×.      If used in a trainer battle, nothing happens and the ball is lost.",
+    "cost": 20,
+    "image_url": "/items/premier-ball.png"
+  },
+  {
+    "id": 11,
+    "name": "luxury-ball",
+    "display_name": "Luxury Ball",
+    "category": "pokeballs",
+    "filename": "luxury-ball.png",
+    "description": "Used in battle :   Attempts to catch a wild Pokémon, using a catch rate of 1×.  Whenever the caught Pokémon's happiness increases, it increases by one extra point.      If used in a trainer battle, nothing happens and the ball is lost.",
+    "cost": 3000,
+    "image_url": "/items/luxury-ball.png"
+  },
+  {
+    "id": 10,
+    "name": "timer-ball",
+    "display_name": "Timer Ball",
+    "category": "pokeballs",
+    "filename": "timer-ball.png",
+    "description": "Used in battle :   Attempts to catch a wild Pokémon.  Has a catch rate of 1.1× on the first turn of the battle and increases by 0.1× every turn, to a maximum of 4× on turn 30.      If used in a trainer battle, nothing happens and the ball is lost.",
+    "cost": 1000,
+    "image_url": "/items/timer-ball.png"
+  },
+  {
+    "id": 15,
+    "name": "quick-ball",
+    "display_name": "Quick Ball",
+    "category": "pokeballs",
+    "filename": "quick-ball.png",
+    "description": "Used in battle :   Attempts to catch a wild Pokémon, using a catch rate of 4× on the first turn of a battle, but 1× any other time.      If used in a trainer battle, nothing happens and the ball is lost.",
+    "cost": 1000,
+    "image_url": "/items/quick-ball.png"
+  },
+  {
+    "id": 13,
+    "name": "dusk-ball",
+    "display_name": "Dusk Ball",
+    "category": "pokeballs",
+    "filename": "dusk-ball.png",
+    "description": "Used in battle :   Attempts to catch a wild Pokémon.  If it's currently nighttime or the wild Pokémon was encountered while walking in a cave, this ball has a catch rate of 3.5×.  Otherwise, it has a catch rate of 1×.      If used in a trainer battle, nothing happens and the ball is lost.",
+    "cost": 1000,
+    "image_url": "/items/dusk-ball.png"
+  },
+  {
+    "id": 14,
+    "name": "heal-ball",
+    "display_name": "Heal Ball",
+    "category": "pokeballs",
+    "filename": "heal-ball.png",
+    "description": "Used in battle :   Attempts to catch a wild Pokémon, using a catch rate of 1×.  The caught Pokémon's HP is immediately restored, PP for all its moves is restored, and any status ailment is cured.      If used in a trainer battle, nothing happens and the ball is lost.",
+    "cost": 300,
+    "image_url": "/items/heal-ball.png"
+  },
+  {
+    "id": 17,
+    "name": "potion",
+    "display_name": "Potion",
+    "category": "potions",
+    "filename": "potion.png",
+    "description": "Used on a friendly Pokémon :   Restores 20 HP.",
+    "cost": 200,
+    "image_url": "/items/potion.png"
+  },
+  {
+    "id": 26,
+    "name": "super-potion",
+    "display_name": "Super Potion",
+    "category": "potions",
+    "filename": "super-potion.png",
+    "description": "Used on a party Pokémon :   Restores 50 HP.",
+    "cost": 700,
+    "image_url": "/items/super-potion.png"
+  },
+  {
+    "id": 25,
+    "name": "hyper-potion",
+    "display_name": "Hyper Potion",
+    "category": "potions",
+    "filename": "hyper-potion.png",
+    "description": "Used on a party Pokémon :   Restores 200 HP.",
+    "cost": 1500,
+    "image_url": "/items/hyper-potion.png"
+  },
+  {
+    "id": 24,
+    "name": "max-potion",
+    "display_name": "Max Potion",
+    "category": "potions",
+    "filename": "max-potion.png",
+    "description": "Used on a party Pokémon :   Restores HP to full.",
+    "cost": 2500,
+    "image_url": "/items/max-potion.png"
+  },
+  {
+    "id": 23,
+    "name": "full-restore",
+    "display_name": "Full Restore",
+    "category": "potions",
+    "filename": "full-restore.png",
+    "description": "Used on a party Pokémon :   Restores HP to full and cures any status ailment and confusion.",
+    "cost": 3000,
+    "image_url": "/items/full-restore.png"
+  },
+  {
+    "id": 18,
+    "name": "antidote",
+    "display_name": "Antidote",
+    "category": "status_healing",
+    "filename": "antidote.png",
+    "description": "Used on a party Pokémon :   Cures poison.",
+    "cost": 200,
+    "image_url": "/items/antidote.png"
+  },
+  {
+    "id": 19,
+    "name": "burn-heal",
+    "display_name": "Burn Heal",
+    "category": "status_healing",
+    "filename": "burn-heal.png",
+    "description": "Used on a party Pokémon :   Cures a burn.",
+    "cost": 200,
+    "image_url": "/items/burn-heal.png"
+  },
+  {
+    "id": 20,
+    "name": "ice-heal",
+    "display_name": "Ice Heal",
+    "category": "status_healing",
+    "filename": "ice-heal.png",
+    "description": "Used on a party Pokémon :   Cures freezing.",
+    "cost": 200,
+    "image_url": "/items/ice-heal.png"
+  },
+  {
+    "id": 21,
+    "name": "awakening",
+    "display_name": "Awakening",
+    "category": "status_healing",
+    "filename": "awakening.png",
+    "description": "Used on a party Pokémon :   Cures sleep.",
+    "cost": 200,
+    "image_url": "/items/awakening.png"
+  },
+  {
+    "id": 22,
+    "name": "paralyze-heal",
+    "display_name": "Paralyze Heal",
+    "category": "status_healing",
+    "filename": "paralyze-heal.png",
+    "description": "Used on a party Pokémon :   Cures paralysis.",
+    "cost": 200,
+    "image_url": "/items/paralyze-heal.png"
+  },
+  {
+    "id": 27,
+    "name": "full-heal",
+    "display_name": "Full Heal",
+    "category": "status_healing",
+    "filename": "full-heal.png",
+    "description": "Used on a party Pokémon :   Cures any status ailment and confusion.",
+    "cost": 400,
+    "image_url": "/items/full-heal.png"
+  },
+  {
+    "id": 28,
+    "name": "revive",
+    "display_name": "Revive",
+    "category": "revival",
+    "filename": "revive.png",
+    "description": "Used on a party Pokémon :   Revives the Pokémon and restores half its HP.",
+    "cost": 2000,
+    "image_url": "/items/revive.png"
+  },
+  {
+    "id": 29,
+    "name": "max-revive",
+    "display_name": "Max Revive",
+    "category": "revival",
+    "filename": "max-revive.png",
+    "description": "Used on a party Pokémon :   Revives the Pokémon and restores its HP to full.",
+    "cost": 4000,
+    "image_url": "/items/max-revive.png"
+  },
+  {
+    "id": 30,
+    "name": "fresh-water",
+    "display_name": "Fresh Water",
+    "category": "drinks",
+    "filename": "fresh-water.png",
+    "description": "Used on a party Pokémon :   Restores 50 HP.",
+    "cost": 200,
+    "image_url": "/items/fresh-water.png"
+  },
+  {
+    "id": 31,
+    "name": "soda-pop",
+    "display_name": "Soda Pop",
+    "category": "drinks",
+    "filename": "soda-pop.png",
+    "description": "Used on a party Pokémon :   Restores 60 HP.",
+    "cost": 300,
+    "image_url": "/items/soda-pop.png"
+  },
+  {
+    "id": 32,
+    "name": "lemonade",
+    "display_name": "Lemonade",
+    "category": "drinks",
+    "filename": "lemonade.png",
+    "description": "Used on a party Pokémon :   Restores 80 HP.",
+    "cost": 400,
+    "image_url": "/items/lemonade.png"
+  },
+  {
+    "id": 33,
+    "name": "moomoo-milk",
+    "display_name": "Moomoo Milk",
+    "category": "drinks",
+    "filename": "moomoo-milk.png",
+    "description": "Used on a party Pokémon :   Restores 100 HP.",
+    "cost": 600,
+    "image_url": "/items/moomoo-milk.png"
+  },
+  {
+    "id": 132,
+    "name": "oran-berry",
+    "display_name": "Oran Berry",
+    "category": "berries",
+    "filename": "oran-berry.png",
+    "description": "Held in battle :   When the holder has 1/2 its max HP remaining or less, it consumes this item to restore 10 HP.  Used on a party Pokémon :   Restores 10 HP.",
+    "cost": 80,
+    "image_url": "/items/oran-berry.png"
+  },
+  {
+    "id": 135,
+    "name": "sitrus-berry",
+    "display_name": "Sitrus Berry",
+    "category": "berries",
+    "filename": "sitrus-berry.png",
+    "description": "Held in battle :   When the holder has 1/2 its max HP remaining or less, it consumes this item to restore 1/4 its max HP.  Used on a party Pokémon :   Restores 1/4 the Pokémon's max HP.",
+    "cost": 80,
+    "image_url": "/items/sitrus-berry.png"
+  },
+  {
+    "id": 149,
+    "name": "chesto-berry",
+    "display_name": "Chesto Berry",
+    "category": "berries",
+    "filename": "chesto-berry.png",
+    "description": "Used on a party Pokémon :   Increases happiness by 10/5/2.  Lowers Special Attack effort by 10.",
+    "cost": 80,
+    "image_url": "/items/chesto-berry.png"
+  },
+  {
+    "id": 150,
+    "name": "pecha-berry",
+    "display_name": "Pecha Berry",
+    "category": "berries",
+    "filename": "pecha-berry.png",
+    "description": "Used on a party Pokémon :   Increases happiness by 10/5/2.  Lowers Special Defense effort by 10.",
+    "cost": 80,
+    "image_url": "/items/pecha-berry.png"
+  },
+  {
+    "id": 151,
+    "name": "rawst-berry",
+    "display_name": "Rawst Berry",
+    "category": "berries",
+    "filename": "rawst-berry.png",
+    "description": "Used on a party Pokémon :   Increases happiness by 10/5/2.  Lowers Speed effort by 10.",
+    "cost": 80,
+    "image_url": "/items/rawst-berry.png"
+  },
+  {
+    "id": 152,
+    "name": "aspear-berry",
+    "display_name": "Aspear Berry",
+    "category": "berries",
+    "filename": "aspear-berry.png",
+    "description": "No effect; only useful for planting and cooking.",
+    "cost": 20,
+    "image_url": "/items/aspear-berry.png"
+  },
+  {
+    "id": 153,
+    "name": "leppa-berry",
+    "display_name": "Leppa Berry",
+    "category": "berries",
+    "filename": "leppa-berry.png",
+    "description": "No effect; only useful for planting and cooking.",
+    "cost": 20,
+    "image_url": "/items/leppa-berry.png"
+  }
+]
