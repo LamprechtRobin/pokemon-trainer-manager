@@ -5,6 +5,7 @@ import { Pokemon } from "../types/pokemon";
 import { Attack } from "../types/attack";
 import { trainerService } from "../firebase/trainerService";
 import { attackService } from "../services/attackService";
+import Shop from "../components/Shop";
 
 type BattlePhase = "selection" | "battle";
 
@@ -50,6 +51,7 @@ const BattleMode: React.FC = () => {
   const [showBattleEndDialog, setShowBattleEndDialog] = useState(false);
   const [battleEndExpGains, setBattleEndExpGains] = useState<{[pokemonIndex: number]: number}>({});
   const [battleEndMoneyReward, setBattleEndMoneyReward] = useState(0);
+  const [showShop, setShowShop] = useState(false);
 
   useEffect(() => {
     if (trainerId) {
@@ -230,6 +232,16 @@ const BattleMode: React.FC = () => {
 
   const updateMoneyReward = (amount: number) => {
     setBattleEndMoneyReward(prev => prev + amount);
+  };
+
+  const handleShopPurchase = async (updatedTrainer: Trainer) => {
+    try {
+      await trainerService.updateTrainer(trainer!.id!, updatedTrainer);
+      setTrainer(updatedTrainer);
+    } catch (error) {
+      console.error("Error saving shop purchase:", error);
+      alert("Fehler beim Speichern des Kaufs");
+    }
   };
 
   // Calculate level based on EXP (10 EXP per level, starting at level 1)
@@ -520,12 +532,20 @@ const BattleMode: React.FC = () => {
               </p>
             </div>
             {battlePhase === "battle" && (
-              <button
-                onClick={handleBattleEndClick}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm"
-              >
-                Kampf beenden
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowShop(true)}
+                  className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors text-sm"
+                >
+                  🏪 Shop
+                </button>
+                <button
+                  onClick={handleBattleEndClick}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm"
+                >
+                  Kampf beenden
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -1645,6 +1665,15 @@ const BattleMode: React.FC = () => {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Shop Modal */}
+        {showShop && trainer && (
+          <Shop
+            trainer={trainer}
+            onPurchase={handleShopPurchase}
+            onClose={() => setShowShop(false)}
+          />
         )}
       </div>
     </div>

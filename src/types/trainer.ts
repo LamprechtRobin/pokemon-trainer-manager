@@ -5,6 +5,7 @@ export interface Item {
   name: string;
   description: string;
   imageUrl?: string;
+  quantity: number; // How many of this item the trainer has
   createdAt?: string;
 }
 
