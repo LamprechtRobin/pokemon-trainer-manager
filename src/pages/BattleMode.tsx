@@ -237,10 +237,6 @@ const BattleMode: React.FC = () => {
     return Math.floor(exp / 10) + 1;
   };
 
-  // Calculate EXP needed for next level
-  const getExpForNextLevel = (level: number): number => {
-    return level * 10;
-  };
 
   // Calculate current EXP within the level (0-9)
   const getCurrentLevelExp = (exp: number): number => {
@@ -258,10 +254,11 @@ const BattleMode: React.FC = () => {
         const index = parseInt(indexStr);
         if (updatedTeam[index] && expGain > 0) {
           const currentExp = updatedTeam[index].exp || 0;
-          const newExp = currentExp + expGain;
-          const newLevel = calculateLevel(newExp);
+          const totalExp = currentExp + expGain;
+          const newLevel = calculateLevel(totalExp);
+          const remainderExp = getCurrentLevelExp(totalExp);
           
-          updatedTeam[index].exp = newExp;
+          updatedTeam[index].exp = remainderExp;
           updatedTeam[index].level = newLevel;
         }
       });
@@ -1442,9 +1439,10 @@ const BattleMode: React.FC = () => {
                     const pokemon = trainer.team![pokemonIndex];
                     const currentExp = pokemon.exp || 0;
                     const expGain = battleEndExpGains[pokemonIndex] || 0;
-                    const newExp = currentExp + expGain;
+                    const totalExp = currentExp + expGain;
                     const currentLevel = pokemon.level || 1;
-                    const newLevel = calculateLevel(newExp);
+                    const newLevel = calculateLevel(totalExp);
+                    const finalExp = getCurrentLevelExp(totalExp);
                     const levelUp = newLevel > currentLevel;
                     
                     return (
@@ -1479,7 +1477,7 @@ const BattleMode: React.FC = () => {
                             <div>
                               <h4 className="font-medium text-gray-900">{pokemon.name}</h4>
                               <div className="text-sm text-gray-600">
-                                Level {currentLevel} → {newLevel} • EXP: {currentExp} → {newExp}
+                                Level {currentLevel} → {newLevel} • EXP: {currentExp} → {finalExp}
                               </div>
                               {levelUp && (
                                 <div className="text-xs text-blue-600 font-medium">
@@ -1538,7 +1536,7 @@ const BattleMode: React.FC = () => {
                         
                         {expGain > 0 && (
                           <div className="text-xs text-green-600 bg-green-50 rounded p-2">
-                            ⬆️ +{expGain} EXP → Neue Gesamt-EXP: {newExp}
+                            ⬆️ +{expGain} EXP → Finale EXP: {finalExp}/10
                             {levelUp && (
                               <div className="text-blue-600 font-medium mt-1">
                                 🎉 Level {currentLevel} → {newLevel}!

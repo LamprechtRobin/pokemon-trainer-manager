@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Trainer } from "../types/trainer";
+import { Trainer, Item } from "../types/trainer";
 import { Pokemon } from "../types/pokemon";
 import { trainerService } from "../firebase/trainerService";
 import PokemonSearch from "../components/PokemonSearch";
@@ -21,6 +21,18 @@ const TrainerDetail: React.FC = () => {
     name: "",
     description: "",
     money: "",
+  });
+
+  // Item management state
+  const [showAddItemForm, setShowAddItemForm] = useState(false);
+  const [newItem, setNewItem] = useState<{
+    name: string;
+    description: string;
+    imageUrl: string;
+  }>({
+    name: "",
+    description: "",
+    imageUrl: "",
   });
 
   useEffect(() => {
@@ -147,6 +159,51 @@ const TrainerDetail: React.FC = () => {
     } catch (error) {
       console.error("Error removing Pokemon:", error);
       alert("Fehler beim Entfernen des Pokemon");
+    }
+  };
+
+  // Item management functions
+  const handleAddItem = async () => {
+    if (!trainer || !newItem.name.trim()) {
+      alert("Item-Name ist erforderlich");
+      return;
+    }
+
+    try {
+      const item: Item = {
+        name: newItem.name.trim(),
+        description: newItem.description.trim() || "",
+        imageUrl: newItem.imageUrl.trim() || undefined,
+        createdAt: new Date().toISOString(),
+      };
+
+      const updatedItems = [...(trainer.items || []), item];
+      const updatedTrainer = { ...trainer, items: updatedItems };
+
+      await trainerService.updateTrainer(trainer.id!, updatedTrainer);
+      setTrainer(updatedTrainer);
+      
+      // Reset form
+      setNewItem({ name: "", description: "", imageUrl: "" });
+      setShowAddItemForm(false);
+    } catch (error) {
+      console.error("Error adding item:", error);
+      alert("Fehler beim Hinzufügen des Items");
+    }
+  };
+
+  const handleRemoveItem = async (index: number) => {
+    if (!trainer) return;
+
+    const updatedItems = (trainer.items || []).filter((_, i) => i !== index);
+    const updatedTrainer = { ...trainer, items: updatedItems };
+
+    try {
+      await trainerService.updateTrainer(trainer.id!, updatedTrainer);
+      setTrainer(updatedTrainer);
+    } catch (error) {
+      console.error("Error removing item:", error);
+      alert("Fehler beim Entfernen des Items");
     }
   };
 
@@ -356,6 +413,127 @@ const TrainerDetail: React.FC = () => {
                           e.stopPropagation();
                           handleRemovePokemon(index);
                         }}
+                        className="px-3 py-1 bg-danger-500 text-white text-sm rounded hover:bg-danger-600 transition-colors"
+                      >
+                        Entfernen
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Items Inventory - Separate Row */}
+        <div className="mt-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">
+              Items Inventar
+            </h3>
+
+            {/* Add Item Section */}
+            <div className="mb-6">
+              {!showAddItemForm ? (
+                <button
+                  onClick={() => setShowAddItemForm(true)}
+                  className="w-full px-4 py-3 bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-600 transition-colors"
+                >
+                  + Item hinzufügen
+                </button>
+              ) : (
+                <div className="p-4 bg-gray-50 rounded-lg space-y-3">
+                  <h4 className="font-medium text-gray-900">Neues Item</h4>
+                  
+                  <input
+                    type="text"
+                    placeholder="Item Name *"
+                    value={newItem.name}
+                    onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                  
+                  <textarea
+                    placeholder="Beschreibung"
+                    value={newItem.description}
+                    onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                    rows={2}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 resize-vertical"
+                  />
+                  
+                  <input
+                    type="url"
+                    placeholder="Bild URL (optional)"
+                    value={newItem.imageUrl}
+                    onChange={(e) => setNewItem({ ...newItem, imageUrl: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                  
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleAddItem}
+                      className="flex-1 px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                    >
+                      Hinzufügen
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowAddItemForm(false);
+                        setNewItem({ name: "", description: "", imageUrl: "" });
+                      }}
+                      className="flex-1 px-3 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+                    >
+                      Abbrechen
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Current Items */}
+            <div>
+              <h4 className="font-medium text-gray-900 mb-3">
+                Items ({(trainer.items || []).length})
+              </h4>
+              {(trainer.items || []).length === 0 ? (
+                <p className="text-gray-500 italic">
+                  Noch keine Items im Inventar
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {trainer.items!.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    >
+                      <div className="flex items-center gap-3 flex-1">
+                        {item.imageUrl ? (
+                          <img
+                            src={item.imageUrl}
+                            alt={item.name}
+                            className="w-10 h-10 rounded-lg object-cover border border-gray-200"
+                            onError={(e) => {
+                              e.currentTarget.style.display = "none";
+                            }}
+                          />
+                        ) : (
+                          <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                            📦
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <div className="font-medium text-gray-900">
+                            {item.name}
+                          </div>
+                          {item.description && (
+                            <div className="text-sm text-gray-500">
+                              {item.description}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleRemoveItem(index)}
                         className="px-3 py-1 bg-danger-500 text-white text-sm rounded hover:bg-danger-600 transition-colors"
                       >
                         Entfernen

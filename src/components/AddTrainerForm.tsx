@@ -83,6 +83,7 @@ const AddTrainerForm: React.FC<AddTrainerFormProps> = ({ onSubmit, onCancel }) =
       money: parseInt(formData.money) || 0,
       imageUrl,
       team: [], // Initialize with empty Pokemon team
+      items: [], // Initialize with empty items inventory
       createdAt: new Date().toISOString()
     };
     

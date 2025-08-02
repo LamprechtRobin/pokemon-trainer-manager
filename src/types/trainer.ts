@@ -1,11 +1,20 @@
 import { Pokemon } from './pokemon';
 
+export interface Item {
+  id?: string;
+  name: string;
+  description: string;
+  imageUrl?: string;
+  createdAt?: string;
+}
+
 export interface Trainer {
   id?: string;
   name: string;
   imageUrl?: string; // Optional trainer image (will be uploaded file converted to data URL)
   description?: string;
   team?: Pokemon[]; // Array of Pokemon in trainer's team (optional for backwards compatibility)
+  items?: Item[]; // Array of items in trainer's inventory
   money?: number; // Trainer's money in PokéDollar (₽)
   createdAt: string;
 }
