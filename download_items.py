@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """
-Pokemon Item Image Downloader
+Pokemon Item & Badge Image Downloader
 
-This script downloads common Pokemon item images from the PokeAPI
-and saves them to the public/items folder for use in the web app.
+This script downloads common Pokemon item images from the PokeAPI and provides
+infrastructure for downloading gym badge images. Items are saved to public/items
+and badges would be saved to public/badges folders for use in the web app.
+
+Note: Badge downloading requires working image URLs. The structure is prepared
+for when valid badge image sources are found.
 
 Requirements: pip install requests
 
@@ -26,7 +30,9 @@ import json
 # Configuration
 BASE_URL = "https://pokeapi.co/api/v2"
 SPRITE_BASE = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items"
+BADGES_SPRITE_BASE = "https://www.serebii.net/itemdex/sprites"
 OUTPUT_DIR = Path("public/items")
+BADGES_OUTPUT_DIR = Path("public/badges")
 DELAY_BETWEEN_REQUESTS = 0.2  # Be respectful to the API
 
 # Common items to download
@@ -90,18 +96,33 @@ ITEMS_TO_DOWNLOAD = {
     ],
 }
 
+# Gym Badges to download (Note: Badge images from external sources may not be available)
+# This demonstrates the structure for future badge downloads when working URLs are found
+BADGES_TO_DOWNLOAD = {
+    # Kanto Gym Badges (Placeholder structure)
+    "kanto": [
+        {"id": 464, "name": "boulder-badge", "display_name": "Boulder Badge", "gym": "Pewter City", "leader": "Brock", "url": "placeholder-badge.png"},
+        {"id": 465, "name": "cascade-badge", "display_name": "Cascade Badge", "gym": "Cerulean City", "leader": "Misty", "url": "placeholder-badge.png"},
+        {"id": 466, "name": "thunder-badge", "display_name": "Thunder Badge", "gym": "Vermilion City", "leader": "Lt. Surge", "url": "placeholder-badge.png"},
+        {"id": 467, "name": "rainbow-badge", "display_name": "Rainbow Badge", "gym": "Celadon City", "leader": "Erika", "url": "placeholder-badge.png"},
+    ],
+}
+
 def create_output_directories():
     """Create the output directory structure"""
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    BADGES_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     print(f"✅ Created output directory: {OUTPUT_DIR}")
+    print(f"✅ Created badges directory: {BADGES_OUTPUT_DIR}")
 
-def download_image(url, filename):
+def download_image(url, filename, output_dir=None):
     """Download an image from URL and save it to filename"""
     try:
         response = requests.get(url, stream=True, timeout=10)
         response.raise_for_status()
         
-        filepath = OUTPUT_DIR / filename
+        target_dir = output_dir if output_dir else OUTPUT_DIR
+        filepath = target_dir / filename
         with open(filepath, 'wb') as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
@@ -180,6 +201,57 @@ def download_items():
     
     return items_catalog
 
+def download_badges():
+    """Download all specified gym badges"""
+    badges_catalog = []
+    total_badges = sum(len(region_badges) for region_badges in BADGES_TO_DOWNLOAD.values())
+    current_badge = 0
+    
+    print(f"\n🏆 Starting download of {total_badges} Pokemon gym badges...")
+    
+    for region, badges in BADGES_TO_DOWNLOAD.items():
+        print(f"\n🌍 Processing {region.title()} badges ({len(badges)} badges)...")
+        
+        for badge in badges:
+            current_badge += 1
+            badge_id = badge["id"]
+            badge_name = badge["name"]
+            display_name = badge["display_name"]
+            gym = badge["gym"]
+            leader = badge["leader"]
+            url_path = badge["url"]
+            
+            print(f"  [{current_badge}/{total_badges}] {display_name} ({gym})...")
+            
+            # Download badge image
+            image_url = f"{BADGES_SPRITE_BASE}/{url_path}"
+            filename = f"{badge_name}.png"
+            
+            if download_image(image_url, filename, BADGES_OUTPUT_DIR):
+                print(f"    ✅ Downloaded: {filename}")
+                
+                # Add to catalog
+                badge_info = {
+                    "id": badge_id,
+                    "name": badge_name,
+                    "display_name": display_name,
+                    "region": region,
+                    "gym": gym,
+                    "leader": leader,
+                    "filename": filename,
+                    "description": f"The {display_name} earned by defeating {leader} at {gym}.",
+                    "image_url": f"/badges/{filename}"
+                }
+                
+                badges_catalog.append(badge_info)
+            else:
+                print(f"    ❌ Failed to download: {filename}")
+            
+            # Be respectful to the API
+            time.sleep(DELAY_BETWEEN_REQUESTS)
+    
+    return badges_catalog
+
 def save_catalog(items_catalog):
     """Save the items catalog as JSON for easy import"""
     catalog_file = OUTPUT_DIR / "items_catalog.json"
@@ -190,31 +262,55 @@ def save_catalog(items_catalog):
     print(f"\n📋 Saved items catalog to: {catalog_file}")
     print(f"   Contains {len(items_catalog)} items with descriptions and metadata")
 
-def print_summary(items_catalog):
-    """Print a summary of downloaded items"""
+def save_badges_catalog(badges_catalog):
+    """Save the badges catalog as JSON for easy import"""
+    catalog_file = BADGES_OUTPUT_DIR / "badges_catalog.json"
+    
+    with open(catalog_file, 'w', encoding='utf-8') as f:
+        json.dump(badges_catalog, f, indent=2, ensure_ascii=False)
+    
+    print(f"\n🏆 Saved badges catalog to: {catalog_file}")
+    print(f"   Contains {len(badges_catalog)} badges with descriptions and metadata")
+
+def print_summary(items_catalog, badges_catalog):
+    """Print a summary of downloaded items and badges"""
     print(f"\n🎉 Download Complete!")
     print(f"📊 Summary:")
     print(f"   Total items downloaded: {len(items_catalog)}")
+    print(f"   Total badges downloaded: {len(badges_catalog)}")
     
+    # Items by category
     by_category = {}
     for item in items_catalog:
         category = item["category"]
         by_category[category] = by_category.get(category, 0) + 1
     
+    print(f"\n📦 Items by category:")
     for category, count in by_category.items():
         print(f"   {category.title()}: {count} items")
     
-    print(f"\n📁 Files saved to: {OUTPUT_DIR}")
-    print(f"   - Individual PNG images")
-    print(f"   - items_catalog.json (for easy import)")
+    # Badges by region
+    by_region = {}
+    for badge in badges_catalog:
+        region = badge["region"]
+        by_region[region] = by_region.get(region, 0) + 1
+    
+    print(f"\n🏆 Badges by region:")
+    for region, count in by_region.items():
+        print(f"   {region.title()}: {count} badges")
+    
+    print(f"\n📁 Files saved to:")
+    print(f"   {OUTPUT_DIR} - Items with PNG images and catalog")
+    print(f"   {BADGES_OUTPUT_DIR} - Badges with PNG images and catalog")
     
     print(f"\n💡 Usage in web app:")
-    print(f"   Item images are now available at /items/[item-name].png")
-    print(f"   Use the catalog JSON to populate item selection dropdowns")
+    print(f"   Item images: /items/[item-name].png")
+    print(f"   Badge images: /badges/[badge-name].png")
+    print(f"   Use catalog JSONs for easy data import")
 
 def main():
     """Main function"""
-    print("🎮 Pokemon Item Image Downloader")
+    print("🎮 Pokemon Item & Badge Image Downloader")
     print("=" * 50)
     
     # Create directories
@@ -223,11 +319,15 @@ def main():
     # Download all items
     items_catalog = download_items()
     
-    # Save catalog
+    # Download all badges
+    badges_catalog = download_badges()
+    
+    # Save catalogs
     save_catalog(items_catalog)
+    save_badges_catalog(badges_catalog)
     
     # Print summary
-    print_summary(items_catalog)
+    print_summary(items_catalog, badges_catalog)
     
     print(f"\n✨ Ready to use in your Pokemon Trainer Manager app!")
 
