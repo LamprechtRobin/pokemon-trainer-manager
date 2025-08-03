@@ -61,6 +61,9 @@ export class MarkdownService {
           { name: 'current-state', title: 'Aktueller Zustand', path: 'lore/world/current-state.md' },
           { name: 'kanto-government', title: 'Kanto-Regierung', path: 'lore/world/kanto-government.md' },
           { name: 'other-regions', title: 'Andere Regionen', path: 'lore/world/other-regions.md' }
+        ],
+        'lore/sessions': [
+          { name: '00-special-force', title: 'Session 00: Special Force', path: 'lore/sessions/00-special-force.md' }
         ]
       };
 
@@ -227,6 +230,11 @@ export const LORE_SECTIONS: MarkdownSection[] = [
     id: "world",
     title: "Die Welt heute",
     folder: "lore/world"
+  },
+  {
+    id: "sessions",
+    title: "Sessions",
+    folder: "lore/sessions"
   }
 ];
 

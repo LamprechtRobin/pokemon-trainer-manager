@@ -14,7 +14,7 @@
       "name": "Bodyslam",
       "type": "normal",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "hyper_beam"
     },
@@ -23,7 +23,7 @@
       "name": "Hyperstrahl",
       "type": "normal",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -40,7 +40,7 @@
       "name": "Flammenwurf",
       "type": "fire",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "fire_blast"
     },
@@ -49,7 +49,7 @@
       "name": "Feuersturm",
       "type": "fire",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -66,7 +66,7 @@
       "name": "Surfer",
       "type": "water",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "hydro_pump"
     },
@@ -75,7 +75,7 @@
       "name": "Hydropumpe",
       "type": "water",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -92,7 +92,7 @@
       "name": "Donnerblitz",
       "type": "electric",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "thunder"
     },
@@ -101,7 +101,7 @@
       "name": "Donner",
       "type": "electric",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -118,7 +118,7 @@
       "name": "Rasierblatt",
       "type": "grass",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "solar_beam"
     },
@@ -127,7 +127,7 @@
       "name": "Solarstrahl",
       "type": "grass",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -144,7 +144,7 @@
       "name": "Eisstrahl",
       "type": "ice",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "blizzard"
     },
@@ -153,7 +153,7 @@
       "name": "Blizzard",
       "type": "ice",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -170,7 +170,7 @@
       "name": "Durchbruch",
       "type": "fighting",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "close_combat"
     },
@@ -179,7 +179,7 @@
       "name": "Nahkampf",
       "type": "fighting",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -196,7 +196,7 @@
       "name": "Matschbombe",
       "type": "poison",
       "power": 7,
-      "accuracy": 95,      
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "gunk_shot"
     },
@@ -205,7 +205,7 @@
       "name": "Mülltreffer",
       "type": "poison",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -222,7 +222,7 @@
       "name": "Erdbeben",
       "type": "ground",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "fissure"
     },
@@ -231,7 +231,7 @@
       "name": "Geofissur",
       "type": "ground",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -248,7 +248,7 @@
       "name": "Luftschnitt",
       "type": "flying",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "hurricane"
     },
@@ -257,7 +257,7 @@
       "name": "Orkan",
       "type": "flying",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -274,7 +274,7 @@
       "name": "Psychokinese",
       "type": "psychic",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "psystrike"
     },
@@ -283,7 +283,7 @@
       "name": "Psyschlag",
       "type": "psychic",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -300,7 +300,7 @@
       "name": "Käfersummen",
       "type": "bug",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "megahorn"
     },
@@ -309,7 +309,7 @@
       "name": "Vielender",
       "type": "bug",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -326,7 +326,7 @@
       "name": "Steinhagel",
       "type": "rock",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "stone_edge"
     },
@@ -335,7 +335,7 @@
       "name": "Steinkante",
       "type": "rock",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -352,7 +352,7 @@
       "name": "Spukball",
       "type": "ghost",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "shadow_force"
     },
@@ -361,7 +361,7 @@
       "name": "Schattenstoß",
       "type": "ghost",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -378,7 +378,7 @@
       "name": "Drachenpuls",
       "type": "dragon",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "draco_meteor"
     },
@@ -387,7 +387,7 @@
       "name": "Draco Meteor",
       "type": "dragon",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -404,7 +404,7 @@
       "name": "Knirscher",
       "type": "dark",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "dark_pulse"
     },
@@ -413,7 +413,7 @@
       "name": "Finsteraura",
       "type": "dark",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -430,7 +430,7 @@
       "name": "Eisenschädel",
       "type": "steel",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "meteor_mash"
     },
@@ -439,7 +439,7 @@
       "name": "Sternenhieb",
       "type": "steel",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     },
     {
@@ -456,7 +456,7 @@
       "name": "Blendender Glanz",
       "type": "fairy",
       "power": 7,
-      "accuracy": 95,
+      "accuracy": 100,
       "tier": 2,
       "evolvesTo": "moonblast"
     },
@@ -465,7 +465,7 @@
       "name": "Mondschein",
       "type": "fairy",
       "power": 10,
-      "accuracy": 85,
+      "accuracy": 100,
       "tier": 3
     }
   ]
