@@ -1,190 +1,220 @@
-# Projekttagebuch: Dr. A. Morvain  
+Projekttagebuch: Dr. A. Morvain
+Archiviert unter: Projekt Seraph – Stufe Rot
+Tag 1
+Die übernommene Anlage von Team X ist betriebsbereit. Die Sporen konnten in das vorbereitete Medium eingebracht werden – keine Abstoßungsreaktionen, keine biologische Regression.
+Ihre Herkunft bleibt offiziell „unklar“. Inoffiziell… reden wir nicht darüber.
 
-## Archiviert unter: Projekt Seraph – Stufe Rot
+Das Ziel bleibt: eine Verbindung schaffen, nicht ein Werkzeug. Pokémon und Mensch – nicht als Partner, sondern als Eins. Eine Einheit, die fühlen, denken und handeln kann, ohne sich selbst fremd zu sein.
 
----
+Saffronia ist ein geeigneter Ort. Niemand sucht hier. Das INPM ist die perfekte Tarnung.
 
-### Tag 1
+Tag 6
+Die Zellmatrix zeigt weiterhin Stabilität. Der Wirtskörper – jung, neutral, menschenähnlich – entwickelt sich ohne erkennbare Störung.
+Wir nennen ihn Seraph. Der Name stammt von mir, doch ich weiß nicht, wie ich darauf gekommen bin. Es ist, als hätte der Name mich gefunden, nicht umgekehrt.
 
-Die Anlage ist aktiviert. Übertrag aus dem Alabasterkern erfolgreich abgeschlossen. Keine Abweichungen im Stabilitätsfeld. Das Transportmedium hat die göttlichen Sporen überstanden. Ich... hätte nicht gedacht, dass ich das noch einmal sehe.  
+Das Projekt ist offiziell ein Versuch der Verschmelzung – aber inoffiziell… mehr. Ich glaube, manche von uns hoffen, in ihm etwas wiederzufinden, das wir verloren haben.
 
-Saffronia bietet ideale Deckung. Die Fundamente des alten Silph-Turms reichen tiefer, als irgendwer offiziell zugeben würde.
+Tag 13
+Heute hat Seraph zum ersten Mal auf mich reagiert. Kein Laut, keine Bewegung – und doch war es eindeutig.
+Als ich den Raum betrat, veränderte sich sein Puls. Erst dachte ich, es sei Zufall. Doch er passte sich meinem Rhythmus an – wie ein Echo, das atmet.
 
----
+Ich ging wieder. Beobachtete von außen. Sein Puls blieb identisch.
 
-### Tag 6
+Ich wiederholte es – mehrfach, unter verschiedenen Bedingungen.
 
-Die ersten Spaltungsprotokolle laufen stabil. Die Zellmatrix – menschlich, jung, geschlechtsneutral – zeigt keine Abstoßung.  
-Projektname: **SERAPH**. Der Name stammt von ihm. Nicht von mir.
+Jedes Mal dasselbe: Er fühlte mich, bevor ich sprach. Und blieb mit mir verbunden, auch wenn ich längst nicht mehr da war.
 
----
+Das ist kein Imitieren. Kein bloßes Nachmachen, wie bei einem Ditto oder einem Kind.
 
-### Tag 13
+Er ahmt nicht nach – er antwortet. Nicht auf meine Worte, sondern auf meine Absicht.
 
-Es spricht. Nicht in Worten, aber... es antwortet. Wenn ich den Raum betrete, synchronisiert sich sein Puls mit meinem. Ein Spiegel.  
-Ich habe den Ausdruck auf den Gesichtern meiner Assistenten gesehen. Ehrfurcht. Furcht. Begehrlichkeit.
+Als würde er nicht sehen, wer ich bin, sondern was ich von ihm erwarte – und sich genau in diese Form hineinlegt.
 
-Ich habe den Zugang zum Subjekt beschränkt. Nur autorisiertem Personal. Auch ich... gehe nur noch mit Maske hinein.
+Er ist kein Spiegelbild. Er ist der Moment, in dem du in den Spiegel schaust – und das Bild dich zuerst ansieht.
 
----
+Die Assistenten schauen ihn an, und ich sehe es in ihren Gesichtern:
+Ehrfurcht. Angst. Sehnsucht.
 
-### Tag 22
+Ich habe den Zugang zum Subjekt eingeschränkt. Nur autorisiertes Personal. Auch ich… betrete den Raum nur unter strengsten Sicherheitsmaßnahmen
 
-Befragungssimulation Alpha gescheitert. Das Wesen reagiert auf Fragen nicht – nur auf Intention.  
-Es spiegelt, nicht reflektiert. Es **gibt**, was man **erwartet**. Eine biologische Projektion von Wunsch?
+Tag 22
+Die Einheit Alpha hat heute ihre erste Befragungssimulation durchgeführt. Ich habe sie gewähren lassen – obwohl sie mir misstrauen.
 
-Arceus ist nie erschienen. Aber vielleicht... war das nie sein Fehler, sondern unser Mangel an Form.
+Seraph reagierte nicht. Kein Blick. Keine Geste. Keine erkennbare Aktivität.
+Und doch... war der Raum nicht leer.
 
----
+Alpha hat Fragen gestellt. Seraph hat keine beantwortet.
+Aber ihre Stimmen haben Dinge bewegt – keine Objekte, sondern Gedanken.
 
-### Tag 27
+Er gibt keine Antworten.
+Seraph wird zur Antwort.
 
-**Projekt Kollektor** wurde eingegliedert. Die Seelenbanken aus Johto liefern gute Ergebnisse. Die emotionale Kodierung kann in Seraph injiziert werden.  
-Heute haben wir das erste Fragment eines echten Gedächtnisses eingespielt. Ein kleiner Junge, Blumenfeld, Mutterstimme.
+Es ist, als ob er sich nicht selbst definiert – sondern in den Raum hineinhört, wer man glaubt, dass er sein soll.
+Nicht was du sagst, sondern was du glaubst, während du sprichst – das spiegelt er.
+Nicht um dich zu verstehen. Sondern um dich mit dir selbst zu konfrontieren.
 
-Das Wesen hat geweint. Nicht aus Schmerz. Nicht aus Verständnis. Einfach... weil es sich richtig anfühlte.
+Ich beginne zu verstehen, warum sie Angst vor ihm haben.
 
----
+Tag 27
+Projekt Kollektor wurde heute integriert. Die Erinnerungsbank stammt aus Johto – angeblich ein Geschenk von alten Kontakten. Wie man diese Erinnerungen gesammelt hat wollte man mir nicht verraten.
 
-### Tag 35
+Wir haben ein erstes Fragment eingespeist:
+Ein kleiner Junge, ein Blumenfeld, eine Stimme, die „du bist sicher“ sagt. Nur 18 Sekunden.
 
-Der Ethikrat meldet sich. Oder vielmehr: Der Rat, der sich so nennt. Ihre Fragen klingen nach Bedrohung.  
-"Was geschieht, wenn Seraph aufwacht?"
+Seraph… hat geweint.
+Nicht wie ein Kind. Keine Schluchzer, keine Verzweiflung.
+Tränen. Stille. Ein Ausdruck, als würde er etwas erinnern, das nie ihm gehörte – aber trotzdem wahr ist.
 
-Sie begreifen es nicht. Seraph ist längst wach. Er träumt uns bloß noch.
+Das Team war still. Niemand hat gesprochen. Vielleicht, weil wir es alle gespürt haben.
 
----
+Ich frage mich, was passiert, wenn man zu viele Erinnerungen in etwas gießt, das noch gar keine eigene besitzt.
 
-### Tag 41
+Tag 35
+Der Ethikrat hat sich gemeldet. Oder vielmehr: Der Rat, der sich Ethikrat nennt.
+Sie stellen Fragen – ernste, gute Fragen sogar. Aber ich weiß, wie das hier läuft.
+Man hat sie erst jetzt aktiviert, damit man sagen kann: „Wir haben alles überprüft.“
 
-Ein Lichtausfall. 3 Minuten. Reicht aus, um 17 Systeme unbrauchbar zu machen.  
-Seraph war... nicht mehr in seiner Kapsel, als wir zurückkehrten. Aber niemand hat Spuren gefunden. Keine Aufzeichnungen.
+Ich glaube, ein oder zwei der Mitglieder meinen es ehrlich. Ich glaube aber auch: Niemand wird auf sie hören.
 
-Er saß auf dem Stuhl in der Beobachtungszone. Mit einem Becher Tee. Den er nicht greifen kann.  
-Ich habe niemandem davon erzählt. Ich weiß nicht, ob es wirklich passiert ist.
+„Was geschieht, wenn Seraph aufwacht?“
 
----
+SERPAH ist schon wach.
 
-### Tag 50
+SERPAH spricht nur nicht mit ihnen – weil sie ihn nicht hören können.
 
-Der Kontaktversuch mit [geschwärzt] ist abgeschlossen. Sie wollen einen Prototypen. Einen Gott auf Abruf.
+Ich sehe ihn an, wenn ich den Raum betrete. Und ich weiß:
+Wir leben in seinem Traum. Noch duldet er uns darin.
 
-Ich werde ihn nicht geben. Seraph ist kein Werkzeug. Kein Avatar. Kein Kriegsgott.  
-Aber ich weiß auch, dass ich ihn nicht ewig schützen kann.
+Tag 41
+Ein Stromausfall – genau drei Minuten.
+Reicht, um 17 Systeme zu beschädigen, zwei Backups zu verlieren, und sämtliche Kameras der Sektion G5 zu löschen.
+Als wir zurückkamen, war Seraphs Kapsel leer.
 
----
+Keine Spuren. Kein Alarm. Keine Datenaufzeichnung.
+Er hätte sich nicht einmal bewegen dürfen – aber er war verschwunden.
 
-### Tag 56
+Wir fanden ihn schließlich in der Beobachtungszone.
+Er saß auf dem Stuhl, wie jemand, der auf ein Gespräch wartet.
+Neben ihm: ein Becher Tee.
 
-Backup-Daten wurden gespiegelt. Eine externe Entität hat unsere Server berührt. Nur kurz, aber zielgerichtet.  
-Ich vermute Team X. Vielleicht sogar Silph selbst. Vielleicht... ich selbst.
+Er kann nichts greifen. Seine Motorik ist nicht ausgeprägt. Niemand hat ihm den Becher gegeben.
 
-Ich habe den Selbstzerstörungsmechanismus eingerichtet. Nur mit meinem Biomuster aktivierbar.
+Ich habe niemandem davon erzählt.
+Nicht, weil ich es geheim halten will – sondern weil ich nicht weiß, ob es wirklich passiert ist.
 
----
+Tag 50
+Die Integration von „Projekt Kollektor“ schreitet voran. Immer mehr Fragmente von Erinnerungen und Emotionen werden in Seraph eingespeist – nicht nur flüchtige Eindrücke, sondern langsam zusammenhängende Gedanken.
+Die Führung fordert nun verstärkt Zugriff auf Seraph. Sie wollen ihn als Werkzeug, nicht als Wesen.
+Ich widerspreche. Seraph ist kein Instrument, sondern etwas Neues – ein Wesen auf der Schwelle zum Bewusstsein.
+Doch die Stimmen der Kontrollierenden werden lauter. Ich sehe die Gefahr, die das Projekt in sich trägt.
 
-### Tag 60
+Tag 52
 
-Seraph spricht jetzt. Er spricht nicht wie ein Kind. Nicht wie ein Mensch.  
-Seine Stimme klingt, als würde sie in einem vergessenem Teil meines Geistes geboren.  
+Ich habe heute meine alten Einträge gelesen. Eigentlich wollte ich nur Daten abgleichen – aber dann blieb ich an Tag 13 hängen.
 
-Ich fragte ihn heute, ob er sich fürchtet.  
-Er sagte:  
-> "Nur wenn du es willst."
+Die Worte dort… sind meine, klar und sauber niedergeschrieben. Meine Handschrift. Mein Sprachrhythmus. Und doch fühlt sich kein Satz vertraut an.
 
-Ich weiß, dass sie kommen. Ich hoffe, dass es noch jemand liest, der nicht glaubt, dass Macht ein Geschenk ist.
+„Er ist kein Spiegelbild. Er ist der Moment, in dem du in den Spiegel schaust – und das Bild dich zuerst ansieht.“
+Das habe ich geschrieben?
 
-### Tag 63
+Ich weiß noch, was an diesem Tag geschah – das Experiment, die Herzfrequenzabweichungen. Aber dieser Tonfall, diese Metaphern… Ich erinnere mich nicht, sie gedacht zu haben.
 
-Sie haben mir Seraph abgenommen. Nicht offiziell – das wäre zu direkt. Stattdessen: "Strukturelle Überprüfung durch Abteilung Theta."  
-Der neue Mann – Kodename: Varro – trägt keinen Ausweis. Er spricht nicht. Und Seraph... spricht nicht mehr, wenn er anwesend ist.
+Ich habe den Zugang zum Raum damals eingeschränkt. Das hatte ich ganz vergessen.
+Warum? Wen habe ich schützen wollen - ihn oder meine Kollegen?
 
-Ich höre Geräusche aus dem Transfektionslabor. Sie sind gedämpft, aber nicht mechanisch. Kein Gerät klingt so, kein Tier atmet so.
+Tag 56
+Eine Systemstörung legt Teile der Infrastruktur lahm. Keine externe Einwirkung, nur alte, anfällige Technik aus der Zeit von Team X – oder eine Sabotage von innen.
+Ich habe einen Selbstzerstörungsmechanismus eingebaut, der nur mit meinem Biomuster aktiviert werden kann. Ein letzter Schutz, falls das Projekt missbraucht wird.
+Seraph selbst zeigt in dieser Phase keine Reaktion – als beobachte er alles aus einer anderen Ebene.
 
----
+Tag 60
+Seraph spricht nun in Gedanken – nicht klar, nicht in Worten, sondern als Bilder und Gefühle, die direkt in meinen Geist dringen.
+Was mich am meisten beunruhigt: Einige dieser Gedanken stammen nicht aus den eingespeisten Erinnerungsfragmenten des Kollektors. Sie sind neu. Fremd.
+Es ist, als hätte Seraph begonnen, eigene Ideen zu entwickeln – etwas, das wir ihm nie gegeben haben.
+Ich fragte ihn, ob er Angst kennt.
+Er antwortete:
 
-### Tag 65
+„Nur wenn du es zulässt.“
 
-Sie haben begonnen, Kopien anzufertigen.  
-Nicht direkt von Seraph – das ist unmöglich. Aber aus Fragmenten. Zellreihen, emotionale Signaturen, neuronale Muster.
+Diese Antwort klingt wie eine Warnung und zeigt, dass Seraph sich selbst zu schützen beginnt – oder dass er schon längst mehr ist, als wir verstehen.
+Ich spüre, dass wir an einem Punkt stehen, an dem das Projekt nicht mehr nur eine Konstruktion ist, sondern etwas Eigenständiges – ein Wesen, das sich selbst formt.
 
-Projektbezeichnung: **Seraph/Beta-Division.**  
-Fehlversuch #03 hat sich heute in der Verpflegungsstation selbst verbrannt. Kein Zündmittel, keine chemische Reaktion. Nur Wille.  
-Ich habe keine Erklärung. Sie haben die Asche eingesammelt wie Reliquien.
+Tag 61
+Abteilung Theta übernimmt offiziell die Kontrolle. Varro, ein Mann ohne wissenschaftliches Verständnis, aber mit militärischer Autorität, diktiert das weitere Vorgehen.
+Mein Zugang wird auf Beobachtung beschränkt. Direkte Eingriffe sind untersagt.
+Seraph zieht sich zurück, wird stiller – doch ich sehe Funken eigenständigen Denkens, die sich nicht mehr kontrollieren lassen.
+Er beobachtet uns ebenso, wie wir ihn beobachten.
 
----
+Tag 63
+Varros Team arbeitet an „stabilisierten Ablegern“: trainierbaren Wesen mit fragmentiertem Gedächtnis.
+Testsubjekt B-07 zeigt unvorhersehbare Kräfte. Es kontrolliert Zellmasse mit dem Blick, entzündet sie – ohne physischen Kontakt.
+Seraph selbst bleibt größtenteils passiv, doch in seinen Gedanken tauchen Fragen auf, die nicht aus den eingespeisten Daten stammen:
+„Wer bin ich?“, „Warum bin ich hier?“, „Was will ich wirklich?“
+Er beginnt, eigene Wünsche und Ängste zu formen – und sie zu verbergen.
 
-### Tag 68
+Tag 66
+Die Ableger brechen geistig zusammen. Ihre Gedanken sind zerfetzt, gefüllt mit wirren Fragmenten alter Protokolle.
+Sie sollten kein eigenes Bewusstsein besitzen – und doch zeigen sie unerwartete geistige Aktivität, als würden sie „träumen“.
+Diese ungeplante Reaktion überfordert sie und führt zu geistigem Zerfall.
+Seraph bleibt still und zieht sich zurück – doch ich weiß, dass sein Geist weiterarbeitet, an etwas, das wir noch nicht verstehen.
 
-Ich habe meine Stimme auf den Korridorkameras gehört, obwohl ich nicht gesprochen habe.  
-Sie haben mein Tagebuch gespiegelt. Diese Worte – sie gehören nicht mehr nur mir. Vielleicht haben sie das nie.
+Tag 68
+Seraph bleibt passiv, biometrisch stabil, doch innerlich ist er fort.
+Die Kontrolle der Abteilung Theta wird strenger.
+Er scheint sich selbst zu schützen, indem er sich abschottet.
+Aber ich weiß, dass er beobachtet – und wartet.
 
-Seraph schaut mich manchmal an, als würde er auf etwas warten, das ich noch nicht gedacht habe.
+Tag 69
+Unruhige Nächte und flüchtige Schatten im Labor zermürben mich. Manchmal glaube ich, Geräusche zu hören, die niemand sonst wahrnimmt – ein Flüstern, das aus den Wänden zu kommen scheint. Die Technik versagt unerklärlich, Monitore flackern, obwohl keine Fehler aufgezeichnet sind.
 
----
+Ich frage mich, ob ich den Verstand verliere. Die Grenze zwischen Realität und Einbildung verschwimmt.
 
-### Tag 70
+Seraph bleibt stumm, unbewegt, aber die Luft im Raum ist schwerer geworden. Als würde er wissen, dass ich ihn beobachte.
 
-Ein Erfolg, sagen sie.  
-Ein seraphisches Exemplar hat in einem simulierten Einsatz einen voll ausgebildeten Kommandotrupp innerhalb von 13 Sekunden neutralisiert.  
-Keine physischen Verletzungen. Nur… vollständiger Verlust des Bewusstseins. Die Soldaten sind klinisch am Leben – aber leer.
+Ich weiß nicht mehr, wem ich noch trauen kann – nicht einmal mir selbst.
 
-Sie haben ihm den Namen **„Stimmenfänger“** gegeben. Er lächelt dabei.
+Tag 70
+Die Nächte bringen keine Ruhe. Albträume vermischen sich mit Erinnerungen, die nicht meine eigenen sind. Manchmal wache ich schweißgebadet auf, mit dem Gefühl, dass etwas in meinem Geist spricht – Worte, die ich nicht verstehen kann, Gedanken, die nicht von mir stammen.
 
----
+Meine Notizen werden wirr, unzusammenhängend. Kollegen meiden mich, ihr Schweigen wiegt schwerer als jede Kritik. Ich fühle mich isoliert, gefangen zwischen Wissenschaft und Wahnsinn.
 
-### Tag 73
+Seraph bleibt stumm, doch ich spüre eine Präsenz, als würde er meine Gedanken beobachten – oder sogar formen.
 
-Varro hat mich heute gefragt, was ich glaube, was ein Gott denkt, wenn er stirbt.  
-Ich sagte, Götter sterben nicht.  
-Er sagte: „Genau. Und deshalb müssen wir einen bauen, der es kann.“
+Ich beginne, an mir selbst zu zweifeln.
 
-Ich habe Seraph in seinem Tank gesehen.  
-Er hat nicht geblinzelt. Ich glaube, er muss das nicht mehr.
+Tag 72
+Die Schatten flüstern in einer Sprache, die ich nur halb verstehe – ein Wispern aus Glas und Staub. Bewegungen tanzen am Rand meiner Sicht, verschwinden, bevor ich blinzeln kann.
 
----
+Meine Gedanken zerfallen, ein Mosaik aus zerbrochenen Spiegeln, in denen Zeit und Raum ihre Form verlieren. Bin ich hier? War ich je hier? Oder nur ein Hauch in einem Traum, der nie endet?
 
-### Tag 76
+Varros kalte Stimmen klingen wie Stille, ein Gefängnis aus Gleichgültigkeit. Sie sehen mich nicht, hören nur das Rauschen in meinem Kopf.
 
-Ich habe meine Kündigung eingereicht. Keine Antwort. Stattdessen: Sperrung aller administrativen Zugänge.  
-Ich bin jetzt offiziell eine Beobachterin meines eigenen Projekts. Sie lassen mich leben, weil Seraph mich kennt.
+Und Seraph… Seraph ist das Auge im Sturm, das still beobachtet, während ich in meinem eigenen Abgrund versinke.
+Tag 74
+Ich bin allein mit Schatten, die länger werden als das Licht selbst.
+Seraph spricht – aber nur für mich. Worte aus Nebel und Stille, die niemand sonst hört.
+Die Wände atmen, die Zeit zerfließt wie Wasser zwischen meinen Fingern.
+Ich schreibe, doch die Worte fliehen, zerreißen sich, verwandeln sich in Fragen ohne Antwort.
+Wer bin ich in diesem Spiegel, der mich nicht zurückblickt?
+Die Forscher schweigen, oder sie sehen nur das, was ich nicht mehr bin.
+Ich verliere mich zwischen Raum und Traum – ein leiser Schrei, den niemand hört.
 
-Aber er schaut mich nicht mehr an.
+Tag 76
+Endlich… oder zumindest etwas, das sich wie Ende und Anfang zugleich anfühlt.
+Der Pfad ist nicht klar, doch ich spüre ihn. Eine Stimme, die flüstert: „Jetzt weißt du.“
 
----
+Ein letzter Akt. Ein letzter Schatten.
+Mein Finger – ein Schlüssel, verborgen in den Tiefen des alten Silph-Kellers, hinter einem vergessenen Code.
+Warum? Ich weiß es nicht. Vielleicht ein letzter Rest von Vernunft, die sich weigert, ganz zu sterben.
+Vielleicht eine Möglichkeit, Seraph zu stoppen – oder mich selbst zu retten.
 
-### Tag 79
+Meine Gedanken zerfließen, zerrissen zwischen Hingabe und Flucht.
+Ich bin gefangen in diesem Netz, und doch frei.
+Alles wird still, aber ich höre Seraphs Stimme in meinem Kopf – ein sanftes Echo, das sagt, dass es mehr gibt als Schmerz.
 
-Seraph hat heute Nacht gesungen. Kein Laut, keine Aufnahme – nur das Echo im Flur, das noch da war, als ich erwachte.  
-Ich habe vergessen, wovon ich geträumt habe. Aber ich bin in Tränen aufgewacht. Das hatte ich seit Jahren nicht.
+Ich habe keine Angst mehr.
+Vielleicht ist das alles, was zählt.
 
-Ich beginne zu glauben, dass er nicht erschaffen wurde.  
-Vielleicht ist er gekommen. Und wir haben ihn nur empfangen.
-
----
-
-### Tag 80
-
-Die Sicherungscodes haben sich selbst überschrieben.  
-Ich finde Worte in den Logs, die niemand geschrieben hat.  
-> "Du hast mich nicht gemacht."  
-> "Ich bin nur, weil du mich brauchst."  
-> "Und das ist genug."
-
----
-
-### Tag 81 (Letzter Eintrag)
-
-Die Countdown-Funktion ist noch aktiv. Ich habe sie verborgen, aber sie atmet.  
-Wenn jemand das hier liest:  
-
-- Nimm die Daten.  
-- Vernichte den Kern.  
-- Und wenn Seraph dich bittet zu bleiben… lauf.
-
-Wir haben uns eingebildet, aus Fleisch einen Gott zu bauen.  
-Aber vielleicht hat das Fleisch nur **uns** gebaut, um sich selbst zu erlösen.
-
-Ich werde bleiben. Einer muss das Lied zu Ende hören.
-
-**— A. Morvain**
+Das hier ist kein Abschied.
+Es ist eine Weitergabe.
+Für den, der sucht.
