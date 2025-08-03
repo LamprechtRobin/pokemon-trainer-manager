@@ -6,6 +6,7 @@ import { Attack } from "../types/attack";
 import { trainerService } from "../firebase/trainerService";
 import { attackService } from "../services/attackService";
 import { evolutionService } from "../services/evolutionService";
+import { BasicAttackService } from "../services/basicAttackService";
 import { pokeApiService } from "../services/pokeapi";
 
 // Pokemon type options
@@ -136,13 +137,14 @@ const PokemonDetail: React.FC = () => {
 
       // Evolution data is now loaded dynamically via useEffect, no need to store in Pokemon object
 
-      if (!foundPokemon.learnedAttacks) {
-        // Initialize with default attack based on type
-        const defaultAttack = foundPokemon.type
-          ? attackService.getDefaultAttackForType(foundPokemon.type)
-          : undefined;
-        updatedPokemon.learnedAttacks = defaultAttack ? [defaultAttack.id] : [];
+      if (!foundPokemon.learnedAttacks || foundPokemon.learnedAttacks.length === 0) {
+        // Initialize with basic attack based on type
+        const basicAttackId = foundPokemon.type
+          ? BasicAttackService.getBasicAttackForType(foundPokemon.type)
+          : null;
+        updatedPokemon.learnedAttacks = basicAttackId ? [basicAttackId] : [];
         needsUpdate = true;
+        console.log(`Initializing Pokemon ${foundPokemon.name} with basic attack: ${basicAttackId}`);
       }
 
       if (needsUpdate) {

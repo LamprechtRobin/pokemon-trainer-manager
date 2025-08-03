@@ -33,11 +33,13 @@ export const trainerService = {
     try {
       console.log('Firebase: Adding trainer to collection:', COLLECTION_NAME);
       console.log('Firebase: Trainer data:', trainerData);
+      console.log('Firebase: Original imageUrl:', trainerData.imageUrl);
       
       // Recursively remove undefined values as Firestore doesn't support them
       const cleanData = this.removeUndefinedValues(trainerData);
       
       console.log('Firebase: Clean data (undefined removed):', cleanData);
+      console.log('Firebase: Clean imageUrl:', cleanData.imageUrl);
       const docRef = await addDoc(collection(db, COLLECTION_NAME), cleanData);
       console.log('Firebase: Document added with ID:', docRef.id);
       return docRef.id;

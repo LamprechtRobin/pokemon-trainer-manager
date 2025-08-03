@@ -49,7 +49,6 @@ export const TrainerImage: React.FC<{
     // This handles cases where onLoad event doesn't fire for base64 images
     if (imageUrl && imageUrl.trim() !== '') {
       const timer = setTimeout(() => {
-        console.log('TrainerImage: Fallback timer triggered for', name);
         setImageLoaded(true);
       }, 3000);
       
@@ -58,12 +57,10 @@ export const TrainerImage: React.FC<{
   }, [imageUrl, name]);
 
   const handleImageError = () => {
-    console.log('TrainerImage: Image failed to load:', imageUrl);
     setImageError(true);
   };
 
   const handleImageLoad = () => {
-    console.log('TrainerImage: Image successfully loaded for', name);
     setImageLoaded(true);
   };
 

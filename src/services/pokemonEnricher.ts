@@ -6,6 +6,7 @@ import {
 import { Pokemon } from '../types/pokemon';
 import { pokeApiService } from './pokeapi';
 import { TalentPointService } from './talentPointService';
+import { BasicAttackService } from './basicAttackService';
 
 export class PokemonEnricher {
   /**
@@ -214,13 +215,15 @@ export class PokemonEnricher {
    * Creates a fallback Pokemon when API enrichment fails
    */
   private static createFallbackPokemon(generatedPokemon: GeneratedPokemonData): EnrichedPokemonData {
+    const fallbackType = 'normal'; // Default fallback type
+    
     return {
       id: `fallback-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       name: generatedPokemon.name,
       level: generatedPokemon.level,
       pokemonId: 1, // Default to Bulbasaur ID
       imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-      type: 'normal',
+      type: fallbackType,
       stats: { hp: 50, attack: 50, defense: 50, speed: 50 },
       talentPoints: { hp: 0, attack: 0, defense: 0, speed: 0 },
       talentPointsSpentOnAttacks: 0,
@@ -273,7 +276,10 @@ export class PokemonEnricher {
       talentPointsSpentOnAttacks: enrichedPokemon.talentPointsSpentOnAttacks || 0,
       isShiny: enrichedPokemon.isShiny || false,
       createdAt: enrichedPokemon.createdAt || new Date().toISOString(),
-      learnedAttacks: [], // Start with no learned attacks
+      learnedAttacks: BasicAttackService.addBasicAttackToPokemon({
+        type: enrichedPokemon.type,
+        learnedAttacks: []
+      }), // Start with basic attack for primary type
       abilities: [], // Start with no abilities
       species: enrichedPokemon.name || 'Unknown' // Use name as species
     };

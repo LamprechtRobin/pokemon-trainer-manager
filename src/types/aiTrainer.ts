@@ -11,6 +11,7 @@ export interface AIGenerationSettings {
   allowShiny: boolean;
   trainerPersonality: TrainerPersonality;
   statDistributionStyle: StatDistributionStyle;
+  generateImage: boolean; // Whether to generate a trainer image
 }
 
 // Region Options (Generation-based)
@@ -59,7 +60,8 @@ export const DEFAULT_AI_SETTINGS: AIGenerationSettings = {
   teamSize: 4,
   allowShiny: true,
   trainerPersonality: "random",
-  statDistributionStyle: "balanced"
+  statDistributionStyle: "balanced",
+  generateImage: false
 };
 
 // Region Information
@@ -138,6 +140,7 @@ export type GenerationStep =
   | "creating_team"
   | "enriching_pokemon"
   | "calculating_stats"
+  | "generating_image"
   | "validating_result"
   | "finalizing";
 

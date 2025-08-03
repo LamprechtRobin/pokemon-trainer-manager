@@ -7,8 +7,8 @@ import PokemonSearch from "../components/PokemonSearch";
 import ItemImagePicker from "../components/ItemImagePicker";
 import Shop from "../components/Shop";
 import { pokeApiService } from "../services/pokeapi";
-import { attackService } from "../services/attackService";
 import { evolutionService } from "../services/evolutionService";
+import { BasicAttackService } from "../services/basicAttackService";
 import { TrainerImage } from "../utils/imageUtils";
 
 const TrainerDetail: React.FC = () => {
@@ -109,9 +109,9 @@ const TrainerDetail: React.FC = () => {
       );
 
       // Standard-Attacke basierend auf primärem Typ ermitteln
-      const defaultAttack = pokemonDetails?.type
-        ? attackService.getDefaultAttackForType(pokemonDetails.type)
-        : undefined;
+      const basicAttackId = pokemonDetails?.type
+        ? BasicAttackService.getBasicAttackForType(pokemonDetails.type)
+        : null;
 
       const evolutionData = evolutionService.getEvolutionData(pokemonName);
 
@@ -128,7 +128,7 @@ const TrainerDetail: React.FC = () => {
           speed: 0,
         },
         talentPointsSpentOnAttacks: 0,
-        learnedAttacks: defaultAttack ? [defaultAttack.id] : [],
+        learnedAttacks: basicAttackId ? [basicAttackId] : [],
         createdAt: new Date().toISOString(),
       };
 

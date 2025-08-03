@@ -165,6 +165,27 @@ const GenerationSettings: React.FC<GenerationSettingsProps> = ({
             Shiny Pokemon erlauben (selten)
           </label>
         </div>
+        
+        <div className="space-y-2">
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="generateImage"
+              checked={settings.generateImage}
+              onChange={(e) => updateSetting('generateImage', e.target.checked)}
+              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+            />
+            <label htmlFor="generateImage" className="ml-2 text-sm text-gray-900">
+              Trainer-Bild automatisch generieren
+            </label>
+          </div>
+          {settings.generateImage && (
+            <div className="ml-6 text-xs text-gray-500">
+              <p>⚠️ Benötigt einen gültigen Hugging Face API-Key mit Credits</p>
+              <p>Bei Fehlern wird der Trainer ohne Bild erstellt</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Settings Summary */}
@@ -181,6 +202,7 @@ const GenerationSettings: React.FC<GenerationSettingsProps> = ({
           <p>• {settings.preferredType === 'all' ? 'Gemischte Typen' : `Fokus auf ${TYPE_NAMES[settings.preferredType as PokemonType]}`}</p>
           <p>• {PERSONALITY_DESCRIPTIONS[settings.trainerPersonality].split(' (')[0]} Persönlichkeit</p>
           <p>• {STAT_STYLE_DESCRIPTIONS[settings.statDistributionStyle].split(' (')[0]} Stat-Verteilung</p>
+          <p>• {settings.generateImage ? 'Mit Bild-Generierung' : 'Ohne Bild-Generierung'}</p>
         </div>
       </div>
     </div>

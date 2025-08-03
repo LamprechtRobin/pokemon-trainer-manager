@@ -11,6 +11,7 @@ import {
 import { RegionService } from './regionService';
 import { TalentPointService } from './talentPointService';
 import { PokemonEnricher } from './pokemonEnricher';
+import { imageGenerationService } from './imageGenerationService';
 
 export interface GeminiContent {
   parts: Array<{
@@ -543,6 +544,68 @@ Erstelle jetzt einen kreativen, aber regelkonformen Trainer basierend auf diesen
     return types[Math.floor(Math.random() * types.length)];
   }
 
+  private static buildImagePrompt(trainer: GeneratedTrainerData, settings: AIGenerationSettings): string {
+    // Build a descriptive prompt for the trainer image based on personality and description
+    let prompt = `Pokemon trainer portrait, ${trainer.name}`;
+    
+    // Add personality-based styling
+    switch (settings.trainerPersonality) {
+      case 'friendly':
+        prompt += ', friendly and cheerful person, warm smile, bright colors';
+        break;
+      case 'aggressive':
+        prompt += ', tough and intimidating person, serious expression, dark colors';
+        break;
+      case 'mysterious':
+        prompt += ', mysterious and enigmatic person, hood or cape, shadowy atmosphere';
+        break;
+      case 'professional':
+        prompt += ', professional scientist or gym leader, clean uniform, confident pose';
+        break;
+      default:
+        prompt += ', unique personality';
+    }
+
+    // Add preferred type theming
+    if (settings.preferredType && settings.preferredType !== 'all') {
+      const typeColors: Record<string, string> = {
+        fire: 'red and orange colors',
+        water: 'blue and aqua colors',
+        grass: 'green and nature colors',
+        electric: 'yellow and electric colors',
+        psychic: 'purple and mystical colors',
+        ice: 'light blue and white colors',
+        dragon: 'purple and gold colors',
+        dark: 'black and gray colors',
+        fighting: 'brown and tan colors',
+        poison: 'purple and green colors',
+        ground: 'brown and earth colors',
+        flying: 'sky blue and white colors',
+        bug: 'green and brown colors',
+        rock: 'gray and brown colors',
+        ghost: 'purple and ethereal colors',
+        steel: 'silver and metallic colors',
+        fairy: 'pink and pastel colors',
+        normal: 'neutral colors'
+      };
+      
+      const typeColor = typeColors[settings.preferredType];
+      if (typeColor) {
+        prompt += `, ${typeColor}`;
+      }
+    }
+
+    // Add description context if available
+    if (trainer.description) {
+      prompt += `, ${trainer.description}`;
+    }
+
+    // Add style requirements
+    prompt += ', anime style, high quality, detailed face, Pokemon art style';
+
+    return prompt;
+  }
+
   // New method: Generate trainer with full Pokemon enrichment
   static async generateEnrichedTrainer(
     settings: AIGenerationSettings,
@@ -590,7 +653,36 @@ Erstelle jetzt einen kreativen, aber regelkonformen Trainer basierend auf diesen
         PokemonEnricher.applyTalentPoints(pokemon, settings.statDistributionStyle)
       );
 
-      // Step 4: Create final enriched trainer
+      // Step 4: Generate trainer image (if requested)
+      let trainerImageUrl: string | undefined;
+      if (settings.generateImage) {
+        onProgress?.({
+          step: 'generating_image',
+          message: 'Generiere Trainer-Bild...',
+          progress: 88
+        });
+
+        try {
+          const imagePrompt = this.buildImagePrompt(generatedTrainer, settings);
+          const imageResult = await imageGenerationService.generateTrainerAvatar({
+            prompt: imagePrompt
+          });
+          trainerImageUrl = imageResult.imageUrl;
+        } catch (error) {
+          console.warn('Failed to generate trainer image:', error);
+          
+          // Show a more specific progress message about the failure
+          onProgress?.({
+            step: 'generating_image',
+            message: `Bildgenerierung fehlgeschlagen: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`,
+            progress: 88
+          });
+          
+          // Continue without image rather than failing the entire generation
+        }
+      }
+
+      // Step 5: Create final enriched trainer
       onProgress?.({
         step: 'finalizing',
         message: 'Finalisiere Trainer...',
@@ -601,6 +693,7 @@ Erstelle jetzt einen kreativen, aber regelkonformen Trainer basierend auf diesen
         id: `ai-generated-${Date.now()}`,
         name: generatedTrainer.name,
         description: generatedTrainer.description || '',
+        imageUrl: trainerImageUrl,
         money: 1000,
         team: pokemonWithTalentPoints,
         items: [],
@@ -614,7 +707,7 @@ Erstelle jetzt einen kreativen, aber regelkonformen Trainer basierend auf diesen
         }
       };
 
-      // Step 5: Validate final result
+      // Step 6: Validate final result
       const validation = PokemonEnricher.validateEnrichedTeam(pokemonWithTalentPoints);
       if (!validation.isValid) {
         enrichedTrainer.validationSummary = {

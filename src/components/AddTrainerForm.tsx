@@ -111,14 +111,15 @@ const AddTrainerForm: React.FC<AddTrainerFormProps> = ({ onSubmit, onCancel }) =
     const trainerData: Omit<Trainer, 'id'> = {
       name: enrichedTrainer.name || 'AI-Generated Trainer',
       description: enrichedTrainer.description || '',
+      imageUrl: enrichedTrainer.imageUrl, // Include generated image
       money: enrichedTrainer.money || 1000,
       team: pokemonTeam, // Now includes real Pokemon with PokeAPI data
       items: enrichedTrainer.items || [],
       createdAt: enrichedTrainer.createdAt || new Date().toISOString()
-      // Remove imageUrl entirely if it's undefined
     };
     
     console.log('AI Generated enriched trainer:', enrichedTrainer);
+    console.log('Generated imageUrl:', enrichedTrainer.imageUrl);
     console.log('Converted Pokemon team:', pokemonTeam);
     console.log('Calling onSubmit with enriched trainer data:', trainerData);
     onSubmit(trainerData);

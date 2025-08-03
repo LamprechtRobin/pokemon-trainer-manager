@@ -7,6 +7,7 @@ import {
 } from '../types/aiTrainer';
 import { GeminiService } from '../services/geminiService';
 import GenerationSettings from './GenerationSettings';
+import { TrainerImage } from '../utils/imageUtils';
 
 interface AITrainerGeneratorProps {
   onGenerate: (trainer: EnrichedTrainerData) => void;
@@ -188,13 +189,24 @@ const AITrainerGenerator: React.FC<AITrainerGeneratorProps> = ({
       {generatedTrainer && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-6">
           <div className="flex items-start justify-between mb-4">
-            <div>
-              <h4 className="text-lg font-semibold text-green-900">
-                {generatedTrainer.name}
-              </h4>
-              <p className="text-sm text-green-700 mt-1">
-                {generatedTrainer.description}
-              </p>
+            <div className="flex items-start space-x-4">
+              {/* Trainer Image */}
+              <div className="flex-shrink-0">
+                <TrainerImage 
+                  imageUrl={generatedTrainer.imageUrl}
+                  name={generatedTrainer.name}
+                  size={80}
+                />
+              </div>
+              
+              <div>
+                <h4 className="text-lg font-semibold text-green-900">
+                  {generatedTrainer.name}
+                </h4>
+                <p className="text-sm text-green-700 mt-1">
+                  {generatedTrainer.description}
+                </p>
+              </div>
             </div>
             <div className="flex space-x-2">
               <button

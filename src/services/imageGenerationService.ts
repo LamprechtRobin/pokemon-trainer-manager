@@ -117,9 +117,15 @@ class ImageGenerationService {
           const errorText = await response.text();
           console.log(`${model} failed: ${response.status} - ${errorText}`);
           
-          // Continue to next model unless it's an auth error
+          // Handle specific error codes
           if (response.status === 401) {
             throw new Error('Invalid API key. Please check your Hugging Face token.');
+          }
+          if (response.status === 402) {
+            throw new Error('Insufficient credits for image generation. Please check your Hugging Face billing or try a different API key.');
+          }
+          if (response.status === 429) {
+            throw new Error('Rate limit exceeded. Please wait before trying again.');
           }
           // For other errors, try next model
           continue;
@@ -131,8 +137,8 @@ class ImageGenerationService {
       }
     }
     
-    // If all models failed, try a simple fallback approach
-    return this.trySimpleFallback(prompt);
+    // If all models failed, throw a comprehensive error
+    throw new Error('All image generation models failed. Please check your API key and credits, or try again later.');
   }
 
   /**

@@ -3,6 +3,7 @@ import { trainerService } from '../firebase/trainerService';
 import TrainerCard from './TrainerCard';
 import AddTrainerForm from './AddTrainerForm';
 import { Trainer } from '../types/trainer';
+import { PokemonMigration } from '../utils/pokemonMigration';
 
 const TrainerOverview: React.FC = () => {
   const [trainers, setTrainers] = useState<Trainer[]>([]);
@@ -18,7 +19,25 @@ const TrainerOverview: React.FC = () => {
       console.log('Loading trainers...');
       const trainersData = await trainerService.getAllTrainers();
       console.log('Loaded trainers:', trainersData);
-      setTrainers(trainersData);
+      
+      // Run migration to ensure all Pokemon have basic attacks
+      const migrationResult = PokemonMigration.migrateAllTrainers(trainersData);
+      
+      // If any trainers were updated, save them back to Firebase
+      if (migrationResult.migrationCount > 0) {
+        console.log(`Migrating ${migrationResult.migrationCount} trainers with basic attacks...`);
+        
+        // Save updated trainers back to Firebase
+        for (const trainer of migrationResult.updatedTrainers) {
+          if (trainer.id) {
+            await trainerService.updateTrainer(trainer.id, trainer);
+          }
+        }
+        
+        console.log('Migration complete - all Pokemon now have basic attacks');
+      }
+      
+      setTrainers(migrationResult.updatedTrainers);
     } catch (error) {
       console.error('Failed to load trainers:', error);
       alert('Failed to load trainers. Check console for details.');

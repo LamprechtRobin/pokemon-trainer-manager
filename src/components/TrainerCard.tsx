@@ -11,13 +11,6 @@ interface TrainerCardProps {
 const TrainerCard: React.FC<TrainerCardProps> = ({ trainer, onDelete }) => {
   const navigate = useNavigate();
   
-  // Debug logging
-  console.log('TrainerCard Debug for', trainer.name + ':', 
-    'imageUrl =', trainer.imageUrl, 
-    'hasImageUrl =', !!trainer.imageUrl,
-    'imageUrlType =', typeof trainer.imageUrl
-  );
-  
   const handleDelete = (e: React.MouseEvent): void => {
     e.stopPropagation(); // Prevent navigation when deleting
     if (window.confirm(`Are you sure you want to delete trainer ${trainer.name}?`)) {
