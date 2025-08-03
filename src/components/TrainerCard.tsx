@@ -11,6 +11,13 @@ interface TrainerCardProps {
 const TrainerCard: React.FC<TrainerCardProps> = ({ trainer, onDelete }) => {
   const navigate = useNavigate();
   
+  // Debug logging
+  console.log('TrainerCard Debug for', trainer.name + ':', 
+    'imageUrl =', trainer.imageUrl, 
+    'hasImageUrl =', !!trainer.imageUrl,
+    'imageUrlType =', typeof trainer.imageUrl
+  );
+  
   const handleDelete = (e: React.MouseEvent): void => {
     e.stopPropagation(); // Prevent navigation when deleting
     if (window.confirm(`Are you sure you want to delete trainer ${trainer.name}?`)) {
@@ -28,18 +35,13 @@ const TrainerCard: React.FC<TrainerCardProps> = ({ trainer, onDelete }) => {
       className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer"
     >
       <div className="mb-4">
-        {trainer.imageUrl && (
-          <div className="mb-4 flex justify-center">
-            <img 
-              src={trainer.imageUrl} 
-              alt={`${trainer.name} avatar`}
-              className="w-20 h-20 rounded-full object-cover border-4 border-gray-200"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-          </div>
-        )}
+        <div className="mb-4 flex justify-center">
+          <TrainerImage 
+            imageUrl={trainer.imageUrl}
+            name={trainer.name}
+            size={80}
+          />
+        </div>
         <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-1 text-center">
           {trainer.name}
         </h3>

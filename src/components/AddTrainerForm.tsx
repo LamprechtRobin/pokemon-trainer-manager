@@ -5,6 +5,7 @@ import { PokemonEnricher } from '../services/pokemonEnricher';
 import ImageModeSelector from './ImageModeSelector';
 import AIImageGenerator from './AIImageGenerator';
 import AITrainerGenerator from './AITrainerGenerator';
+import { TrainerImage } from '../utils/imageUtils';
 
 interface AddTrainerFormProps {
   onSubmit: (trainerData: Omit<Trainer, 'id'>) => void;
@@ -205,15 +206,13 @@ const AddTrainerForm: React.FC<AddTrainerFormProps> = ({ onSubmit, onCancel }) =
               accept="image/*"
               className="w-full px-3 py-3 border border-gray-300 rounded-lg text-base bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
-            {imagePreview && (
-              <div className="mt-2 flex justify-center">
-                <img 
-                  src={imagePreview} 
-                  alt="Preview" 
-                  className="w-20 h-20 rounded-full object-cover border-4 border-gray-200"
-                />
-              </div>
-            )}
+            <div className="mt-2 flex justify-center">
+              <TrainerImage 
+                imageUrl={imagePreview || undefined}
+                name={formData.name || "Neuer Trainer"}
+                size={80}
+              />
+            </div>
           </div>
         )}
 

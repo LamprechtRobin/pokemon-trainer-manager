@@ -9,6 +9,7 @@ import Shop from "../components/Shop";
 import { pokeApiService } from "../services/pokeapi";
 import { attackService } from "../services/attackService";
 import { evolutionService } from "../services/evolutionService";
+import { TrainerImage } from "../utils/imageUtils";
 
 const TrainerDetail: React.FC = () => {
   const { trainerId } = useParams<{ trainerId: string }>();
@@ -382,16 +383,13 @@ const TrainerDetail: React.FC = () => {
           {/* Trainer Info */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="text-center mb-6">
-              {trainer.imageUrl && (
-                <img
-                  src={trainer.imageUrl}
-                  alt={`${trainer.name} avatar`}
-                  className="w-24 h-24 rounded-full object-cover border-4 border-gray-200 mx-auto mb-4"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
+              <div className="flex justify-center mb-4">
+                <TrainerImage 
+                  imageUrl={trainer.imageUrl}
+                  name={trainer.name}
+                  size={96}
                 />
-              )}
+              </div>
 
               {editMode ? (
                 <input

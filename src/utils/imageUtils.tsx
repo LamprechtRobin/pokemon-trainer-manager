@@ -31,13 +31,11 @@ export const TrainerImage: React.FC<{
   name: string;
   size?: number;
   className?: string;
-  showPlaceholder?: boolean;
 }> = ({ 
   imageUrl, 
   name, 
   size = 80, 
-  className = '',
-  showPlaceholder = true 
+  className = ''
 }) => {
   const [imageError, setImageError] = React.useState(false);
   const [imageLoaded, setImageLoaded] = React.useState(false);
@@ -46,18 +44,41 @@ export const TrainerImage: React.FC<{
   React.useEffect(() => {
     setImageError(false);
     setImageLoaded(false);
-  }, [imageUrl]);
+    
+    // Fallback: If image doesn't load within 3 seconds, assume it's loaded
+    // This handles cases where onLoad event doesn't fire for base64 images
+    if (imageUrl && imageUrl.trim() !== '') {
+      const timer = setTimeout(() => {
+        console.log('TrainerImage: Fallback timer triggered for', name);
+        setImageLoaded(true);
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [imageUrl, name]);
 
   const handleImageError = () => {
+    console.log('TrainerImage: Image failed to load:', imageUrl);
     setImageError(true);
   };
 
   const handleImageLoad = () => {
+    console.log('TrainerImage: Image successfully loaded for', name);
     setImageLoaded(true);
   };
 
-  // Show placeholder if no image URL, image failed to load, or we explicitly want to show placeholder
-  const shouldShowPlaceholder = !imageUrl || imageError || !showPlaceholder;
+  // Show placeholder if no image URL or image failed to load
+  // Also handle empty strings and whitespace-only strings
+  const shouldShowPlaceholder = !imageUrl || imageUrl.trim() === '' || imageError;
+
+  // Debug log for TrainerImage logic
+  console.log('TrainerImage for', name + ':', {
+    hasImageUrl: !!imageUrl,
+    imageUrlLength: imageUrl?.length || 0,
+    imageError,
+    imageLoaded,
+    shouldShowPlaceholder
+  });
 
   return (
     <div className={`relative ${className}`}>
@@ -80,7 +101,7 @@ export const TrainerImage: React.FC<{
             alt={`${name} avatar`}
             className={`${
               imageLoaded ? 'opacity-100' : 'opacity-0'
-            } transition-opacity duration-200 rounded-full object-cover border-4 border-gray-200`}
+            } transition-opacity duration-200 rounded-full object-cover border-4 border-gray-200 relative z-10`}
             style={{ width: size, height: size }}
             onError={handleImageError}
             onLoad={handleImageLoad}

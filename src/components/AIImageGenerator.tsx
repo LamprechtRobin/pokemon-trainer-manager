@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { imageGenerationService } from '../services/imageGenerationService';
+import { TrainerImage } from '../utils/imageUtils';
 
 interface AIImageGeneratorProps {
   prompt: string;
@@ -147,16 +148,19 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({
       </button>
 
       {/* Generated Image Preview */}
-      {generatedImageUrl && (
-        <div className="bg-gray-50 rounded-lg p-4">
-          <div className="text-sm text-gray-700 mb-2">Generated Avatar:</div>
-          <div className="flex justify-center">
-            <img 
-              src={generatedImageUrl} 
-              alt="Generated trainer avatar" 
-              className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
-            />
-          </div>
+      <div className="bg-gray-50 rounded-lg p-4">
+        <div className="text-sm text-gray-700 mb-2">
+          {generatedImageUrl ? 'Generated Avatar:' : 'Avatar Preview:'}
+        </div>
+        <div className="flex justify-center">
+          <TrainerImage 
+            imageUrl={generatedImageUrl || undefined}
+            name="Generated Trainer"
+            size={128}
+            className="shadow-md"
+          />
+        </div>
+        {generatedImageUrl && (
           <div className="mt-3 flex justify-center space-x-2">
             <button
               type="button"
@@ -167,8 +171,8 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({
               🔄 Generate Another
             </button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Generation Info */}
       {isGenerating && (
