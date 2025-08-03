@@ -14,7 +14,7 @@
 
 ---
 
-## Einleitung (Für Spieler:innen)
+## Einleitung (Für Spieler)
 
 Die Welt nach dem Ereignis ist zerbrechlich. Überall lauern Gefahren, und die Kanto-Regierung kämpft darum, die Ordnung aufrechtzuerhalten. Zwischen diplomatischen Spannungen und wachsender Gewalt gibt es nur wenige, die in den dunkelsten Ecken der Gesellschaft handeln können.
 
@@ -61,8 +61,8 @@ Willkommen bei **Operation: Glutkern**.
 
 **Zeitpunkt:** Früher Abend  
 **Ort:** Südliches Industrieviertel von Saffronia City  
-**Deckname der Einrichtung:** INPM – Institut für Neuromolekulare Pokémon-Medizin  
-**Tarnung:** Alte medizinische Forschungsstation, angeblich im Umbau, kein öffentlicher Zugang  
+**Deckname der Einrichtung:** INPM – Institut für Neuromolekulare Pokémon-Medizin von Silph Co.
+**Tarnung:** Medizinische Forschungsstation. 
 **KR-Stützpunkt (Start):** Provisorisches Safehouse in einer stillgelegten Lagerhalle, ca. 400 Meter vom Ziel entfernt
 
 ---
@@ -84,10 +84,15 @@ Die Spieler können Fragen stellen, Ausrüstung anpassen, Pläne schmieden.
 
 Die Gruppe hat nun mehrere Möglichkeiten zur Vorbereitung:
 
+- Wie kommt ihr rein?
+- Was wollt ihr vorher noch herausfinden?
+- Wie findet ihr es heraus?
+- Ausrüstung?
+
 **Optionale Erkundungen:**
 
 - **Beobachtungsposten einnehmen:** Sie können von gegenüberliegenden Gebäuden das Zielobjekt ausspähen (Bewegung von Personal, Wachrouten, technische Geräte).
-- **Zivilkontakt:** Ein alter Hausmeister in der Nähe mein sich zu Erinnern, das vor 
+- **Zivilkontakt:** Ein alter Hausmeister in der Nähe meint sich zu Erinnern, das vor hier sonst immer Leute ein und aus gingen die dort nicht arbeiten.
 - **Technischer Zugriff:** Über das alte Silph-Stromnetz könnten sie Kamerafeeds abfangen oder Zugangscodes erhalten (Hacker-Rollen).
 - **Wege prüfen:** Auswahl zwischen:
   - Vordereingang mit gefälschten Ausweisen
@@ -117,12 +122,7 @@ Unabhängig vom gewählten Weg, stoßen die Spieler im Komplex auf **etwas Unerw
 
 > In einem Nebenraum flackert ein Licht. Ein humanoides Pokémon-Geschöpf sitzt gefesselt an der Wand. Es sieht aus wie eine Mischung aus Kind und Shaymin. Es reagiert nicht verbal – aber seine Augen flehen. Seine Anwesenheit schmerzt. Etwas an ihm ist falsch – und wunderschön zugleich.
 
-**Mögliche Reaktionen:**
-
-- Medizinisch untersuchen (entdeckt: experimentelle Genfusion)
-- Befreien (Alarmwahrscheinlichkeit steigt)
-- Töten (moralischer Konflikt, möglicherweise zukünftige Schuldgefühle)
-- Ignorieren (Risiko: es wird später gegen sie eingesetzt)
+Es handelt sich um eines der Seraph Kopien. Spieler können entscheiden wie sie damit umgehen.
 
 ---
 
@@ -131,20 +131,25 @@ Unabhängig vom gewählten Weg, stoßen die Spieler im Komplex auf **etwas Unerw
 Am Ende des ersten Aktes:
 
 - Die Gruppe hat **Zugang zum Untergrundlabor** erreicht.
-- Sie trägt erste Erkenntnisse über die Aktivitäten von Team Y.
+- Sie trägt erste Erkenntnisse über die Aktivitäten von Team Y. (Tagebucheintrag)
 - Mindestens eine ethisch komplexe Entscheidung wurde getroffen.
 - Das nächste Ziel: **Serverraum finden, Daten sichern**.
-
-Optional: Am Ende von Akt 1 können sie auf eine Patrouille oder einen getarnten feindlichen Techniker treffen – für einen kleinen, taktischen Encounter oder ein Rollenspielgespräch mit Täuschungspotenzial.
 
 ---
 
 ## Nächste Phase (Akt 2)
 
 - Eindringen in die tieferen Sektoren des Labors  
-- Direkter Kontakt mit der Leitwissenschaftlerin Dr. Morvain  
-- Aktivierung der Selbstzerstörung oder alternative Neutralisierung  
-- Entscheidung über das Schicksal des Testsubjekts
+- Auffindung von Seraph (gefesselt)
+- Tagebuch Einträge
+- Eine komplett durchgeknallte Wissenschaftlerin (letzte Überlebende). Redet nur wirres Zeug. Will Seraph befreien.
+
+---
+
+## Phase 3
+
+- Wissenschafter löst etwas aus wodurch Seraph befreit wird. (10min Countdown)
+- Spieler stehen vor der Wahl. Seraph töten (aber jemand muss das auslösen). Frei lassen. Rein hacken und gefangen lassen? Aber was dann?
 
 ---
 

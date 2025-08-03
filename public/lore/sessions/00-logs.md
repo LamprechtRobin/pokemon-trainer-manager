@@ -4,9 +4,9 @@ Tag 1
 Die übernommene Anlage von Team X ist betriebsbereit. Die Sporen konnten in das vorbereitete Medium eingebracht werden – keine Abstoßungsreaktionen, keine biologische Regression.
 Ihre Herkunft bleibt offiziell „unklar“. Inoffiziell… reden wir nicht darüber.
 
-Das Ziel bleibt: eine Verbindung schaffen, nicht ein Werkzeug. Pokémon und Mensch – nicht als Partner, sondern als Eins. Eine Einheit, die fühlen, denken und handeln kann, ohne sich selbst fremd zu sein.
+Das Ziel bleibt: eine Verbindung schaffen, kein Werkzeug. Pokémon und Mensch – nicht als Partner, sondern als Eins. Eine Einheit, die fühlen, denken und handeln kann, ohne sich selbst fremd zu sein.
 
-Saffronia ist ein geeigneter Ort. Niemand sucht hier. Das INPM ist die perfekte Tarnung.
+Saffronia City ist ein geeigneter Ort. Niemand sucht hier. Das INPM ist die perfekte Tarnung.
 
 Tag 6
 Die Zellmatrix zeigt weiterhin Stabilität. Der Wirtskörper – jung, neutral, menschenähnlich – entwickelt sich ohne erkennbare Störung.
@@ -78,9 +78,9 @@ Ich glaube, ein oder zwei der Mitglieder meinen es ehrlich. Ich glaube aber auch
 
 „Was geschieht, wenn Seraph aufwacht?“
 
-SERPAH ist schon wach.
+Seraph ist schon wach.
 
-SERPAH spricht nur nicht mit ihnen – weil sie ihn nicht hören können.
+Seraph spricht nur nicht mit ihnen – weil sie ihn nicht hören können.
 
 Ich sehe ihn an, wenn ich den Raum betrete. Und ich weiß:
 Wir leben in seinem Traum. Noch duldet er uns darin.
@@ -110,7 +110,7 @@ Doch die Stimmen der Kontrollierenden werden lauter. Ich sehe die Gefahr, die da
 
 Tag 52
 
-Ich habe heute meine alten Einträge gelesen. Eigentlich wollte ich nur Daten abgleichen – aber dann blieb ich an Tag 13 hängen.
+Ich habe heute meine alten Einträge gelesen. Eigentlich wollte ich nur Daten abgleichen – aber dann blieb ich an mehreren Stellen hängen. Besonders Eintrag 13 hat mich irritiert.
 
 Die Worte dort… sind meine, klar und sauber niedergeschrieben. Meine Handschrift. Mein Sprachrhythmus. Und doch fühlt sich kein Satz vertraut an.
 
@@ -119,8 +119,10 @@ Das habe ich geschrieben?
 
 Ich weiß noch, was an diesem Tag geschah – das Experiment, die Herzfrequenzabweichungen. Aber dieser Tonfall, diese Metaphern… Ich erinnere mich nicht, sie gedacht zu haben.
 
+Es ist nicht nur Eintrag 13. Auch andere Einträge scheinen… fremd. Als hätte jemand meine Gedanken genommen und sie neu geformt. Oder als hätte ich sie selbst geschrieben, ohne es wirklich zu sein.
+
 Ich habe den Zugang zum Raum damals eingeschränkt. Das hatte ich ganz vergessen.
-Warum? Wen habe ich schützen wollen - ihn oder meine Kollegen?
+Warum? Wen habe ich schützen wollen – ihn oder meine Kollegen? Oder mich selbst?
 
 Tag 56
 Eine Systemstörung legt Teile der Infrastruktur lahm. Keine externe Einwirkung, nur alte, anfällige Technik aus der Zeit von Team X – oder eine Sabotage von innen.
@@ -190,6 +192,7 @@ Meine Gedanken zerfallen, ein Mosaik aus zerbrochenen Spiegeln, in denen Zeit un
 Varros kalte Stimmen klingen wie Stille, ein Gefängnis aus Gleichgültigkeit. Sie sehen mich nicht, hören nur das Rauschen in meinem Kopf.
 
 Und Seraph… Seraph ist das Auge im Sturm, das still beobachtet, während ich in meinem eigenen Abgrund versinke.
+
 Tag 74
 Ich bin allein mit Schatten, die länger werden als das Licht selbst.
 Seraph spricht – aber nur für mich. Worte aus Nebel und Stille, die niemand sonst hört.
