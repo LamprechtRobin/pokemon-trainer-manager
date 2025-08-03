@@ -40,6 +40,12 @@ const TrainerOverviewPage: React.FC = () => {
           >
             📚 Lore
           </button>
+          <button
+            onClick={() => navigate("/gemini-test")}
+            className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center gap-2 font-medium"
+          >
+            🤖 Gemini API Test
+          </button>
         </div>
 
         {/* Temporärer PokeAPI Test */}
