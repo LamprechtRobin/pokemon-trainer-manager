@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { Trainer, TrainerFormData } from '../types/trainer';
+import { EnrichedTrainerData } from '../types/aiTrainer';
+import { PokemonEnricher } from '../services/pokemonEnricher';
 import ImageModeSelector from './ImageModeSelector';
 import AIImageGenerator from './AIImageGenerator';
+import AITrainerGenerator from './AITrainerGenerator';
 
 interface AddTrainerFormProps {
   onSubmit: (trainerData: Omit<Trainer, 'id'>) => void;
   onCancel: () => void;
 }
 
+type CreationMode = 'manual' | 'ai';
+
 const AddTrainerForm: React.FC<AddTrainerFormProps> = ({ onSubmit, onCancel }) => {
+  const [creationMode, setCreationMode] = useState<CreationMode>('manual');
   const [formData, setFormData] = useState<TrainerFormData>({
     name: '',
     description: '',
@@ -77,17 +83,43 @@ const AddTrainerForm: React.FC<AddTrainerFormProps> = ({ onSubmit, onCancel }) =
       imageUrl = formData.generatedImageUrl;
     }
     
-    const trainerData = {
+    const trainerData: Omit<Trainer, 'id'> = {
       name: formData.name,
-      description: formData.description || undefined,
+      description: formData.description || '',
       money: parseInt(formData.money) || 0,
-      imageUrl,
       team: [], // Initialize with empty Pokemon team
       items: [], // Initialize with empty items inventory
       createdAt: new Date().toISOString()
     };
+
+    // Only add imageUrl if it exists
+    if (imageUrl) {
+      (trainerData as any).imageUrl = imageUrl;
+    }
     
     console.log('Calling onSubmit with:', trainerData);
+    onSubmit(trainerData);
+  };
+
+  const handleAIGenerate = (enrichedTrainer: EnrichedTrainerData): void => {
+    // Convert enriched trainer to standard trainer format
+    const pokemonTeam = enrichedTrainer.team.map(pokemon => 
+      PokemonEnricher.convertToStandardPokemon(pokemon)
+    );
+
+    const trainerData: Omit<Trainer, 'id'> = {
+      name: enrichedTrainer.name || 'AI-Generated Trainer',
+      description: enrichedTrainer.description || '',
+      money: enrichedTrainer.money || 1000,
+      team: pokemonTeam, // Now includes real Pokemon with PokeAPI data
+      items: enrichedTrainer.items || [],
+      createdAt: enrichedTrainer.createdAt || new Date().toISOString()
+      // Remove imageUrl entirely if it's undefined
+    };
+    
+    console.log('AI Generated enriched trainer:', enrichedTrainer);
+    console.log('Converted Pokemon team:', pokemonTeam);
+    console.log('Calling onSubmit with enriched trainer data:', trainerData);
     onSubmit(trainerData);
   };
 
@@ -97,7 +129,35 @@ const AddTrainerForm: React.FC<AddTrainerFormProps> = ({ onSubmit, onCancel }) =
         Add New Trainer
       </h3>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Tab Navigation */}
+      <div className="flex border-b border-gray-200 mb-6">
+        <button
+          type="button"
+          onClick={() => setCreationMode('manual')}
+          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
+            creationMode === 'manual'
+              ? 'border-primary-500 text-primary-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          }`}
+        >
+          Manuell erstellen
+        </button>
+        <button
+          type="button"
+          onClick={() => setCreationMode('ai')}
+          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ml-8 ${
+            creationMode === 'ai'
+              ? 'border-primary-500 text-primary-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          }`}
+        >
+          KI-generiert
+        </button>
+      </div>
+
+      {/* Manual Creation Tab */}
+      {creationMode === 'manual' && (
+        <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-900 mb-1">
             Name *
@@ -225,7 +285,17 @@ const AddTrainerForm: React.FC<AddTrainerFormProps> = ({ onSubmit, onCancel }) =
             Cancel
           </button>
         </div>
-      </form>
+        </form>
+      )}
+
+      {/* AI Generation Tab */}
+      {creationMode === 'ai' && (
+        <AITrainerGenerator
+          onGenerate={handleAIGenerate}
+          onCancel={onCancel}
+          className="mt-0"
+        />
+      )}
     </div>
   );
 };

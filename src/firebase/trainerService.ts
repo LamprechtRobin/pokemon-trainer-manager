@@ -34,10 +34,8 @@ export const trainerService = {
       console.log('Firebase: Adding trainer to collection:', COLLECTION_NAME);
       console.log('Firebase: Trainer data:', trainerData);
       
-      // Remove undefined values as Firestore doesn't support them
-      const cleanData = Object.fromEntries(
-        Object.entries(trainerData).filter(([_, value]) => value !== undefined)
-      );
+      // Recursively remove undefined values as Firestore doesn't support them
+      const cleanData = this.removeUndefinedValues(trainerData);
       
       console.log('Firebase: Clean data (undefined removed):', cleanData);
       const docRef = await addDoc(collection(db, COLLECTION_NAME), cleanData);
