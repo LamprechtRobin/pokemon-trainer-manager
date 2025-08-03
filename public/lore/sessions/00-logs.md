@@ -204,9 +204,14 @@ Endlich… oder zumindest etwas, das sich wie Ende und Anfang zugleich anfühlt.
 Der Pfad ist nicht klar, doch ich spüre ihn. Eine Stimme, die flüstert: „Jetzt weißt du.“
 
 Ein letzter Akt. Ein letzter Schatten.
-Mein Finger – ein Schlüssel, verborgen in den Tiefen des alten Silph-Kellers, hinter einem vergessenen Code.
-Warum? Ich weiß es nicht. Vielleicht ein letzter Rest von Vernunft, die sich weigert, ganz zu sterben.
-Vielleicht eine Möglichkeit, Seraph zu stoppen – oder mich selbst zu retten.
+Mein Finger – ein Schlüssel.
+Ich erinnere mich, dass ich ihn unkenntlich machen wollte. Warum, weiß ich nicht mehr. Vielleicht, um etwas zu verbergen, vielleicht, um etwas zu bewahren.
+
+Es fühlt sich an, als hätte ich sie alle unkenntlich gemacht. Einer nach dem anderen, bis nur noch dieser übrig war. Und doch… tief in mir, ein Flüstern, kaum hörbar, sagte mir, ich müsse ihn abschneiden. Ihn verstecken.
+
+Vielleicht war es ein letzter Rest von Vernunft. Vielleicht war es etwas anderes – etwas, das ich nicht mehr greifen kann. Aber ich weiß: Dieser Finger ist mehr als ein Schlüssel. Er ist eine Möglichkeit. Eine Wahl.
+
+Schaut man hinter das Bild, das wir Realität nennen, wird man erkennen: „Seraph ist die Antwort“ – auf alle Fragen, die wir uns nie zu stellen wagten.
 
 Meine Gedanken zerfließen, zerrissen zwischen Hingabe und Flucht.
 Ich bin gefangen in diesem Netz, und doch frei.

@@ -87,7 +87,7 @@ Die Gruppe hat nun mehrere Möglichkeiten zur Vorbereitung:
 **Optionale Erkundungen:**
 
 - **Beobachtungsposten einnehmen:** Sie können von gegenüberliegenden Gebäuden das Zielobjekt ausspähen (Bewegung von Personal, Wachrouten, technische Geräte).
-- **Zivilkontakt:** Ein alter Hausmeister oder ein Straßenkind in der Nähe kennt Gerüchte über nächtliche Transporte oder „komische Lichter“.
+- **Zivilkontakt:** Ein alter Hausmeister in der Nähe mein sich zu Erinnern, das vor 
 - **Technischer Zugriff:** Über das alte Silph-Stromnetz könnten sie Kamerafeeds abfangen oder Zugangscodes erhalten (Hacker-Rollen).
 - **Wege prüfen:** Auswahl zwischen:
   - Vordereingang mit gefälschten Ausweisen
@@ -145,3 +145,21 @@ Optional: Am Ende von Akt 1 können sie auf eine Patrouille oder einen getarnten
 - Direkter Kontakt mit der Leitwissenschaftlerin Dr. Morvain  
 - Aktivierung der Selbstzerstörung oder alternative Neutralisierung  
 - Entscheidung über das Schicksal des Testsubjekts
+
+---
+
+## Hintergrundgeschichte
+
+Während der chaotischen Zeit nach dem Ereignis nutzte Team X die Gelegenheit, ein geheimes Labor unter dem Silph Co.-Gebäude in Saffronia City einzurichten. Dieses Labor diente der Entwicklung fortschrittlicher Technologien und Experimente, die ihre Vision von künstlicher Intelligenz und Kontrolle vorantreiben sollten. Doch als die Welt ins Chaos stürzte, entschied sich Team X, das Labor aufzugeben. Sie hatten inzwischen modernere und effizientere Einrichtungen an anderen Orten aufgebaut, und die Kosten für den Betrieb des veralteten Labors unter Silph Co. waren nicht mehr gerechtfertigt.
+
+Silph Co., das von der Existenz des Labors wusste, sah darin eine Gelegenheit. Sie verkauften die Informationen über das Labor und seine Infrastruktur an Team Y, das bereit war, dafür zu zahlen. Seitdem erhält Silph Co. finanzielle Unterstützung von Team Y, anstatt von Team X, und kümmert sich nicht weiter um die Aktivitäten im Untergrund, solange die Zahlungen eingehen.
+
+Die Ereignisse, die sich im Labor abspielten, wurden erst durch ein Logbuch bekannt, das später gefunden wurde. Es enthielt erschreckende Details:
+
+1. **Erschaffung von Seraph:** Team Y nutzte die Technologie von Team X, um ein Wesen zu erschaffen, das sie „Seraph“ nannten – ein künstliches Wesen, eine Mischung aus Pokemon und Mensch.
+2. **Erinnerungen durch den Kollektor:** Seraph wurde mit künstlichen Erinnerungen ausgestattet, die durch ein Projekt names "Kollektor" injiziert wurden.
+3. **Entwicklung eines eigenen Bewusstseins:** Entgegen den Erwartungen entwickelte Seraph ein eigenes Bewusstsein.
+4. **Tragödie im Labor:** Die Forscher, die an Seraph arbeiteten, begannen, sich gegenseitig zu misstrauen. Es kam zu Spannungen, die schließlich in Gewalt eskalierten. Viele der Forscher begingen Selbstmord oder wurden Opfer von Seraphs unkontrollierbaren Kräften.
+5. **Verlassenes Labor:** Das Labor wurde schließlich aufgegeben. Team Y zog sich zurück, und Seraph blieb allein zurück. Silph Co. zeigte keinerlei Interesse an den Vorfällen, solange ihre finanziellen Interessen nicht beeinträchtigt wurden.
+
+Das Labor liegt immer noch unter dem Silph Co. Gebäude. Auch wenn heute dort niemand mehr ist.
