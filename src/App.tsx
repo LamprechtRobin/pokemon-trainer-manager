@@ -8,8 +8,8 @@ import AttackManagement from "./pages/AttackManagement";
 import BattleMode from "./pages/BattleMode";
 import DocumentationPage from "./pages/DocumentationPage";
 import LorePage from "./pages/LorePage";
-import GeminiTestPage from "./pages/GeminiTestPage";
 import BackupPage from "./pages/BackupPage";
+import ApiTestPage from "./pages/ApiTestPage";
 
 const App: React.FC = () => {
   return (
@@ -30,7 +30,7 @@ const App: React.FC = () => {
         <Route path="/documentation" element={<DocumentationPage />} />
         <Route path="/lore" element={<LorePage />} />
         <Route path="/backup" element={<BackupPage />} />
-        <Route path="/gemini-test" element={<GeminiTestPage />} />
+        <Route path="/api-tests" element={<ApiTestPage />} />
       </Routes>
     </Router>
   );

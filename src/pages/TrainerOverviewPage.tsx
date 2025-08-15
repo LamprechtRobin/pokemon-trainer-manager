@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import TrainerOverview from "../components/TrainerOverview";
-import PokeAPITest from "../components/PokeAPITest";
 
 const TrainerOverviewPage: React.FC = () => {
   const navigate = useNavigate();
@@ -47,15 +46,12 @@ const TrainerOverviewPage: React.FC = () => {
             📚 Lore
           </button>
           <button
-            onClick={() => navigate("/gemini-test")}
+            onClick={() => navigate("/api-tests")}
             className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center gap-2 font-medium"
           >
-            🤖 Gemini API Test
+            🧪 API Tests
           </button>
         </div>
-
-        {/* Temporärer PokeAPI Test */}
-        <PokeAPITest />
 
         <TrainerOverview />
       </div>
