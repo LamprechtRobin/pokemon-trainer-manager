@@ -1,5 +1,6 @@
 import { Attack, AttackDatabase } from '../types/attack';
-import attacksData from '../data/attacks.json';
+import baseAttacksData from '../data/attacks/base-attacks.json';
+import powerAttacksData from '../data/attacks/power-attacks.json';
 
 // Type emojis mapping (same as in pokeapi.ts)
 const TYPE_EMOJIS: Record<string, string> = {
@@ -25,10 +26,26 @@ const TYPE_EMOJIS: Record<string, string> = {
 
 export const attackService = {
   /**
-   * Get all attacks
+   * Get all attacks (combines base and power attacks)
    */
   getAllAttacks(): Attack[] {
-    return (attacksData as AttackDatabase).attacks;
+    const baseAttacks = (baseAttacksData as AttackDatabase).attacks;
+    const powerAttacks = (powerAttacksData as AttackDatabase).attacks;
+    return [...baseAttacks, ...powerAttacks];
+  },
+
+  /**
+   * Get only base attacks (100% accuracy, lower power)
+   */
+  getBaseAttacks(): Attack[] {
+    return (baseAttacksData as AttackDatabase).attacks;
+  },
+
+  /**
+   * Get only power attacks (70% accuracy, higher power)
+   */
+  getPowerAttacks(): Attack[] {
+    return (powerAttacksData as AttackDatabase).attacks;
   },
 
   /**

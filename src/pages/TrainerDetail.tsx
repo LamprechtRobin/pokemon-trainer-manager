@@ -6,6 +6,7 @@ import { trainerService } from "../firebase/trainerService";
 import PokemonSearch from "../components/PokemonSearch";
 import ItemImagePicker from "../components/ItemImagePicker";
 import Shop from "../components/Shop";
+import PokemonTransferModal from "../components/PokemonTransferModal";
 import { pokeApiService } from "../services/pokeapi";
 import { evolutionService } from "../services/evolutionService";
 import { BasicAttackService } from "../services/basicAttackService";
@@ -32,6 +33,10 @@ const TrainerDetail: React.FC = () => {
   const [showShop, setShowShop] = useState(false);
   const [healingMessage, setHealingMessage] = useState<string | null>(null);
   const [imageMode, setImageMode] = useState<'url' | 'picker'>('picker');
+  
+  // Transfer state
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [transferPokemon, setTransferPokemon] = useState<{ pokemon: Pokemon; index: number } | null>(null);
   const [newItem, setNewItem] = useState<{
     name: string;
     description: string;
@@ -163,6 +168,57 @@ const TrainerDetail: React.FC = () => {
     } catch (error) {
       console.error("Error removing Pokemon:", error);
       alert("Fehler beim Entfernen des Pokemon");
+    }
+  };
+
+  const handleOpenTransfer = (pokemon: Pokemon, index: number) => {
+    setTransferPokemon({ pokemon, index });
+    setShowTransferModal(true);
+  };
+
+  const handleCloseTransfer = () => {
+    setShowTransferModal(false);
+    setTransferPokemon(null);
+  };
+
+  const handleTransferPokemon = async (targetTrainerId: string) => {
+    if (!trainer || !transferPokemon) return;
+
+    try {
+      // Get all trainers to find the target trainer
+      const allTrainers = await trainerService.getAllTrainers();
+      const targetTrainer = allTrainers.find(t => t.id === targetTrainerId);
+      
+      if (!targetTrainer) {
+        alert("Zieltrainer nicht gefunden");
+        return;
+      }
+
+      // Remove Pokemon from current trainer
+      const updatedCurrentTeam = (trainer.team || []).filter((_, i) => i !== transferPokemon.index);
+      const updatedCurrentTrainer = { ...trainer, team: updatedCurrentTeam };
+
+      // Add Pokemon to target trainer
+      const updatedTargetTeam = [...(targetTrainer.team || []), transferPokemon.pokemon];
+      const updatedTargetTrainer = { ...targetTrainer, team: updatedTargetTeam };
+
+      // Update both trainers in Firebase
+      await Promise.all([
+        trainerService.updateTrainer(trainer.id!, updatedCurrentTrainer),
+        trainerService.updateTrainer(targetTrainerId, updatedTargetTrainer)
+      ]);
+
+      // Update local state
+      setTrainer(updatedCurrentTrainer);
+      
+      // Show success message
+      alert(`${transferPokemon.pokemon.name} wurde erfolgreich zu ${targetTrainer.name} transferiert!`);
+      
+      // Close modal
+      handleCloseTransfer();
+    } catch (error) {
+      console.error("Error transferring Pokemon:", error);
+      alert("Fehler beim Transferieren des Pokemon");
     }
   };
 
@@ -527,15 +583,26 @@ const TrainerDetail: React.FC = () => {
                           Klicken für Details →
                         </div>
                       </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemovePokemon(index);
-                        }}
-                        className="px-3 py-1 bg-danger-500 text-white text-sm rounded hover:bg-danger-600 transition-colors"
-                      >
-                        Entfernen
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenTransfer(pokemon, index);
+                          }}
+                          className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
+                        >
+                          Transfer
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemovePokemon(index);
+                          }}
+                          className="px-3 py-1 bg-danger-500 text-white text-sm rounded hover:bg-danger-600 transition-colors"
+                        >
+                          Entfernen
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -802,6 +869,18 @@ const TrainerDetail: React.FC = () => {
             trainer={trainer}
             onPurchase={handleShopPurchase}
             onClose={() => setShowShop(false)}
+          />
+        )}
+
+        {/* Transfer Modal */}
+        {showTransferModal && transferPokemon && trainer && (
+          <PokemonTransferModal
+            isOpen={showTransferModal}
+            onClose={handleCloseTransfer}
+            pokemon={transferPokemon.pokemon}
+            pokemonIndex={transferPokemon.index}
+            currentTrainer={trainer}
+            onTransfer={handleTransferPokemon}
           />
         )}
 

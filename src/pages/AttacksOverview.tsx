@@ -36,6 +36,22 @@ const AttacksOverview: React.FC = () => {
     }
   };
 
+  const getAttackCategoryInfo = (attack: Attack) => {
+    if (attack.accuracy === 100) {
+      return {
+        name: 'Base',
+        color: 'bg-blue-50 text-blue-700 border-blue-200',
+        description: 'Zuverlässig'
+      };
+    } else {
+      return {
+        name: 'Power',
+        color: 'bg-red-50 text-red-700 border-red-200',
+        description: 'Riskant'
+      };
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -113,7 +129,15 @@ const AttacksOverview: React.FC = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {attacks
-                    .sort((a, b) => a.tier - b.tier)
+                    .sort((a, b) => {
+                      // Group by attack families (base vs power attacks)
+                      // Base attacks (100% accuracy) come first, then power attacks (70% accuracy)
+                      if (a.accuracy !== b.accuracy) {
+                        return b.accuracy - a.accuracy; // 100% first, then 70%
+                      }
+                      // Within same accuracy group, sort by tier
+                      return a.tier - b.tier;
+                    })
                     .map(attack => (
                       <div
                         key={attack.id}
@@ -121,9 +145,14 @@ const AttacksOverview: React.FC = () => {
                       >
                         <div className="flex items-start justify-between mb-2">
                           <h4 className="font-semibold text-gray-900">{attack.name}</h4>
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getTierColor(attack.tier)}`}>
-                            {attackService.getTierName(attack.tier)}
-                          </span>
+                          <div className="flex gap-1">
+                            <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getAttackCategoryInfo(attack).color}`}>
+                              {getAttackCategoryInfo(attack).name}
+                            </span>
+                            <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getTierColor(attack.tier)}`}>
+                              {attackService.getTierName(attack.tier)}
+                            </span>
+                          </div>
                         </div>
                         
                         <div className="space-y-1 text-sm">

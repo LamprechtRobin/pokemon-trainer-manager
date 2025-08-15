@@ -1,0 +1,472 @@
+{
+  "attacks": [
+    {
+      "id": "mega_punch",
+      "name": "Megahieb",
+      "type": "normal",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "giga_impact"
+    },
+    {
+      "id": "giga_impact",
+      "name": "Gigastoß",
+      "type": "normal",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "explosion"
+    },
+    {
+      "id": "explosion",
+      "name": "Explosion",
+      "type": "normal",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "fire_punch",
+      "name": "Feuerschlag",
+      "type": "fire",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "overheat"
+    },
+    {
+      "id": "overheat",
+      "name": "Hitzekoller",
+      "type": "fire",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "blast_burn"
+    },
+    {
+      "id": "blast_burn",
+      "name": "Lohekanonade",
+      "type": "fire",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "waterfall",
+      "name": "Kaskade",
+      "type": "water",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "aqua_tail"
+    },
+    {
+      "id": "aqua_tail",
+      "name": "Nassschweif",
+      "type": "water",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "hydro_cannon"
+    },
+    {
+      "id": "hydro_cannon",
+      "name": "Aquahaubitze",
+      "type": "water",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "thunder_punch",
+      "name": "Donnerschlag",
+      "type": "electric",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "discharge"
+    },
+    {
+      "id": "discharge",
+      "name": "Ladungsstoß",
+      "type": "electric",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "zap_cannon"
+    },
+    {
+      "id": "zap_cannon",
+      "name": "Blitzkanone",
+      "type": "electric",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "vine_whip",
+      "name": "Rankenhieb",
+      "type": "grass",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "power_whip"
+    },
+    {
+      "id": "power_whip",
+      "name": "Machtpeitsche",
+      "type": "grass",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "frenzy_plant"
+    },
+    {
+      "id": "frenzy_plant",
+      "name": "Florakraft",
+      "type": "grass",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "ice_punch",
+      "name": "Eishieb",
+      "type": "ice",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "ice_shard"
+    },
+    {
+      "id": "ice_shard",
+      "name": "Eisscherbe",
+      "type": "ice",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "sheer_cold"
+    },
+    {
+      "id": "sheer_cold",
+      "name": "Eiseskälte",
+      "type": "ice",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "dynamic_punch",
+      "name": "Wuchtschlag",
+      "type": "fighting",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "superpower"
+    },
+    {
+      "id": "superpower",
+      "name": "Kraftkoloss",
+      "type": "fighting",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "focus_punch"
+    },
+    {
+      "id": "focus_punch",
+      "name": "Power-Punch",
+      "type": "fighting",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "poison_jab",
+      "name": "Gifthieb",
+      "type": "poison",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "toxic"
+    },
+    {
+      "id": "toxic",
+      "name": "Toxin",
+      "type": "poison",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "poison_fang"
+    },
+    {
+      "id": "poison_fang",
+      "name": "Giftzahn",
+      "type": "poison",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "bone_club",
+      "name": "Knochenkeule",
+      "type": "ground",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "earth_power"
+    },
+    {
+      "id": "earth_power",
+      "name": "Erdkräfte",
+      "type": "ground",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "precipice_blades"
+    },
+    {
+      "id": "precipice_blades",
+      "name": "Abgrundsklinge",
+      "type": "ground",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "wing_attack",
+      "name": "Flügelschlag",
+      "type": "flying",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "brave_bird"
+    },
+    {
+      "id": "brave_bird",
+      "name": "Sturzflug",
+      "type": "flying",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "sky_attack"
+    },
+    {
+      "id": "sky_attack",
+      "name": "Himmelsangriff",
+      "type": "flying",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "psybeam",
+      "name": "Psystrahl",
+      "type": "psychic",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "future_sight"
+    },
+    {
+      "id": "future_sight",
+      "name": "Seher",
+      "type": "psychic",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "psycho_boost"
+    },
+    {
+      "id": "psycho_boost",
+      "name": "Psychoschub",
+      "type": "psychic",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "pin_missile",
+      "name": "Nadelrakete",
+      "type": "bug",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "x_scissor"
+    },
+    {
+      "id": "x_scissor",
+      "name": "Kreuzschere",
+      "type": "bug",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "attack_order"
+    },
+    {
+      "id": "attack_order",
+      "name": "Angriffsbefehl",
+      "type": "bug",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "rock_blast",
+      "name": "Felswurf",
+      "type": "rock",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "head_smash"
+    },
+    {
+      "id": "head_smash",
+      "name": "Kopfstoß",
+      "type": "rock",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "diamond_storm"
+    },
+    {
+      "id": "diamond_storm",
+      "name": "Diamantsturm",
+      "type": "rock",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "night_shade",
+      "name": "Nachtnebel",
+      "type": "ghost",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "phantom_force"
+    },
+    {
+      "id": "phantom_force",
+      "name": "Phantomkraft",
+      "type": "ghost",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "astral_barrage"
+    },
+    {
+      "id": "astral_barrage",
+      "name": "Astralbarrage",
+      "type": "ghost",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "twister",
+      "name": "Windhose",
+      "type": "dragon",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "dragon_claw"
+    },
+    {
+      "id": "dragon_claw",
+      "name": "Drachenklaue",
+      "type": "dragon",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "roar_of_time"
+    },
+    {
+      "id": "roar_of_time",
+      "name": "Zeitenlärm",
+      "type": "dragon",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "feint_attack",
+      "name": "Finte",
+      "type": "dark",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "night_slash"
+    },
+    {
+      "id": "night_slash",
+      "name": "Nachthieb",
+      "type": "dark",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "dark_void"
+    },
+    {
+      "id": "dark_void",
+      "name": "Schlummerort",
+      "type": "dark",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "bullet_punch",
+      "name": "Patronenhieb",
+      "type": "steel",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "flash_cannon"
+    },
+    {
+      "id": "flash_cannon",
+      "name": "Lichtkanone",
+      "type": "steel",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "doom_desire"
+    },
+    {
+      "id": "doom_desire",
+      "name": "Kismetwunsch",
+      "type": "steel",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    },
+    {
+      "id": "charm",
+      "name": "Charme",
+      "type": "fairy",
+      "power": 8,
+      "accuracy": 70,
+      "tier": 1,
+      "evolvesTo": "play_rough"
+    },
+    {
+      "id": "play_rough",
+      "name": "Knuddler",
+      "type": "fairy",
+      "power": 12,
+      "accuracy": 70,
+      "tier": 2,
+      "evolvesTo": "light_of_ruin"
+    },
+    {
+      "id": "light_of_ruin",
+      "name": "Ruinenlicht",
+      "type": "fairy",
+      "power": 16,
+      "accuracy": 70,
+      "tier": 3
+    }
+  ]
+}
