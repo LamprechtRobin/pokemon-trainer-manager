@@ -1,4 +1,4 @@
-# Flammen im Schatten
+# Träume im Schatten
 
 ## One-Shot für Spezialeinheit der Kanto-Regierung
 
@@ -53,7 +53,7 @@ Vielleicht rettet ihr Kanto – aber am Ende müsst ihr euch selbst fragen, **we
 Willkommen bei **Operation: Glutkern**.
 
 
-# Flammen im Schatten – Akt 1: Schatten von Saffronia
+# Träume im Schatten – Akt 1: Schatten von Saffronia
 
 ---
 

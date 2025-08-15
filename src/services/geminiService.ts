@@ -779,8 +779,7 @@ Erstelle jetzt einen kreativen, aber regelkonformen Trainer basierend auf diesen
       // Team size validation
       if (data.pokemon.length === 0) {
         errors.push('Team must have at least 1 Pokemon');
-      } else if (data.pokemon.length > 6) {
-        warnings.push('Team has more than 6 Pokemon (unusual)');
+      // Teams can now have unlimited Pokemon - no warning needed
       }
     }
 

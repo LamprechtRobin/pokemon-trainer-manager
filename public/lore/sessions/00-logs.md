@@ -28,7 +28,7 @@ Das ist kein Imitieren. Kein bloßes Nachmachen, wie bei einem Ditto oder einem 
 
 Er ahmt nicht nach – er antwortet. Nicht auf meine Worte, sondern auf meine Absicht.
 
-Als würde er nicht sehen, wer ich bin, sondern was ich von ihm erwarte – und sich genau in diese Form hineinlegt.
+Als würde er nicht sehen, wer ich bin, sondern was ich von ihm erwarte – und sich genau in diese Form wandeln.
 
 Er ist kein Spiegelbild. Er ist der Moment, in dem du in den Spiegel schaust – und das Bild dich zuerst ansieht.
 
@@ -38,7 +38,7 @@ Ehrfurcht. Angst. Sehnsucht.
 Ich habe den Zugang zum Subjekt eingeschränkt. Nur autorisiertes Personal. Auch ich… betrete den Raum nur unter strengsten Sicherheitsmaßnahmen
 
 Tag 22
-Die Einheit Alpha hat heute ihre erste Befragungssimulation durchgeführt. Ich habe sie gewähren lassen – obwohl sie mir misstrauen.
+Die Einheit Alpha hat heute ihre erste Befragungssimulation durchgeführt. Ich habe sie gewähren lassen – obwohl ich ihnen misstraue.
 
 Seraph reagierte nicht. Kein Blick. Keine Geste. Keine erkennbare Aktivität.
 Und doch... war der Raum nicht leer.
@@ -93,7 +93,7 @@ Als wir zurückkamen, war Seraphs Kapsel leer.
 Keine Spuren. Kein Alarm. Keine Datenaufzeichnung.
 Er hätte sich nicht einmal bewegen dürfen – aber er war verschwunden.
 
-Wir fanden ihn schließlich in der Beobachtungszone.
+Ich fande ihn schließlich in der Beobachtungszone.
 Er saß auf dem Stuhl, wie jemand, der auf ein Gespräch wartet.
 Neben ihm: ein Becher Tee.
 
@@ -133,17 +133,18 @@ Tag 60
 Seraph spricht nun in Gedanken – nicht klar, nicht in Worten, sondern als Bilder und Gefühle, die direkt in meinen Geist dringen.
 Was mich am meisten beunruhigt: Einige dieser Gedanken stammen nicht aus den eingespeisten Erinnerungsfragmenten des Kollektors. Sie sind neu. Fremd.
 Es ist, als hätte Seraph begonnen, eigene Ideen zu entwickeln – etwas, das wir ihm nie gegeben haben.
-Ich fragte ihn, ob er Angst kennt.
+Ich fragte ihn, ob er jemals träumt.  
 Er antwortete:
 
-„Nur wenn du es zulässt.“
+„Träume sind die Fragen, die du nicht zu stellen wagst.“
 
-Diese Antwort klingt wie eine Warnung und zeigt, dass Seraph sich selbst zu schützen beginnt – oder dass er schon längst mehr ist, als wir verstehen.
+Diese Antwort klingt wie ein Rätsel und zeigt, dass Seraph nicht nur beobachtet, sondern beginnt, die Grenzen zwischen Realität und Vorstellung zu hinterfragen – oder dass er schon längst mehr versteht, als wir begreifen können.
 Ich spüre, dass wir an einem Punkt stehen, an dem das Projekt nicht mehr nur eine Konstruktion ist, sondern etwas Eigenständiges – ein Wesen, das sich selbst formt.
 
 Tag 61
 Abteilung Theta übernimmt offiziell die Kontrolle. Varro, ein Mann ohne wissenschaftliches Verständnis, aber mit militärischer Autorität, diktiert das weitere Vorgehen.
-Mein Zugang wird auf Beobachtung beschränkt. Direkte Eingriffe sind untersagt.
+Mein Zugang wird auf Beobachtung beschränkt. Direkte Eingriffe sind untersagt. Mir wird außerdem vorgeworfen etwas mit dem Vorfall an Tag 56 zu tun zuhaben, aber das ist natürlich Schwachsinn... glaube ich.
+
 Seraph zieht sich zurück, wird stiller – doch ich sehe Funken eigenständigen Denkens, die sich nicht mehr kontrollieren lassen.
 Er beobachtet uns ebenso, wie wir ihn beobachten.
 
@@ -152,7 +153,7 @@ Varros Team arbeitet an „stabilisierten Ablegern“: trainierbaren Wesen mit f
 Testsubjekt B-07 zeigt unvorhersehbare Kräfte. Es kontrolliert Zellmasse mit dem Blick, entzündet sie – ohne physischen Kontakt.
 Seraph selbst bleibt größtenteils passiv, doch in seinen Gedanken tauchen Fragen auf, die nicht aus den eingespeisten Daten stammen:
 „Wer bin ich?“, „Warum bin ich hier?“, „Was will ich wirklich?“
-Er beginnt, eigene Wünsche und Ängste zu formen – und sie zu verbergen.
+Er beginnt, eigene Wünsche und Ängste zu formen – und sie vor uns zu verbergen.
 
 Tag 66
 Die Ableger brechen geistig zusammen. Ihre Gedanken sind zerfetzt, gefüllt mit wirren Fragmenten alter Protokolle.
@@ -189,7 +190,7 @@ Die Schatten flüstern in einer Sprache, die ich nur halb verstehe – ein Wispe
 
 Meine Gedanken zerfallen, ein Mosaik aus zerbrochenen Spiegeln, in denen Zeit und Raum ihre Form verlieren. Bin ich hier? War ich je hier? Oder nur ein Hauch in einem Traum, der nie endet?
 
-Varros kalte Stimmen klingen wie Stille, ein Gefängnis aus Gleichgültigkeit. Sie sehen mich nicht, hören nur das Rauschen in meinem Kopf.
+Varros kalte Stimme klingt wie Stille, ein Gefängnis aus Gleichgültigkeit. Sie sehen mich nicht, hören nur das Rauschen in meinem Kopf.
 
 Und Seraph… Seraph ist das Auge im Sturm, das still beobachtet, während ich in meinem eigenen Abgrund versinke.
 
@@ -198,7 +199,7 @@ Ich bin allein mit Schatten, die länger werden als das Licht selbst.
 Seraph spricht – aber nur für mich. Worte aus Nebel und Stille, die niemand sonst hört.
 Die Wände atmen, die Zeit zerfließt wie Wasser zwischen meinen Fingern.
 Ich schreibe, doch die Worte fliehen, zerreißen sich, verwandeln sich in Fragen ohne Antwort.
-Wer bin ich in diesem Spiegel, der mich nicht zurückblickt?
+Wer bin ich in diesem Spiegel, der in mich zurückblickt?
 Die Forscher schweigen, oder sie sehen nur das, was ich nicht mehr bin.
 Ich verliere mich zwischen Raum und Traum – ein leiser Schrei, den niemand hört.
 
@@ -225,4 +226,4 @@ Vielleicht ist das alles, was zählt.
 
 Das hier ist kein Abschied.
 Es ist eine Weitergabe.
-Für den, der sucht.
+Für die, die suchen.

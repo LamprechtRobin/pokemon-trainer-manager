@@ -94,10 +94,7 @@ const TrainerDetail: React.FC = () => {
   const handleAddPokemon = async (pokemonName: string) => {
     if (!trainer) return;
 
-    if ((trainer.team || []).length >= 6) {
-      alert("Ein Trainer kann maximal 6 Pokemon haben!");
-      return;
-    }
+    // No limit on Pokemon count - trainer can have unlimited Pokemon
 
     const startingLevel = 1; // Always start at level 1
     const startingExp = 0; // Always start with 0 EXP
@@ -453,7 +450,7 @@ const TrainerDetail: React.FC = () => {
 
               <div className="pt-4 border-t border-gray-200">
                 <p className="text-sm text-gray-500">
-                  Team: {(trainer.team || []).length}/6 Pokemon
+                  Team: {(trainer.team || []).length} Pokemon
                 </p>
               </div>
             </div>
@@ -473,13 +470,11 @@ const TrainerDetail: React.FC = () => {
               <PokemonSearch
                 onSelect={handleAddPokemon}
                 placeholder="Pokemon suchen (z.B. 'Pika' für Pikachu)..."
-                disabled={(trainer.team || []).length >= 6}
+                disabled={false}
               />
               <div className="flex justify-between items-center mt-2">
                 <p className="text-xs text-gray-500">
-                  {(trainer.team || []).length >= 6
-                    ? "Team ist voll (6/6)"
-                    : `Noch ${6 - (trainer.team || []).length} Plätze frei`}
+                  {`${(trainer.team || []).length} Pokemon im Team`}
                 </p>
                 <p className="text-xs text-gray-400">
                   Alle Generationen • Deutsche Namen

@@ -7,7 +7,7 @@ export interface AIGenerationSettings {
   preferredType: PokemonType | "all";
   averageLevel: number; // 1-100
   levelVariance: number; // ±X levels variance
-  teamSize: number; // 1-6 Pokemon
+  teamSize: number; // Unlimited Pokemon allowed
   allowShiny: boolean;
   trainerPersonality: TrainerPersonality;
   statDistributionStyle: StatDistributionStyle;

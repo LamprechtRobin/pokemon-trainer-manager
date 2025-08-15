@@ -174,13 +174,7 @@ export class TrainerValidator {
       });
     }
 
-    if (data.pokemon.length > 6) {
-      issues.push({
-        type: 'pokemon_not_found',
-        severity: 'warning',
-        message: 'Team has more than 6 Pokemon (will be truncated)'
-      });
-    }
+    // No longer limiting team size to 6 Pokemon
   }
 
   private static async validateAndEnrichPokemon(
@@ -191,7 +185,7 @@ export class TrainerValidator {
   ): Promise<EnrichedPokemonData[]> {
     const enrichedPokemon: EnrichedPokemonData[] = [];
 
-    for (let i = 0; i < Math.min(pokemonList.length, 6); i++) {
+    for (let i = 0; i < pokemonList.length; i++) {
       const pokemonData = pokemonList[i];
       
       try {
@@ -250,10 +244,7 @@ export class TrainerValidator {
       }
     }
 
-    // Auto-correct team size if needed
-    if (pokemonList.length > 6) {
-      autoCorrections.push(`Team size reduced from ${pokemonList.length} to 6 Pokemon`);
-    }
+    // No team size limits - all Pokemon are processed
 
     return enrichedPokemon;
   }

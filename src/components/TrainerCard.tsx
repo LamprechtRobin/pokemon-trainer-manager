@@ -51,11 +51,11 @@ const TrainerCard: React.FC<TrainerCardProps> = ({ trainer, onDelete }) => {
       {/* Pokemon Team Section */}
       <div className="mb-6">
         <h4 className="font-semibold text-gray-900 mb-2">
-          Pokemon Team ({(trainer.team || []).length}/6)
+          Pokemon Team ({(trainer.team || []).length})
         </h4>
         {trainer.team && trainer.team.length > 0 ? (
           <div className="grid grid-cols-3 gap-2">
-            {trainer.team.slice(0, 6).map((pokemon, index) => (
+            {trainer.team.slice(0, 9).map((pokemon, index) => (
               <div key={index} className="bg-gray-50 rounded-lg p-2 text-center">
                 <div className="text-xs font-medium text-gray-700 truncate">
                   {pokemon.name}
@@ -65,6 +65,13 @@ const TrainerCard: React.FC<TrainerCardProps> = ({ trainer, onDelete }) => {
                 )}
               </div>
             ))}
+            {trainer.team.length > 9 && (
+              <div className="bg-gray-100 rounded-lg p-2 text-center flex items-center justify-center">
+                <div className="text-xs text-gray-500">
+                  +{trainer.team.length - 9} mehr
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <p className="text-sm text-gray-500 italic">No Pokemon in team</p>

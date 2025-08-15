@@ -15,7 +15,7 @@ Implementierung einer Gemini-basierten Trainer-Generierung, die aus einem User-P
 
 ### 1.2 Prompt Engineering
 - **System-Prompt:** Detaillierte Anweisungen für JSON-Struktur
-- **Constraints:** Level 1-100, 1-6 Pokemon, realistische Stats
+- **Constraints:** Level 1-100, unbegrenzt viele Pokemon, realistische Stats
 - **Examples:** Beispiel-Trainer für bessere AI-Performance
 - **Schema:** Exakte TypeScript-Interface-Definition im Prompt
 
@@ -179,7 +179,7 @@ src/
 
 ### Edge Cases
 - "Trainer ohne Pokemon" (sollte mindestens 1 Pokemon generieren)
-- "Team mit 10 Pokemon" (sollte auf 6 begrenzen)
+- "Team mit 10 Pokemon" (jetzt erlaubt - keine Begrenzung mehr)
 - "Alle Level 100 Pokemon" (sollte realistischer machen)
 
 ## 11. Mögliche Erweiterungen

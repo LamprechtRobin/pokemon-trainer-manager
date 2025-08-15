@@ -5,7 +5,7 @@ Eine React-basierte Web-Anwendung zur Verwaltung von Pokemon-Trainern und ihren 
 ## Features
 
 - **Trainer-Verwaltung**: Erstelle und bearbeite Pokemon-Trainer mit Bildern und Beschreibungen
-- **Pokemon-Teams**: Jeder Trainer kann bis zu 6 Pokemon in seinem Team haben
+- **Pokemon-Teams**: Jeder Trainer kann unbegrenzt viele Pokemon in seinem Team haben
 - **PokeAPI-Integration**: Alle Pokemon (alle Generationen) mit deutschen Namen, Bildern, Typen und Stats
 - **Dual-Type Support**: Pokemon können ein oder zwei Typen haben (z.B. "🔥 Fire / 🌪️ Flying")
 - **Erfahrungssystem**: Einfaches 0-10 EXP-System mit Quick-Add-Buttons

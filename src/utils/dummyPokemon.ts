@@ -41,6 +41,6 @@ export const generateDummyPokemon = (count: number = 1): Pokemon[] => {
 };
 
 export const getRandomPokemonTeam = (teamSize: number = 3): Pokemon[] => {
-  const maxTeamSize = Math.min(teamSize, 6); // Max 6 Pokemon per team
-  return generateDummyPokemon(maxTeamSize);
+  // No limit on team size - allow any number of Pokemon
+  return generateDummyPokemon(teamSize);
 };
