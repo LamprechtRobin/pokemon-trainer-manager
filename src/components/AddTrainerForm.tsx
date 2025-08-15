@@ -3,7 +3,6 @@ import { Trainer, TrainerFormData } from '../types/trainer';
 import { EnrichedTrainerData } from '../types/aiTrainer';
 import { PokemonEnricher } from '../services/pokemonEnricher';
 import ImageModeSelector from './ImageModeSelector';
-import AIImageGenerator from './AIImageGenerator';
 import AITrainerGenerator from './AITrainerGenerator';
 import { TrainerImage } from '../utils/imageUtils';
 
@@ -219,14 +218,37 @@ const AddTrainerForm: React.FC<AddTrainerFormProps> = ({ onSubmit, onCancel }) =
 
         {/* Generate Mode */}
         {formData.imageMode === 'generate' && (
-          <AIImageGenerator
-            prompt={formData.aiPrompt}
-            onPromptChange={(prompt) => setFormData(prev => ({ ...prev, aiPrompt: prompt }))}
-            generatedImageUrl={formData.generatedImageUrl}
-            onImageGenerated={(imageUrl) => setFormData(prev => ({ ...prev, generatedImageUrl: imageUrl }))}
-            isGenerating={formData.isGenerating}
-            onGeneratingChange={(isGenerating) => setFormData(prev => ({ ...prev, isGenerating }))}
-          />
+          <div>
+            <label htmlFor="aiPrompt" className="block text-sm font-medium text-gray-900 mb-1">
+              AI Image Prompt
+            </label>
+            <input
+              id="aiPrompt"
+              type="text"
+              value={formData.aiPrompt}
+              onChange={(e) => setFormData(prev => ({ ...prev, aiPrompt: e.target.value }))}
+              placeholder="Describe the trainer appearance..."
+              className="w-full px-3 py-3 border border-gray-300 rounded-lg text-base bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                alert('AI image generation is not yet implemented. Please use upload or URL instead.');
+              }}
+              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Generate Image
+            </button>
+            {formData.generatedImageUrl && (
+              <div className="mt-2 flex justify-center">
+                <TrainerImage 
+                  imageUrl={formData.generatedImageUrl}
+                  name={formData.name || "AI Generated Trainer"}
+                  size={80}
+                />
+              </div>
+            )}
+          </div>
         )}
 
         <div>

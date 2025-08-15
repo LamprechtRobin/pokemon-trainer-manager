@@ -25,6 +25,7 @@ const TrainerDetail: React.FC = () => {
     name: "",
     description: "",
     money: "",
+    imageUrl: "",
   });
 
   // Item management state
@@ -37,6 +38,10 @@ const TrainerDetail: React.FC = () => {
   // Transfer state
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [transferPokemon, setTransferPokemon] = useState<{ pokemon: Pokemon; index: number } | null>(null);
+
+  // Image editing state
+  const [showImageEditModal, setShowImageEditModal] = useState(false);
+  const [imageEditLoading, setImageEditLoading] = useState(false);
   const [newItem, setNewItem] = useState<{
     name: string;
     description: string;
@@ -64,6 +69,7 @@ const TrainerDetail: React.FC = () => {
           name: foundTrainer.name,
           description: foundTrainer.description || "",
           money: (foundTrainer.money || 0).toString(),
+          imageUrl: foundTrainer.imageUrl || "",
         });
       } else {
         navigate("/");
@@ -85,6 +91,7 @@ const TrainerDetail: React.FC = () => {
         name: editForm.name.trim(),
         description: editForm.description.trim() || undefined,
         money: parseInt(editForm.money) || 0,
+        imageUrl: editForm.imageUrl.trim() || undefined,
       };
 
       await trainerService.updateTrainer(trainer.id!, updatedTrainer);
@@ -93,6 +100,48 @@ const TrainerDetail: React.FC = () => {
     } catch (error) {
       console.error("Error updating trainer:", error);
       alert("Fehler beim Speichern der Änderungen");
+    }
+  };
+
+  // Image editing functions
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Reset input
+    event.target.value = '';
+
+    if (!file.type.startsWith('image/')) {
+      alert('Bitte wähle eine Bilddatei aus.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const imageUrl = e.target?.result as string;
+      setEditForm(prev => ({ ...prev, imageUrl }));
+      setShowImageEditModal(false);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleImageGeneration = async () => {
+    if (!trainer) return;
+
+    setImageEditLoading(true);
+    try {
+      // Simple prompt for trainer image generation
+      const prompt = `Generate a Pokemon trainer portrait for "${trainer.name}". ${trainer.description ? `Description: ${trainer.description}` : 'A friendly Pokemon trainer.'}`;
+      
+      // In a real implementation, you would call an image generation API here
+      // For now, we'll use a placeholder service or demonstrate the concept
+      alert('Bild-Generierung würde hier implementiert werden. Für diese Demo verwende bitte einen URL oder lade ein Bild hoch.');
+      
+    } catch (error) {
+      console.error('Error generating image:', error);
+      alert('Fehler beim Generieren des Bildes');
+    } finally {
+      setImageEditLoading(false);
     }
   };
 
@@ -437,11 +486,28 @@ const TrainerDetail: React.FC = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="text-center mb-6">
               <div className="flex justify-center mb-4">
-                <TrainerImage 
-                  imageUrl={trainer.imageUrl}
-                  name={trainer.name}
-                  size={96}
-                />
+                {editMode ? (
+                  <div className="relative">
+                    <TrainerImage 
+                      imageUrl={editForm.imageUrl || trainer.imageUrl}
+                      name={trainer.name}
+                      size={96}
+                    />
+                    <button
+                      onClick={() => setShowImageEditModal(true)}
+                      className="absolute -bottom-2 -right-2 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors shadow-lg"
+                      title="Bild bearbeiten"
+                    >
+                      📷
+                    </button>
+                  </div>
+                ) : (
+                  <TrainerImage 
+                    imageUrl={trainer.imageUrl}
+                    name={trainer.name}
+                    size={96}
+                  />
+                )}
               </div>
 
               {editMode ? (
@@ -882,6 +948,115 @@ const TrainerDetail: React.FC = () => {
             currentTrainer={trainer}
             onTransfer={handleTransferPokemon}
           />
+        )}
+
+        {/* Image Edit Modal */}
+        {showImageEditModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
+              <div className="p-6">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Trainer-Bild bearbeiten
+                  </h3>
+                  <button
+                    onClick={() => setShowImageEditModal(false)}
+                    className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                {/* Current Image Preview */}
+                {editForm.imageUrl && (
+                  <div className="mb-6 text-center">
+                    <div className="inline-block relative">
+                      <TrainerImage 
+                        imageUrl={editForm.imageUrl}
+                        name={trainer?.name || "Trainer"}
+                        size={96}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-500 mt-2">Aktuelles Bild</p>
+                  </div>
+                )}
+
+                {/* Image URL Input */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Bild-URL:
+                  </label>
+                  <input
+                    type="url"
+                    value={editForm.imageUrl}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, imageUrl: e.target.value }))}
+                    placeholder="https://example.com/image.jpg"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                {/* Upload Section */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Oder Bild hochladen:
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="image-upload-input"
+                  />
+                  <label
+                    htmlFor="image-upload-input"
+                    className="w-full block px-4 py-3 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="text-gray-600">
+                      📁 Datei auswählen
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      JPG, PNG, GIF bis 5MB
+                    </div>
+                  </label>
+                </div>
+
+                {/* AI Generation Section */}
+                <div className="mb-6">
+                  <button
+                    onClick={handleImageGeneration}
+                    disabled={imageEditLoading}
+                    className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
+                      imageEditLoading
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-purple-500 text-white hover:bg-purple-600'
+                    }`}
+                  >
+                    {imageEditLoading ? '⏳ Generiere...' : '🤖 KI-Bild generieren'}
+                  </button>
+                  <p className="text-xs text-gray-500 mt-1 text-center">
+                    Erstellt automatisch ein Bild basierend auf Name und Beschreibung
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowImageEditModal(false)}
+                    className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+                  >
+                    Abbrechen
+                  </button>
+                  <button
+                    onClick={() => setShowImageEditModal(false)}
+                    className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                  >
+                    Übernehmen
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Healing Message */}

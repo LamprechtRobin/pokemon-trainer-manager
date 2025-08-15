@@ -664,9 +664,11 @@ Erstelle jetzt einen kreativen, aber regelkonformen Trainer basierend auf diesen
 
         try {
           const imagePrompt = this.buildImagePrompt(generatedTrainer, settings);
-          const imageResult = await imageGenerationService.generateTrainerAvatar({
-            prompt: imagePrompt
-          });
+          const imageResult = await imageGenerationService.generateTrainerImage(
+            generatedTrainer.name, 
+            generatedTrainer.description || '', 
+            { style: 'anime' }
+          );
           trainerImageUrl = imageResult.imageUrl;
         } catch (error) {
           console.warn('Failed to generate trainer image:', error);
