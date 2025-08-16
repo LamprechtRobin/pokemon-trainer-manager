@@ -665,9 +665,14 @@ Erstelle jetzt einen kreativen, aber regelkonformen Trainer basierend auf diesen
         try {
           const imagePrompt = this.buildImagePrompt(generatedTrainer, settings);
           const imageResult = await imageGenerationService.generateTrainerImage(
-            generatedTrainer.name, 
-            generatedTrainer.description || '', 
-            { style: 'anime' }
+            '', // Empty name to use the custom prompt
+            imagePrompt, // Use the built prompt as description 
+            { 
+              style: 'anime',
+              size: '512',
+              width: 512,
+              height: 512  // 1:1 Square ratio (512x512)
+            }
           );
           trainerImageUrl = imageResult.imageUrl;
         } catch (error) {
