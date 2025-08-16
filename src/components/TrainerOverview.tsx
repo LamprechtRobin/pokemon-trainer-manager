@@ -78,7 +78,7 @@ const TrainerOverview: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-center sm:justify-start">
+      <div className="flex flex-col sm:flex-row gap-4 justify-center sm:justify-start">
         <button 
           onClick={() => setShowAddForm(!showAddForm)}
           className={`w-full sm:w-auto px-6 py-3 rounded-lg font-medium transition-colors ${
@@ -88,6 +88,13 @@ const TrainerOverview: React.FC = () => {
           }`}
         >
           {showAddForm ? 'Cancel' : 'Add New Trainer'}
+        </button>
+        
+        <button 
+          onClick={() => window.open('/skill-sheet', '_blank')}
+          className="w-full sm:w-auto px-6 py-3 rounded-lg font-medium transition-colors bg-blue-500 text-white hover:bg-blue-600"
+        >
+          📄 Neues Skill Sheet
         </button>
       </div>
 

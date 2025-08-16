@@ -78,15 +78,27 @@ const TrainerCard: React.FC<TrainerCardProps> = ({ trainer, onDelete }) => {
         )}
       </div>
       
-      <div className="flex justify-between items-center pt-4 border-t border-gray-200">
-        <div className="text-sm text-gray-500">
-          Klicken für Details →
+      <div className="flex flex-col space-y-2 pt-4 border-t border-gray-200">
+        <div className="flex justify-between items-center">
+          <div className="text-sm text-gray-500">
+            Klicken für Details →
+          </div>
+          <button 
+            onClick={handleDelete}
+            className="px-4 py-2 bg-danger-500 text-white text-sm font-medium rounded-lg hover:bg-danger-600 transition-colors"
+          >
+            Delete
+          </button>
         </div>
+        
         <button 
-          onClick={handleDelete}
-          className="px-4 py-2 bg-danger-500 text-white text-sm font-medium rounded-lg hover:bg-danger-600 transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open(`/skill-sheet/${trainer.id}`, '_blank');
+          }}
+          className="w-full px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors"
         >
-          Delete
+          📄 Skill Sheet
         </button>
       </div>
     </div>

@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Print CSS */
+@import './styles/print.css';
+
 /* Prevent horizontal scrolling */
 html, body {
   overflow-x: hidden;

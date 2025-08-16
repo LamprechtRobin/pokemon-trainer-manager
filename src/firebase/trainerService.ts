@@ -4,7 +4,8 @@ import {
   getDocs, 
   doc, 
   updateDoc, 
-  deleteDoc 
+  deleteDoc,
+  getDoc 
 } from 'firebase/firestore';
 import { db } from './config';
 import { Trainer } from '../types/trainer';
@@ -95,5 +96,31 @@ export const trainerService = {
       console.error('Error deleting trainer:', error);
       throw error;
     }
+  },
+
+  async getTrainerById(trainerId: string): Promise<Trainer | null> {
+    try {
+      const trainerRef = doc(db, COLLECTION_NAME, trainerId);
+      const docSnap = await getDoc(trainerRef);
+      
+      if (docSnap.exists()) {
+        return {
+          id: docSnap.id,
+          ...docSnap.data()
+        } as Trainer;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Error getting trainer by ID:', error);
+      throw error;
+    }
   }
 };
+
+// Export individual functions for convenience
+export const getAllTrainers = trainerService.getAllTrainers.bind(trainerService);
+export const addTrainer = trainerService.addTrainer.bind(trainerService);
+export const updateTrainer = trainerService.updateTrainer.bind(trainerService);
+export const deleteTrainer = trainerService.deleteTrainer.bind(trainerService);
+export const getTrainerById = trainerService.getTrainerById.bind(trainerService);

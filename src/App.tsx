@@ -10,6 +10,7 @@ import DocumentationPage from "./pages/DocumentationPage";
 import LorePage from "./pages/LorePage";
 import BackupPage from "./pages/BackupPage";
 import ApiTestPage from "./pages/ApiTestPage";
+import SkillSheetPage from "./pages/SkillSheetPage";
 
 const App: React.FC = () => {
   return (
@@ -31,6 +32,8 @@ const App: React.FC = () => {
         <Route path="/lore" element={<LorePage />} />
         <Route path="/backup" element={<BackupPage />} />
         <Route path="/api-tests" element={<ApiTestPage />} />
+        <Route path="/skill-sheet" element={<SkillSheetPage />} />
+        <Route path="/skill-sheet/:trainerId" element={<SkillSheetPage />} />
       </Routes>
     </Router>
   );
