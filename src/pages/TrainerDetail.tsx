@@ -43,6 +43,7 @@ const TrainerDetail: React.FC = () => {
   // Image editing state
   const [showImageEditModal, setShowImageEditModal] = useState(false);
   const [imageEditLoading, setImageEditLoading] = useState(false);
+  const [customPrompt, setCustomPrompt] = useState('');
   const [newItem, setNewItem] = useState<{
     name: string;
     description: string;
@@ -128,16 +129,24 @@ const TrainerDetail: React.FC = () => {
 
   const handleImageGeneration = async () => {
     if (!trainer) return;
+    
+    // If no custom prompt, use trainer name and description as fallback
+    let promptToUse = customPrompt.trim();
+    if (!promptToUse) {
+      promptToUse = `Pokemon trainer named ${trainer.name}${trainer.description ? `, ${trainer.description}` : ''}`;
+    }
 
     setImageEditLoading(true);
     try {
-      // Generate trainer image using Runware AI
+      // Generate trainer image using custom prompt directly
       const result = await imageGenerationService.generateTrainerImage(
-        trainer.name,
-        trainer.description || '',
+        '', // Don't use trainer name when custom prompt is provided
+        customPrompt.trim(),
         { 
           style: 'anime',
-          size: '512'
+          size: '512',
+          width: 512,
+          height: 512  // 1:1 Square ratio (512x512)
         }
       );
       
@@ -147,8 +156,13 @@ const TrainerDetail: React.FC = () => {
         imageUrl: result.imageUrl
       }));
       
-      // Show success message
-      alert(`✅ Bild erfolgreich generiert!\n\nPrompt verwendet: ${result.prompt}\n\nDas Bild wurde automatisch in das URL-Feld eingefügt.`);
+      // Clear the custom prompt after successful generation
+      setCustomPrompt('');
+      
+      // Log success to console instead of browser alert
+      console.log('✅ Bild erfolgreich generiert!');
+      console.log('Prompt verwendet:', result.prompt);
+      console.log('Bild-URL:', result.imageUrl);
       
     } catch (error) {
       console.error('Error generating image:', error);
@@ -1037,11 +1051,25 @@ const TrainerDetail: React.FC = () => {
 
                 {/* AI Generation Section */}
                 <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Benutzerdefinierter Prompt für KI-Bildgenerierung
+                  </label>
+                  <textarea
+                    value={customPrompt}
+                    onChange={(e) => setCustomPrompt(e.target.value)}
+                    placeholder="z.B. anime style Pokemon trainer, red hair, blue jacket, confident pose, high quality"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
+                    rows={3}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Gib deinen eigenen Prompt ein. Automatisch: Anime-Style, quadratisches Format (512x512px).
+                  </p>
+                  
                   <button
                     onClick={handleImageGeneration}
-                    disabled={imageEditLoading}
-                    className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
-                      imageEditLoading
+                    disabled={imageEditLoading || !customPrompt.trim()}
+                    className={`w-full mt-3 px-4 py-3 rounded-lg font-medium transition-colors ${
+                      imageEditLoading || !customPrompt.trim()
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-purple-500 text-white hover:bg-purple-600'
                     }`}
@@ -1049,7 +1077,7 @@ const TrainerDetail: React.FC = () => {
                     {imageEditLoading ? '⏳ Generiere...' : '🤖 KI-Bild generieren'}
                   </button>
                   <p className="text-xs text-gray-500 mt-1 text-center">
-                    Erstellt automatisch ein Bild basierend auf Name und Beschreibung
+                    Erstellt ein Anime-Style Bild im quadratischen Format basierend auf deinem Prompt
                   </p>
                 </div>
 

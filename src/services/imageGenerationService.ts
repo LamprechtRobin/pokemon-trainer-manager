@@ -13,6 +13,8 @@ export interface ImageGenerationOptions {
   prompt: string;
   style?: 'anime' | 'realistic' | 'cartoon';
   size?: '256' | '512' | '1024';
+  width?: number;
+  height?: number;
   apiKey?: string;
 }
 
@@ -37,22 +39,22 @@ export const imageGenerationService = {
       throw new Error('Runware API Key nicht gefunden. Bitte REACT_APP_RUNWARE_API_KEY in .env setzen.');
     }
 
-    // Erstelle optimierten Prompt für Trainer-Bilder
-    const prompt = this.createTrainerPrompt(trainerName, description, options.style || 'anime');
+    // Erstelle optimierten Prompt für Trainer-Bilder (immer anime style)
+    const prompt = this.createTrainerPrompt(trainerName, description, 'anime');
     
     try {
       // Try the standard Runware API format first
       let requestBody, endpoint;
       
-      // Format 1: Standard REST API format
+      // Format 1: Standard REST API format with HiDream-i1 Fast
       requestBody = [
         {
           taskType: "imageInference",
           taskUUID: generateUUID(),
           positivePrompt: prompt,
-          model: "runware:100@1",
-          width: parseInt(options.size || '512'),
-          height: parseInt(options.size || '512'),
+          model: "HiDream-i1-Fast",
+          width: options.width || parseInt(options.size || '512'),
+          height: options.height || parseInt(options.size || '512'),
           numberResults: 1,
           CFGScale: 7,
           steps: 20,
@@ -76,12 +78,12 @@ export const imageGenerationService = {
       if (!response.ok && response.status === 400) {
         console.log('Format 1 failed, trying format 2...');
         
-        // Format 2: Alternative format
+        // Format 2: Alternative format - try different model name
         requestBody = {
           prompt: prompt,
-          model: "runware:100@1",
-          width: parseInt(options.size || '512'),
-          height: parseInt(options.size || '512'),
+          model: "hidream-i1-fast",
+          width: options.width || parseInt(options.size || '512'),
+          height: options.height || parseInt(options.size || '512'),
           num_images: 1,
           guidance_scale: 7,
           steps: 20,
@@ -105,14 +107,14 @@ export const imageGenerationService = {
       if (!response.ok && response.status === 400) {
         console.log('Format 2 failed, trying format 3...');
         
-        // Format 3: Simplified format
+        // Format 3: Simplified format - try another model variant
         requestBody = {
           positivePrompt: prompt,
-          model: "runware:100@1",
+          model: "HiDream-i1",
           taskType: "imageInference",
           taskUUID: generateUUID(),
-          width: parseInt(options.size || '512'),
-          height: parseInt(options.size || '512'),
+          width: options.width || parseInt(options.size || '512'),
+          height: options.height || parseInt(options.size || '512'),
           numberResults: 1
         };
 
@@ -130,13 +132,13 @@ export const imageGenerationService = {
       if (!response.ok && response.status === 400) {
         console.log('Format 3 failed, trying format 4 (most basic)...');
         
-        // Format 4: Most basic format with required taskType (must be array according to API error)
+        // Format 4: Most basic format - fallback to standard model
         requestBody = {
           taskType: "imageInference",
           positivePrompt: prompt,
           model: "runware:100@1",
-          width: parseInt(options.size || '512'),
-          height: parseInt(options.size || '512'),
+          width: options.width || parseInt(options.size || '512'),
+          height: options.height || parseInt(options.size || '512'),
           numberResults: 1,
           taskUUID: generateUUID()
         };
@@ -164,7 +166,7 @@ export const imageGenerationService = {
           errorMessage += `Bad Request - Mögliche Ursachen:\n`;
           errorMessage += `- API-Format wird nicht unterstützt\n`;
           errorMessage += `- Ungültige Parameter im Request\n`;
-          errorMessage += `- Model "runware:100@1" nicht verfügbar\n`;
+          errorMessage += `- Model "HiDream-i1-Fast" nicht verfügbar\n`;
           errorMessage += `- Prompt zu lang oder enthält unerlaubte Inhalte\n\n`;
         } else if (response.status === 401) {
           errorMessage += `Authentifizierung fehlgeschlagen:\n`;
@@ -226,6 +228,16 @@ export const imageGenerationService = {
    * Erstellt optimierten Prompt für Trainer-Bilder
    */
   createTrainerPrompt(name: string, description: string, style: string = 'anime'): string {
+    // If name is empty, treat description as custom prompt
+    if (!name || name.trim() === '') {
+      // Always ensure anime style for custom prompts
+      let customPrompt = description.trim();
+      if (!customPrompt.toLowerCase().includes('anime')) {
+        customPrompt = `anime style, ${customPrompt}`;
+      }
+      return customPrompt;
+    }
+    
     let prompt = '';
     
     // Basis-Prompt je nach Stil
