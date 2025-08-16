@@ -5,6 +5,7 @@ import { PokemonEnricher } from '../services/pokemonEnricher';
 import ImageModeSelector from './ImageModeSelector';
 import AITrainerGenerator from './AITrainerGenerator';
 import { TrainerImage } from '../utils/imageUtils';
+import { imageGenerationService } from '../services/imageGenerationService';
 
 interface AddTrainerFormProps {
   onSubmit: (trainerData: Omit<Trainer, 'id'>) => void;
@@ -99,6 +100,48 @@ const AddTrainerForm: React.FC<AddTrainerFormProps> = ({ onSubmit, onCancel }) =
     
     console.log('Calling onSubmit with:', trainerData);
     onSubmit(trainerData);
+  };
+
+  const handleImageGeneration = async (): Promise<void> => {
+    if (!formData.aiPrompt.trim()) {
+      alert('⚠️ Bitte gib einen Prompt für die Bildgenerierung ein.');
+      return;
+    }
+
+    setFormData(prev => ({ ...prev, isGenerating: true }));
+    
+    try {
+      // Generate trainer image using custom prompt
+      const result = await imageGenerationService.generateTrainerImage(
+        '', // Don't use trainer name when custom prompt is provided
+        formData.aiPrompt.trim(),
+        { 
+          style: 'anime',
+          size: '512',
+          width: 512,
+          height: 512  // 1:1 Square ratio (512x512)
+        }
+      );
+      
+      // Update the form with the generated image URL
+      setFormData(prev => ({
+        ...prev,
+        generatedImageUrl: result.imageUrl,
+        isGenerating: false
+      }));
+      
+      // Log success to console
+      console.log('✅ Bild erfolgreich generiert!');
+      console.log('Prompt verwendet:', result.prompt);
+      console.log('Bild-URL:', result.imageUrl);
+      
+    } catch (error) {
+      console.error('Error generating image:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unbekannter Fehler';
+      alert(`❌ Fehler beim Generieren des Bildes:\n\n${errorMessage}\n\n💡 Tipp: Falls du keinen Runware API Key hast, nutze bitte Upload stattdessen.`);
+      
+      setFormData(prev => ({ ...prev, isGenerating: false }));
+    }
   };
 
   const handleAIGenerate = (enrichedTrainer: EnrichedTrainerData): void => {
@@ -220,25 +263,35 @@ const AddTrainerForm: React.FC<AddTrainerFormProps> = ({ onSubmit, onCancel }) =
         {formData.imageMode === 'generate' && (
           <div>
             <label htmlFor="aiPrompt" className="block text-sm font-medium text-gray-900 mb-1">
-              AI Image Prompt
+              Benutzerdefinierter Prompt für KI-Bildgenerierung
             </label>
-            <input
+            <textarea
               id="aiPrompt"
-              type="text"
               value={formData.aiPrompt}
               onChange={(e) => setFormData(prev => ({ ...prev, aiPrompt: e.target.value }))}
-              placeholder="Describe the trainer appearance..."
-              className="w-full px-3 py-3 border border-gray-300 rounded-lg text-base bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              placeholder="z.B. anime style Pokemon trainer, red hair, blue jacket, confident pose, high quality"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
+              rows={3}
             />
+            <p className="text-xs text-gray-500 mt-1">
+              Gib deinen eigenen Prompt ein. Automatisch: Anime-Style, quadratisches Format (512x512px).
+            </p>
+            
             <button
               type="button"
-              onClick={() => {
-                alert('AI image generation is not yet implemented. Please use upload or URL instead.');
-              }}
-              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              onClick={handleImageGeneration}
+              disabled={formData.isGenerating || !formData.aiPrompt.trim()}
+              className={`w-full mt-3 px-4 py-3 rounded-lg font-medium transition-colors ${
+                formData.isGenerating || !formData.aiPrompt.trim()
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-purple-500 text-white hover:bg-purple-600'
+              }`}
             >
-              Generate Image
+              {formData.isGenerating ? '⏳ Generiere...' : '🤖 KI-Bild generieren'}
             </button>
+            <p className="text-xs text-gray-500 mt-1 text-center">
+              Erstellt ein Anime-Style Bild im quadratischen Format basierend auf deinem Prompt
+            </p>
             {formData.generatedImageUrl && (
               <div className="mt-2 flex justify-center">
                 <TrainerImage 
