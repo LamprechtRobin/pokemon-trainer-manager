@@ -181,7 +181,7 @@ const GenerationSettings: React.FC<GenerationSettingsProps> = ({
           </div>
           {settings.generateImage && (
             <div className="ml-6 text-xs text-gray-500">
-              <p>⚠️ Benötigt einen gültigen Hugging Face API-Key mit Credits</p>
+              <p>⚠️ Benötigt einen gültigen Runware API-Key</p>
               <p>Bei Fehlern wird der Trainer ohne Bild erstellt</p>
             </div>
           )}

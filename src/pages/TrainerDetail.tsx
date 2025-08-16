@@ -11,6 +11,7 @@ import { pokeApiService } from "../services/pokeapi";
 import { evolutionService } from "../services/evolutionService";
 import { BasicAttackService } from "../services/basicAttackService";
 import { TrainerImage } from "../utils/imageUtils";
+import { imageGenerationService } from "../services/imageGenerationService";
 
 const TrainerDetail: React.FC = () => {
   const { trainerId } = useParams<{ trainerId: string }>();
@@ -130,16 +131,29 @@ const TrainerDetail: React.FC = () => {
 
     setImageEditLoading(true);
     try {
-      // Simple prompt for trainer image generation
-      const prompt = `Generate a Pokemon trainer portrait for "${trainer.name}". ${trainer.description ? `Description: ${trainer.description}` : 'A friendly Pokemon trainer.'}`;
+      // Generate trainer image using Runware AI
+      const result = await imageGenerationService.generateTrainerImage(
+        trainer.name,
+        trainer.description || '',
+        { 
+          style: 'anime',
+          size: '512'
+        }
+      );
       
-      // In a real implementation, you would call an image generation API here
-      // For now, we'll use a placeholder service or demonstrate the concept
-      alert('Bild-Generierung würde hier implementiert werden. Für diese Demo verwende bitte einen URL oder lade ein Bild hoch.');
+      // Update the edit form with the generated image URL
+      setEditForm(prev => ({
+        ...prev,
+        imageUrl: result.imageUrl
+      }));
+      
+      // Show success message
+      alert(`✅ Bild erfolgreich generiert!\n\nPrompt verwendet: ${result.prompt}\n\nDas Bild wurde automatisch in das URL-Feld eingefügt.`);
       
     } catch (error) {
       console.error('Error generating image:', error);
-      alert('Fehler beim Generieren des Bildes');
+      const errorMessage = error instanceof Error ? error.message : 'Unbekannter Fehler';
+      alert(`❌ Fehler beim Generieren des Bildes:\n\n${errorMessage}\n\n💡 Tipp: Falls du keinen Runware API Key hast, nutze bitte Upload oder URL-Eingabe.`);
     } finally {
       setImageEditLoading(false);
     }
