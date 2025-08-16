@@ -58,30 +58,6 @@ const GenerationSettings: React.FC<GenerationSettingsProps> = ({
         onChange={(regions) => updateSetting('regions', regions)}
       />
 
-      {/* Preferred Type */}
-      <div>
-        <label className="block text-sm font-medium text-gray-900 mb-2">
-          Bevorzugter Pokemon-Typ
-        </label>
-        <select
-          value={settings.preferredType}
-          onChange={(e) => updateSetting('preferredType', e.target.value as PokemonType | 'all')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-        >
-          <option value="all">Alle Typen</option>
-          {POKEMON_TYPES.map((type) => (
-            <option key={type} value={type}>
-              {TYPE_NAMES[type]}
-            </option>
-          ))}
-        </select>
-        <p className="mt-1 text-sm text-gray-600">
-          {settings.preferredType === 'all' 
-            ? 'Zufällige Auswahl aus allen Pokemon-Typen'
-            : `Mindestens 50% des Teams wird ${TYPE_NAMES[settings.preferredType as PokemonType]} sein`
-          }
-        </p>
-      </div>
 
       {/* Level Settings */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -115,57 +91,9 @@ const GenerationSettings: React.FC<GenerationSettingsProps> = ({
       />
 
 
-      {/* Trainer Personality */}
-      <div>
-        <label className="block text-sm font-medium text-gray-900 mb-2">
-          Trainer-Persönlichkeit
-        </label>
-        <select
-          value={settings.trainerPersonality}
-          onChange={(e) => updateSetting('trainerPersonality', e.target.value as TrainerPersonality)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-        >
-          {Object.entries(PERSONALITY_DESCRIPTIONS).map(([key, description]) => (
-            <option key={key} value={key}>
-              {description}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Stat Distribution Style */}
-      <div>
-        <label className="block text-sm font-medium text-gray-900 mb-2">
-          Stat-Verteilungsstil
-        </label>
-        <select
-          value={settings.statDistributionStyle}
-          onChange={(e) => updateSetting('statDistributionStyle', e.target.value as StatDistributionStyle)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-        >
-          {Object.entries(STAT_STYLE_DESCRIPTIONS).map(([key, description]) => (
-            <option key={key} value={key}>
-              {description}
-            </option>
-          ))}
-        </select>
-      </div>
 
       {/* Additional Options */}
-      <div className="space-y-3">
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="allowShiny"
-            checked={settings.allowShiny}
-            onChange={(e) => updateSetting('allowShiny', e.target.checked)}
-            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-          />
-          <label htmlFor="allowShiny" className="ml-2 text-sm text-gray-900">
-            Shiny Pokemon erlauben (selten)
-          </label>
-        </div>
-        
+      <div className="space-y-3">        
         <div className="space-y-2">
           <div className="flex items-center">
             <input
@@ -199,9 +127,6 @@ const GenerationSettings: React.FC<GenerationSettingsProps> = ({
               : `${settings.regions.length} Regionen`
           }</p>
           <p>• {settings.teamSize} Pokemon, Level {Math.max(1, settings.averageLevel - settings.levelVariance)}-{Math.min(100, settings.averageLevel + settings.levelVariance)}</p>
-          <p>• {settings.preferredType === 'all' ? 'Gemischte Typen' : `Fokus auf ${TYPE_NAMES[settings.preferredType as PokemonType]}`}</p>
-          <p>• {PERSONALITY_DESCRIPTIONS[settings.trainerPersonality].split(' (')[0]} Persönlichkeit</p>
-          <p>• {STAT_STYLE_DESCRIPTIONS[settings.statDistributionStyle].split(' (')[0]} Stat-Verteilung</p>
           <p>• {settings.generateImage ? 'Mit Bild-Generierung' : 'Ohne Bild-Generierung'}</p>
         </div>
       </div>
