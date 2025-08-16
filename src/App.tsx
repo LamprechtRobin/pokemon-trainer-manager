@@ -7,6 +7,7 @@ import AttacksOverview from "./pages/AttacksOverview";
 import AttackManagement from "./pages/AttackManagement";
 import BattleMode from "./pages/BattleMode";
 import DocumentationPage from "./pages/DocumentationPage";
+import RegelwerkPage from "./pages/RegelwerkPage";
 import LorePage from "./pages/LorePage";
 import BackupPage from "./pages/BackupPage";
 import ApiTestPage from "./pages/ApiTestPage";
@@ -29,6 +30,7 @@ const App: React.FC = () => {
         />
         <Route path="/battle/:trainerId" element={<BattleMode />} />
         <Route path="/documentation" element={<DocumentationPage />} />
+        <Route path="/regelwerk" element={<RegelwerkPage />} />
         <Route path="/lore" element={<LorePage />} />
         <Route path="/backup" element={<BackupPage />} />
         <Route path="/api-tests" element={<ApiTestPage />} />
