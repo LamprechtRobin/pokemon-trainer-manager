@@ -26,28 +26,28 @@ const TrainerOverviewPage: React.FC = () => {
             ⚔️ Attacken-Datenbank
           </button>
         </div>
-        <div className="flex justify-center gap-4 mb-8">
+        <div className="grid grid-cols-2 md:flex md:justify-center gap-4 mb-8">
           <button
             onClick={() => navigate("/backup")}
-            className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors flex items-center gap-2 font-medium"
+            className="px-4 md:px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2 font-medium text-sm md:text-base"
           >
             💾 Backup
           </button>
           <button
             onClick={() => navigate("/regelwerk")}
-            className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center gap-2 font-medium"
+            className="px-4 md:px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2 font-medium text-sm md:text-base"
           >
             📋 Regelwerk
           </button>
           <button
             onClick={() => navigate("/lore")}
-            className="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors flex items-center gap-2 font-medium"
+            className="px-4 md:px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors flex items-center justify-center gap-2 font-medium text-sm md:text-base"
           >
             📚 Lore
           </button>
           <button
             onClick={() => navigate("/api-tests")}
-            className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center gap-2 font-medium"
+            className="px-4 md:px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center gap-2 font-medium text-sm md:text-base"
           >
             🧪 API Tests
           </button>

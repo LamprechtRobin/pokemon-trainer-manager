@@ -90,12 +90,6 @@ const TrainerOverview: React.FC = () => {
           {showAddForm ? 'Cancel' : 'Add New Trainer'}
         </button>
         
-        <button 
-          onClick={() => window.open('/skill-sheet', '_blank')}
-          className="w-full sm:w-auto px-6 py-3 rounded-lg font-medium transition-colors bg-blue-500 text-white hover:bg-blue-600"
-        >
-          📄 Neues Skill Sheet
-        </button>
       </div>
 
       {showAddForm && (

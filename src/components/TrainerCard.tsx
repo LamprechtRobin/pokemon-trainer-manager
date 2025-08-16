@@ -90,16 +90,6 @@ const TrainerCard: React.FC<TrainerCardProps> = ({ trainer, onDelete }) => {
             Delete
           </button>
         </div>
-        
-        <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            window.open(`/skill-sheet/${trainer.id}`, '_blank');
-          }}
-          className="w-full px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors"
-        >
-          📄 Skill Sheet
-        </button>
       </div>
     </div>
   );

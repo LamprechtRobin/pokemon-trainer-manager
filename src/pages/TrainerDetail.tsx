@@ -495,6 +495,14 @@ const TrainerDetail: React.FC = () => {
                   ⚔️ Battle Mode
                 </button>
               )}
+              {!editMode && (
+                <button
+                  onClick={() => window.open(`/skill-sheet/${trainerId}`, '_blank')}
+                  className="w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
+                >
+                  📄 Skill Sheet
+                </button>
+              )}
               <button
                 onClick={() => (editMode ? handleSaveEdit() : setEditMode(true))}
                 className={`w-full sm:w-auto px-4 py-2 rounded-lg font-medium transition-colors ${
