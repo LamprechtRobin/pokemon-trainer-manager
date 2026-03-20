@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Trainer, Item } from "../types/trainer";
 import { Pokemon } from "../types/pokemon";
@@ -8,7 +8,6 @@ import ItemImagePicker from "../components/ItemImagePicker";
 import Shop from "../components/Shop";
 import PokemonTransferModal from "../components/PokemonTransferModal";
 import { pokeApiService } from "../services/pokeapi";
-import { evolutionService } from "../services/evolutionService";
 import { BasicAttackService } from "../services/basicAttackService";
 import { TrainerImage } from "../utils/imageUtils";
 import { imageGenerationService } from "../services/imageGenerationService";
@@ -54,13 +53,7 @@ const TrainerDetail: React.FC = () => {
     imageUrl: "",
   });
 
-  useEffect(() => {
-    if (trainerId) {
-      loadTrainer();
-    }
-  }, [trainerId]);
-
-  const loadTrainer = async () => {
+  const loadTrainer = useCallback(async () => {
     try {
       const trainers = await trainerService.getAllTrainers();
       const foundTrainer = trainers.find((t) => t.id === trainerId);
@@ -82,7 +75,13 @@ const TrainerDetail: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [trainerId, navigate]);
+
+  useEffect(() => {
+    if (trainerId) {
+      loadTrainer();
+    }
+  }, [trainerId, loadTrainer]);
 
   const handleSaveEdit = async () => {
     if (!trainer) return;
@@ -191,8 +190,6 @@ const TrainerDetail: React.FC = () => {
       const basicAttackId = pokemonDetails?.type
         ? BasicAttackService.getBasicAttackForType(pokemonDetails.type)
         : null;
-
-      const evolutionData = evolutionService.getEvolutionData(pokemonName);
 
       const newPokemon: Pokemon = {
         name: pokemonName,

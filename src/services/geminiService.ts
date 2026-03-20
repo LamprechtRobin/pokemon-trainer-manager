@@ -1,7 +1,6 @@
 import { 
   AIGenerationSettings, 
   GeneratedTrainerData, 
-  GeminiTrainerResponse,
   GenerationProgress,
   TrainerPersonality,
   PokemonType,
@@ -9,7 +8,6 @@ import {
   RegionOption
 } from '../types/aiTrainer';
 import { RegionService } from './regionService';
-import { TalentPointService } from './talentPointService';
 import { PokemonEnricher } from './pokemonEnricher';
 import { imageGenerationService } from './imageGenerationService';
 

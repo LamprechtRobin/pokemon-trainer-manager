@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Pokemon, PokemonFormData } from "../types/pokemon";
 import { Trainer } from "../types/trainer";
-import { Attack } from "../types/attack";
+import type { Attack } from "../types/attack";
 import { trainerService } from "../services/trainerService";
 import { attackService } from "../services/attackService";
 import { evolutionService } from "../services/evolutionService";
@@ -35,12 +35,6 @@ const POKEMON_TYPES = [
 const MIN_EXP = 0;
 const MAX_EXP = 10;
 
-// Attack upgrade costs (in talent points)
-const ATTACK_UPGRADE_COSTS = {
-  TIER_1_TO_2: 25,
-  TIER_2_TO_3: 50,
-};
-
 const PokemonDetail: React.FC = () => {
   const { trainerId, pokemonIndex } = useParams<{
     trainerId: string;
@@ -53,8 +47,6 @@ const PokemonDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [, setShowAttackSelection] = useState(false);
-  const [attackSearchTerm, setAttackSearchTerm] = useState("");
   const [showEvolutionDialog, setShowEvolutionDialog] = useState(false);
   const [selectedEvolution, setSelectedEvolution] = useState("");
 
@@ -68,13 +60,7 @@ const PokemonDetail: React.FC = () => {
     species: "",
   });
 
-  useEffect(() => {
-    if (trainerId && pokemonIndex !== undefined) {
-      loadPokemonData();
-    }
-  }, [trainerId, pokemonIndex]);
-
-  const loadPokemonData = async () => {
+  const loadPokemonData = useCallback(async () => {
     try {
       const trainers = await trainerService.getAllTrainers();
       const foundTrainer = trainers.find((t) => t.id === trainerId);
@@ -161,7 +147,13 @@ const PokemonDetail: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [trainerId, pokemonIndex, navigate]);
+
+  useEffect(() => {
+    if (trainerId && pokemonIndex !== undefined) {
+      loadPokemonData();
+    }
+  }, [trainerId, pokemonIndex, loadPokemonData]);
 
   const handleFormChange = (field: keyof PokemonFormData, value: string) => {
     setEditForm((prev) => {
@@ -355,180 +347,6 @@ const PokemonDetail: React.FC = () => {
       .filter((attack): attack is Attack => attack !== undefined);
   };
 
-  const getAvailableAttacks = (): Attack[] => {
-    // Get all tier 1 (basic) attacks
-    const basicAttacks = attackService.getAttacksByTier(1);
-    const learnedAttackIds = pokemon?.learnedAttacks || [];
-    let availableAttacks = basicAttacks.filter(
-      (attack) => !learnedAttackIds.includes(attack.id)
-    );
-
-    // Filter by search term
-    if (attackSearchTerm.trim()) {
-      const searchLower = attackSearchTerm.toLowerCase().trim();
-      availableAttacks = availableAttacks.filter(
-        (attack) =>
-          attack.name.toLowerCase().includes(searchLower) ||
-          attack.type.toLowerCase().includes(searchLower)
-      );
-    }
-
-    return availableAttacks.sort((a, b) => a.name.localeCompare(b.name));
-  };
-
-  const handleLearnAttack = (attackId: string) => {
-    if (!pokemon) return;
-
-    const currentAttacks = pokemon.learnedAttacks || [];
-    if (currentAttacks.length >= 4) {
-      alert("Ein Pokemon kann maximal 4 Attacken lernen!");
-      return;
-    }
-
-    if (currentAttacks.includes(attackId)) {
-      alert("Diese Attacke wurde bereits gelernt!");
-      return;
-    }
-
-    const updatedPokemon = {
-      ...pokemon,
-      learnedAttacks: [...currentAttacks, attackId],
-    };
-
-    setPokemon(updatedPokemon);
-    setShowAttackSelection(false);
-    setAttackSearchTerm(""); // Clear search when closing
-  };
-
-  const handleForgetAttack = (attackId: string) => {
-    if (!pokemon?.learnedAttacks) return;
-
-    const attack = attackService.getAttackById(attackId);
-    if (!attack) return;
-
-    // Calculate refund based on attack tier and upgrades spent
-    let refund = 0;
-    if (attack.tier === 2) {
-      refund = ATTACK_UPGRADE_COSTS.TIER_1_TO_2; // Refund tier 1->2 upgrade
-    } else if (attack.tier === 3) {
-      refund =
-        ATTACK_UPGRADE_COSTS.TIER_1_TO_2 + ATTACK_UPGRADE_COSTS.TIER_2_TO_3; // Refund both upgrades
-    }
-
-    const updatedAttacks = pokemon.learnedAttacks.filter(
-      (id) => id !== attackId
-    );
-
-    // Reduce spent talent points on attacks
-    const currentSpentOnAttacks = pokemon.talentPointsSpentOnAttacks || 0;
-    const newSpentOnAttacks = Math.max(0, currentSpentOnAttacks - refund);
-
-    const updatedPokemon = {
-      ...pokemon,
-      learnedAttacks: updatedAttacks,
-      talentPointsSpentOnAttacks: newSpentOnAttacks,
-    };
-
-    setPokemon(updatedPokemon);
-  };
-
-  // Attack Evolution System
-  const getUpgradeCost = (fromTier: 1 | 2 | 3): number => {
-    switch (fromTier) {
-      case 1:
-        return ATTACK_UPGRADE_COSTS.TIER_1_TO_2;
-      case 2:
-        return ATTACK_UPGRADE_COSTS.TIER_2_TO_3;
-      default:
-        return 0;
-    }
-  };
-
-  const getDowngradeRefund = (fromTier: 1 | 2 | 3): number => {
-    switch (fromTier) {
-      case 2:
-        return ATTACK_UPGRADE_COSTS.TIER_1_TO_2; // Refund for going from tier 2 to tier 1
-      case 3:
-        return ATTACK_UPGRADE_COSTS.TIER_2_TO_3; // Refund for going from tier 3 to tier 2
-      default:
-        return 0;
-    }
-  };
-
-  const canUpgradeAttack = (attack: Attack): boolean => {
-    if (!attack.evolvesTo) return false;
-    const upgradeCost = getUpgradeCost(attack.tier);
-    const availablePoints = getAvailableTalentPoints();
-    return availablePoints >= upgradeCost;
-  };
-
-  const handleUpgradeAttack = (attackId: string) => {
-    if (!pokemon?.learnedAttacks) return;
-
-    const attack = attackService.getAttackById(attackId);
-    if (!attack?.evolvesTo) return;
-
-    const upgradeCost = getUpgradeCost(attack.tier);
-    const availablePoints = getAvailableTalentPoints();
-
-    if (availablePoints < upgradeCost) {
-      alert(
-        `Nicht genügend Talent Points! Benötigt: ${upgradeCost}, Verfügbar: ${availablePoints}`
-      );
-      return;
-    }
-
-    // Upgrade the attack
-    const updatedAttacks = pokemon.learnedAttacks.map((id) =>
-      id === attackId ? attack.evolvesTo! : id
-    );
-
-    // Track talent points spent on attacks
-    const currentSpentOnAttacks = pokemon.talentPointsSpentOnAttacks || 0;
-    const newSpentOnAttacks = currentSpentOnAttacks + upgradeCost;
-
-    const updatedPokemon = {
-      ...pokemon,
-      learnedAttacks: updatedAttacks,
-      talentPointsSpentOnAttacks: newSpentOnAttacks,
-    };
-
-    setPokemon(updatedPokemon);
-  };
-
-  const canDowngradeAttack = (attack: Attack): boolean => {
-    return attack.tier > 1; // Can downgrade if not tier 1
-  };
-
-  const handleDowngradeAttack = (attackId: string) => {
-    if (!pokemon?.learnedAttacks) return;
-
-    const attack = attackService.getAttackById(attackId);
-    if (!attack || attack.tier === 1) return;
-
-    const previousAttack = attackService.getPreviousTierAttack(attackId);
-    if (!previousAttack) return;
-
-    const refund = getDowngradeRefund(attack.tier);
-
-    // Downgrade the attack
-    const updatedAttacks = pokemon.learnedAttacks.map((id) =>
-      id === attackId ? previousAttack.id : id
-    );
-
-    // Refund talent points by reducing spent on attacks
-    const currentSpentOnAttacks = pokemon.talentPointsSpentOnAttacks || 0;
-    const newSpentOnAttacks = Math.max(0, currentSpentOnAttacks - refund);
-
-    const updatedPokemon = {
-      ...pokemon,
-      learnedAttacks: updatedAttacks,
-      talentPointsSpentOnAttacks: newSpentOnAttacks,
-    };
-
-    setPokemon(updatedPokemon);
-  };
-
   // Evolution System
   const [evolutionData, setEvolutionData] = useState<{
     canEvolve: boolean;
@@ -536,14 +354,16 @@ const PokemonDetail: React.FC = () => {
   } | null>(null);
   const [loadingEvolution, setLoadingEvolution] = useState(false);
 
+  const pokemonName = pokemon?.name;
+
   // Load evolution data when Pokemon changes
   useEffect(() => {
-    if (!pokemon) return;
+    if (!pokemonName) return;
 
     const loadEvolutionData = async () => {
       setLoadingEvolution(true);
       try {
-        const data = await evolutionService.getEvolutionData(pokemon.name);
+        const data = await evolutionService.getEvolutionData(pokemonName);
         setEvolutionData(data);
       } catch (error) {
         console.error("Error loading evolution data:", error);
@@ -554,7 +374,7 @@ const PokemonDetail: React.FC = () => {
     };
 
     loadEvolutionData();
-  }, [pokemon?.name]);
+  }, [pokemonName]);
 
   const getAvailableEvolutions = (): string[] => {
     return evolutionData?.evolutions || [];

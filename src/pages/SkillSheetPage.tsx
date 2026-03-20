@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import TrainerSkillSheet from '../components/SkillSheet/TrainerSkillSheet';
 import { getTrainerById, updateTrainer } from '../services/trainerService';
@@ -13,13 +13,7 @@ const SkillSheetPage: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (trainerId) {
-      loadTrainer();
-    }
-  }, [trainerId]);
-
-  const loadTrainer = async () => {
+  const loadTrainer = useCallback(async () => {
     if (!trainerId) return;
     
     try {
@@ -38,7 +32,13 @@ const SkillSheetPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [trainerId]);
+
+  useEffect(() => {
+    if (trainerId) {
+      loadTrainer();
+    }
+  }, [trainerId, loadTrainer]);
 
   const handleSkillsChange = async (skills: TrainerSkills) => {
     if (!trainerId || !trainer) return;

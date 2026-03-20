@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { itemsService, PokemonItem, ItemsByCategory } from '../services/itemsService';
 
 interface ItemImagePickerProps {
@@ -22,10 +22,6 @@ const ItemImagePicker: React.FC<ItemImagePickerProps> = ({
     loadItems();
   }, []);
 
-  useEffect(() => {
-    filterItems();
-  }, [itemsByCategory, selectedCategory, searchQuery]); // filterItems is called inline, so it's safe to ignore this warning
-
   const loadItems = async () => {
     try {
       const items = await itemsService.getItemsByCategory();
@@ -37,7 +33,7 @@ const ItemImagePicker: React.FC<ItemImagePickerProps> = ({
     }
   };
 
-  const filterItems = () => {
+  const filterItems = useCallback(() => {
     let items: PokemonItem[] = [];
 
     if (selectedCategory === 'all') {
@@ -59,7 +55,11 @@ const ItemImagePicker: React.FC<ItemImagePickerProps> = ({
     }
 
     setFilteredItems(items);
-  };
+  }, [itemsByCategory, selectedCategory, searchQuery]);
+
+  useEffect(() => {
+    filterItems();
+  }, [filterItems]);
 
   const handleItemSelect = (item: PokemonItem) => {
     onImageSelect(item.image_url, item.display_name, item.description);

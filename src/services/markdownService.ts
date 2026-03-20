@@ -89,7 +89,7 @@ export class MarkdownService {
           
           // Combine folder contents
           let folderContent = '';
-          for (const { file, content } of fileContents) {
+          for (const { content } of fileContents) {
             if (folderContent) {
               folderContent += '\n\n---\n\n';
             }

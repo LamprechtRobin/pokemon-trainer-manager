@@ -88,7 +88,8 @@ export const attackService = {
     let nextAttack: Attack | undefined = baseAttack;
     while (nextAttack) {
       chain.push(nextAttack);
-      nextAttack = nextAttack.evolvesTo ? attacks.find(a => a.id === nextAttack!.evolvesTo) : undefined;
+      const evolvesToId: string | undefined = nextAttack.evolvesTo;
+      nextAttack = evolvesToId ? attacks.find(a => a.id === evolvesToId) : undefined;
     }
     
     return chain;

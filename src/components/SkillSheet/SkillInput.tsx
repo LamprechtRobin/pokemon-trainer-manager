@@ -1,5 +1,5 @@
 import React from 'react';
-import { SKILL_CONFIG, getSkillDie, getSkillLabel } from '../../config/skills.config';
+import { SKILL_CONFIG, getSkillDie } from '../../config/skills.config';
 import type { SkillLevel } from '../../config/skills.config';
 
 interface SkillInputProps {
@@ -27,8 +27,6 @@ const SkillInput: React.FC<SkillInputProps> = ({
   };
 
   const getCurrentDie = getSkillDie(value);
-  const getCurrentLabel = getSkillLabel(value);
-
   return (
     <div className={`flex items-center justify-between py-2 px-3 border-b border-gray-200 ${className}`}>
       <div className="flex-1">
