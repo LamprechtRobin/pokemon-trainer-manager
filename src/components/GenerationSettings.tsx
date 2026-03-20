@@ -1,15 +1,7 @@
 import React from 'react';
 import {
   AIGenerationSettings,
-  DEFAULT_AI_SETTINGS,
-  POKEMON_TYPES,
-  TYPE_NAMES,
-  PERSONALITY_DESCRIPTIONS,
-  STAT_STYLE_DESCRIPTIONS,
-  TrainerPersonality,
-  StatDistributionStyle,
-  PokemonType,
-  RegionOption
+  DEFAULT_AI_SETTINGS
 } from '../types/aiTrainer';
 import RangeSlider from './RangeSlider';
 import MultiRegionSelector from './MultiRegionSelector';
