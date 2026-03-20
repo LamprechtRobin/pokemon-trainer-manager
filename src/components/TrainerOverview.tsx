@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { trainerService } from '../firebase/trainerService';
+import { trainerService } from '../services/trainerService';
 import TrainerCard from './TrainerCard';
 import AddTrainerForm from './AddTrainerForm';
 import { Trainer } from '../types/trainer';
@@ -23,11 +23,11 @@ const TrainerOverview: React.FC = () => {
       // Run migration to ensure all Pokemon have basic attacks
       const migrationResult = PokemonMigration.migrateAllTrainers(trainersData);
       
-      // If any trainers were updated, save them back to Firebase
+      // If any trainers were updated, save them back to the backend
       if (migrationResult.migrationCount > 0) {
         console.log(`Migrating ${migrationResult.migrationCount} trainers with basic attacks...`);
         
-        // Save updated trainers back to Firebase
+        // Save updated trainers back to the backend
         for (const trainer of migrationResult.updatedTrainers) {
           if (trainer.id) {
             await trainerService.updateTrainer(trainer.id, trainer);

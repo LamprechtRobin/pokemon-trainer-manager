@@ -1,11 +1,12 @@
 # Pokemon Trainer Manager (pmon)
 
 ## Project Overview
-A React-based web application for managing Pokemon trainers, with Firebase as the backend database. The app will eventually integrate with the Pokemon API for additional functionality.
+A React-based web application for managing Pokemon trainers, with Supabase as the backend database and Cloudflare R2 for image storage. The app integrates with the Pokemon API for additional functionality.
 
 ## Tech Stack
 - **Frontend**: React 18.2.0 with TypeScript
-- **Database**: Firebase Firestore
+- **Database**: Supabase Postgres
+- **Object Storage**: Cloudflare R2
 - **Styling**: Tailwind CSS (Mobile-First Design)
 - **Package Manager**: pnpm
 - **Language**: TypeScript 5.8.3
@@ -17,9 +18,11 @@ src/
 │   ├── TrainerOverview.tsx   # Main trainer list view
 │   ├── TrainerCard.tsx       # Individual trainer display
 │   └── AddTrainerForm.tsx    # Form for adding new trainers
-├── firebase/
-│   ├── config.ts            # Firebase configuration
-│   └── trainerService.ts    # Firebase CRUD operations
+├── services/
+│   └── trainerService.ts    # Trainer CRUD via Vercel API
+├── api/
+│   ├── trainers/            # Supabase CRUD endpoints
+│   └── storage/             # Cloudflare R2 image endpoints
 ├── types/
 │   └── trainer.ts           # TypeScript type definitions
 ├── App.tsx                  # Main app component
@@ -37,14 +40,14 @@ src/
 - Mobile-first responsive design with Tailwind CSS
 - Touch-friendly UI components
 
-## Firebase Setup Required
-To connect to Firebase, update `src/firebase/config.ts` with your Firebase project credentials:
-- apiKey
-- authDomain
-- projectId
-- storageBucket
-- messagingSenderId
-- appId
+## Environment Setup Required
+Configure these variables in `.env.local` for server-side API functions:
+- R2_ACCOUNT_ID
+- R2_ACCESS_KEY_ID
+- R2_SECRET_ACCESS_KEY
+- R2_BUCKET_NAME
+- SUPABASE_URL
+- SUPABASE_SERVICE_ROLE_KEY
 
 ## Trainer Data Model
 ```javascript
@@ -78,13 +81,13 @@ The project includes comprehensive TypeScript types in `src/types/trainer.ts`:
 
 ## Getting Started
 1. Install dependencies: `pnpm install`
-2. Configure Firebase credentials in `src/firebase/config.ts`
+2. Configure `.env.local` with Supabase and R2 credentials
 3. Start the development server: `pnpm start`
 4. Open http://localhost:3000 to view the app
 
 ## Development Notes
 - All components are written in TypeScript with proper typing
-- Firebase service layer includes full type definitions
+- Trainer data is persisted via Vercel API functions (Supabase + R2)
 - Strict TypeScript configuration for better code quality
 - Mobile-first responsive design approach
 - Uses Tailwind CSS utility classes for styling

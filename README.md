@@ -12,14 +12,15 @@ Eine React-basierte Web-Anwendung zur Verwaltung von Pokemon-Trainern und ihren 
 - **Erfahrungssystem**: Einfaches 0-10 EXP-System mit Quick-Add-Buttons
 - **Pokemon-Details**: Detaillierte Bearbeitung von Pokemon mit Level, EXP, Typen und Stats
 - **Mobile-First Design**: Responsive Design mit Tailwind CSS
-- **Firebase Integration**: Persistente Datenspeicherung mit Firestore
+- **Supabase + Cloudflare R2**: Persistente Datenspeicherung mit Bild-Upload
 
 ## Technologie-Stack
 
 - **Frontend**: React 18.2.0 mit TypeScript
 - **Styling**: Tailwind CSS
 - **Routing**: React Router 7
-- **Database**: Firebase Firestore
+- **Database**: Supabase Postgres
+- **Object Storage**: Cloudflare R2
 - **API**: PokeAPI für Pokemon-Daten
 - **Package Manager**: pnpm
 
@@ -36,20 +37,32 @@ cd pmon
 pnpm install
 ```
 
-3. Firebase-Konfiguration in `src/firebase/config.ts` einrichten
+3. `.env.local` mit Supabase- und R2-Variablen befuellen
+4. SQL aus `supabase/schema.sql` im Supabase SQL Editor ausfuehren
 
-4. Anwendung starten:
+5. Anwendung starten:
 ```bash
 pnpm start
 ```
+
+### Lokale API-Anbindung
+
+Wenn du lokal mit `pnpm start` arbeitest, sind Vercel Functions unter `/api` nicht automatisch verfuegbar.
+Setze dafuer in `.env.local` eine externe API-Base-URL:
+
+```bash
+REACT_APP_API_BASE_URL=https://deine-app.vercel.app
+```
+
+Alternativ kannst du lokal mit `vercel dev` starten, damit `/api` auch lokal aufgeloest wird.
 
 ## Struktur
 
 - `src/components/` - Wiederverwendbare React-Komponenten
 - `src/pages/` - Hauptseiten der Anwendung
-- `src/services/` - API-Services (PokeAPI, Firebase)
+- `src/services/` - API-Services (PokeAPI, Trainer API)
 - `src/types/` - TypeScript-Interfaces
-- `src/firebase/` - Firebase-Konfiguration und Services
+- `api/` - Vercel Functions (Supabase CRUD + R2 Storage)
 
 ## Pokemon-Features
 

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Trainer } from "../types/trainer";
 import { Pokemon } from "../types/pokemon";
 import { Attack } from "../types/attack";
-import { trainerService } from "../firebase/trainerService";
+import { trainerService } from "../services/trainerService";
 import { attackService } from "../services/attackService";
 import Shop from "../components/Shop";
 

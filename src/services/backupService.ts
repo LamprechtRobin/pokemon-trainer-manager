@@ -1,4 +1,4 @@
-import { trainerService } from '../firebase/trainerService';
+import { trainerService } from './trainerService';
 import { Trainer } from '../types/trainer';
 
 interface BackupData {
@@ -99,7 +99,7 @@ export const backupService = {
                 continue;
               }
 
-              // Remove the ID to let Firebase generate a new one
+              // Remove the ID to let the database generate a new one
               const trainerData = { ...trainer };
               delete trainerData.id;
 

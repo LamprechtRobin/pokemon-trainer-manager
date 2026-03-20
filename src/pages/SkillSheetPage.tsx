@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import TrainerSkillSheet from '../components/SkillSheet/TrainerSkillSheet';
-import { getTrainerById, updateTrainer } from '../firebase/trainerService';
+import { getTrainerById, updateTrainer } from '../services/trainerService';
 import { SkillCalculator } from '../utils/skillCalculator';
 import type { Trainer, TrainerSkills } from '../types/trainer';
 
@@ -46,7 +46,7 @@ const SkillSheetPage: React.FC = () => {
     try {
       setIsSaving(true);
       
-      // Clean skills data - remove undefined values for Firebase
+      // Clean skills data - remove undefined values before saving
       const cleanSkills = {
         intelligence: skills.intelligence || 0,
         agility: skills.agility || 0,

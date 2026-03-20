@@ -207,8 +207,8 @@ const ApiTestPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 bg-gray-50 rounded-lg text-center">
               <div className="text-2xl mb-2">🔥</div>
-              <h3 className="font-medium text-gray-900 mb-1">Firebase</h3>
-              <p className="text-sm text-gray-600">Datenbank-Verbindung</p>
+              <h3 className="font-medium text-gray-900 mb-1">Supabase</h3>
+              <p className="text-sm text-gray-600">Postgres-Verbindung</p>
               <div className="mt-2 text-green-600 text-sm">✅ Aktiv</div>
             </div>
             

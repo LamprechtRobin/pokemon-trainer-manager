@@ -34,7 +34,7 @@ const PokemonTransferModal: React.FC<PokemonTransferModalProps> = ({
     try {
       setLoading(true);
       // Import the trainerService dynamically to avoid circular imports
-      const { trainerService } = await import('../firebase/trainerService');
+      const { trainerService } = await import('../services/trainerService');
       const allTrainers = await trainerService.getAllTrainers();
       
       // Filter out the current trainer

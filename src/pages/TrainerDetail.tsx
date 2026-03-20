@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Trainer, Item } from "../types/trainer";
 import { Pokemon } from "../types/pokemon";
-import { trainerService } from "../firebase/trainerService";
+import { trainerService } from "../services/trainerService";
 import PokemonSearch from "../components/PokemonSearch";
 import ItemImagePicker from "../components/ItemImagePicker";
 import Shop from "../components/Shop";
@@ -279,7 +279,7 @@ const TrainerDetail: React.FC = () => {
       const updatedTargetTeam = [...(targetTrainer.team || []), transferPokemon.pokemon];
       const updatedTargetTrainer = { ...targetTrainer, team: updatedTargetTeam };
 
-      // Update both trainers in Firebase
+      // Update both trainers in the database
       await Promise.all([
         trainerService.updateTrainer(trainer.id!, updatedCurrentTrainer),
         trainerService.updateTrainer(targetTrainerId, updatedTargetTrainer)
