@@ -6,9 +6,12 @@ const required = (key) => {
   return value;
 };
 
-const getEnv = () => ({
+const getSupabaseEnv = () => ({
   supabaseUrl: required('SUPABASE_URL'),
-  supabaseServiceRoleKey: required('SUPABASE_SERVICE_ROLE_KEY'),
+  supabaseServiceRoleKey: required('SUPABASE_SERVICE_ROLE_KEY')
+});
+
+const getR2Env = () => ({
   r2AccountId: required('R2_ACCOUNT_ID'),
   r2AccessKeyId: required('R2_ACCESS_KEY_ID'),
   r2SecretAccessKey: required('R2_SECRET_ACCESS_KEY'),
@@ -16,5 +19,6 @@ const getEnv = () => ({
 });
 
 module.exports = {
-  getEnv
+  getSupabaseEnv,
+  getR2Env
 };

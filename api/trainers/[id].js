@@ -1,8 +1,13 @@
 const { getSupabaseAdmin } = require('../_lib/supabase');
 const { TRAINERS_TABLE, normalizeTrainerPayload } = require('../_lib/trainers');
+const { handleCorsPreflight, setCorsHeaders } = require('../_lib/cors');
 
 module.exports = async (req, res) => {
   try {
+    const preflightResponse = handleCorsPreflight(req, res);
+    if (preflightResponse) return preflightResponse;
+    setCorsHeaders(req, res);
+
     const supabase = getSupabaseAdmin();
     const trainerId = req.query.id;
 

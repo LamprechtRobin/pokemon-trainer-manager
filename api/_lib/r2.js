@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
-const { getEnv } = require('./env');
+const { getR2Env } = require('./env');
 
 let client = null;
 
@@ -9,7 +9,7 @@ const getR2Client = () => {
     return client;
   }
 
-  const { r2AccountId, r2AccessKeyId, r2SecretAccessKey } = getEnv();
+  const { r2AccountId, r2AccessKeyId, r2SecretAccessKey } = getR2Env();
   client = new S3Client({
     region: 'auto',
     endpoint: `https://${r2AccountId}.r2.cloudflarestorage.com`,
@@ -23,7 +23,7 @@ const getR2Client = () => {
 };
 
 const uploadDataUrlToR2 = async (dataUrl) => {
-  const { r2BucketName } = getEnv();
+  const { r2BucketName } = getR2Env();
   const matches = /^data:(.+);base64,(.+)$/.exec(dataUrl);
   if (!matches) {
     throw new Error('Invalid data URL format');
@@ -50,7 +50,7 @@ const uploadDataUrlToR2 = async (dataUrl) => {
 };
 
 const getObjectFromR2 = async (key) => {
-  const { r2BucketName } = getEnv();
+  const { r2BucketName } = getR2Env();
   const response = await getR2Client().send(
     new GetObjectCommand({
       Bucket: r2BucketName,

@@ -1,5 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
-const { getEnv } = require('./env');
+const { getSupabaseEnv } = require('./env');
 
 let client = null;
 
@@ -8,7 +8,7 @@ const getSupabaseAdmin = () => {
     return client;
   }
 
-  const { supabaseUrl, supabaseServiceRoleKey } = getEnv();
+  const { supabaseUrl, supabaseServiceRoleKey } = getSupabaseEnv();
   client = createClient(supabaseUrl, supabaseServiceRoleKey, {
     auth: {
       autoRefreshToken: false,

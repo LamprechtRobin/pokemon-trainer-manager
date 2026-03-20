@@ -1,4 +1,5 @@
 const { getObjectFromR2 } = require('../_lib/r2');
+const { handleCorsPreflight, setCorsHeaders } = require('../_lib/cors');
 
 const streamToBuffer = async (stream) => {
   const chunks = [];
@@ -10,6 +11,10 @@ const streamToBuffer = async (stream) => {
 
 module.exports = async (req, res) => {
   try {
+    const preflightResponse = handleCorsPreflight(req, res);
+    if (preflightResponse) return preflightResponse;
+    setCorsHeaders(req, res);
+
     if (req.method !== 'GET') {
       res.setHeader('Allow', 'GET');
       return res.status(405).json({ error: 'Method not allowed' });
