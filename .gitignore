@@ -46,3 +46,4 @@ pids
 .claude/
 .env.production
 .env.local
+env.txt

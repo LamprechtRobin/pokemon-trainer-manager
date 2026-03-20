@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Trainer } from "../types/trainer";
 import { Pokemon } from "../types/pokemon";
@@ -53,13 +53,7 @@ const BattleMode: React.FC = () => {
   const [battleEndMoneyReward, setBattleEndMoneyReward] = useState(0);
   const [showShop, setShowShop] = useState(false);
 
-  useEffect(() => {
-    if (trainerId) {
-      loadTrainer();
-    }
-  }, [trainerId]);
-
-  const loadTrainer = async () => {
+  const loadTrainer = useCallback(async () => {
     try {
       const trainers = await trainerService.getAllTrainers();
       const foundTrainer = trainers.find((t) => t.id === trainerId);
@@ -81,7 +75,13 @@ const BattleMode: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [trainerId, navigate]);
+
+  useEffect(() => {
+    if (trainerId) {
+      loadTrainer();
+    }
+  }, [trainerId, loadTrainer]);
 
   const handlePokemonToggle = (index: number) => {
     setSelectedPokemonIndices((prev) => {

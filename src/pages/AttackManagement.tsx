@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Pokemon } from '../types/pokemon';
 import { Trainer } from '../types/trainer';
@@ -29,13 +29,7 @@ const AttackManagement: React.FC = () => {
     onConfirm: () => void;
   } | null>(null);
 
-  useEffect(() => {
-    if (trainerId && pokemonIndex !== undefined) {
-      loadPokemonData();
-    }
-  }, [trainerId, pokemonIndex]);
-
-  const loadPokemonData = async () => {
+  const loadPokemonData = useCallback(async () => {
     try {
       const trainers = await trainerService.getAllTrainers();
       const foundTrainer = trainers.find(t => t.id === trainerId);
@@ -61,7 +55,13 @@ const AttackManagement: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [trainerId, pokemonIndex, navigate]);
+
+  useEffect(() => {
+    if (trainerId && pokemonIndex !== undefined) {
+      loadPokemonData();
+    }
+  }, [trainerId, pokemonIndex, loadPokemonData]);
 
   const savePokemon = async (updatedPokemon: Pokemon) => {
     if (!trainer || pokemonIndex === undefined) return;

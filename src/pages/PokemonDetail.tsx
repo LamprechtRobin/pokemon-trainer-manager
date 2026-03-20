@@ -53,7 +53,7 @@ const PokemonDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [showAttackSelection, setShowAttackSelection] = useState(false);
+  const [, setShowAttackSelection] = useState(false);
   const [attackSearchTerm, setAttackSearchTerm] = useState("");
   const [showEvolutionDialog, setShowEvolutionDialog] = useState(false);
   const [selectedEvolution, setSelectedEvolution] = useState("");

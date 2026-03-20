@@ -5,7 +5,7 @@ import SkillSection from './SkillSection';
 import { BASE_ATTRIBUTES, SKILL_CONFIG } from '../../config/skills.config';
 import { SkillCalculator } from '../../utils/skillCalculator';
 import type { TrainerSkills } from '../../types/trainer';
-import type { AttributeId, SkillId, SkillLevel, Disadvantage, SpecialAbility } from '../../config/skills.config';
+import type { AttributeId, SkillId, SkillLevel } from '../../config/skills.config';
 
 interface TrainerSkillSheetProps {
   initialSkills?: TrainerSkills;
@@ -89,8 +89,6 @@ const TrainerSkillSheet: React.FC<TrainerSkillSheetProps> = ({
 
   const remainingPoints = SkillCalculator.getRemainingAttributePoints(skills);
   const validation = SkillCalculator.validateTrainerSkills(skills);
-  const stats = SkillCalculator.getCharacterStats(skills);
-
   // Export functions
   const exportToJSON = () => {
     const data = {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MarkdownService, LORE_SECTIONS, MarkdownSection } from "../services/markdownService";
+import { MarkdownService, LORE_SECTIONS } from "../services/markdownService";
 
 const LorePage: React.FC = () => {
   const navigate = useNavigate();
